@@ -1,0 +1,60 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { researchContext, scriptPartContext } from './public/research-context.mjs';
+import { readFile } from 'node:fs/promises';
+
+test('F1 supported evidence retained, uncertain evidence explicitly marked',()=>{
+ const p={researchSummary:'summary',researchFacts:[{claim:'verified',status:'supported',sourceId:'s1'},{claim:'uncertain',status:'needs_check'},{claim:'rejected',status:'rejected'}],claims:[{claim:'claim',status:'supported'},{claim:'maybe',status:'needs_check'}],researchTimeline:[{event:'event'}],researchCast:[{name:'person'}],researchSensory:'sensory'};
+ const ctx=researchContext(p);assert.equal(ctx.researchSummary,'summary');assert.equal(ctx.researchFacts.length,2);assert.equal(ctx.researchFacts[1].assertable,false);assert.match(ctx.researchFacts[1].warning,/khẳng định/);assert.equal(ctx.claims[0].claim,'claim');assert.equal(ctx.researchTimeline[0].event,'event');assert.equal(ctx.researchCast[0].name,'person');
+});
+test('F1 outline/script context includes research and directives prohibit uncertain assertions',async()=>{
+ const app=await readFile('studio/public/app.js','utf8'),server=await readFile('studio/server.mjs','utf8');assert.match(app,/\.\.\.researchContext\(p\)/);assert.match(server,/needs_check.*không được khẳng định/);
+});
+
+test('F2 seven script calls omit raw sources and shrink measured contexts',async()=>{
+ const {scriptPartContext}=await import('./public/research-context.mjs');const p={topic:'Egypt',minutes:7,sources:[{text:'x'.repeat(20000)}],packaging:[{title:'Egypt',thumbnailVisual:'x'.repeat(800)}],outline:Array.from({length:7},(_,i)=>({title:'part '+i})),researchSummary:'Egypt summary',researchFacts:[{claim:'Egypt fact',status:'supported'}]};const c={language:'vi',identity:{voice:'voice',hook:'hook'},characterDescription:'x'.repeat(1000)};const old={...p,packaging:p.packaging[0],characterDescription:c.characterDescription};const seen=[];const mockAI=async context=>{seen.push(JSON.stringify(context));return {narration:'A brief written part.'};};const parts=[];
+ for(let i=0;i<7;i++){const ctx=scriptPartContext(c,p,{focus:p.outline[i],targetWords:150},i,7,parts);assert.equal(ctx.sources,undefined);assert.equal(ctx.packaging,undefined);assert.equal(ctx.characterDescription,undefined);assert.equal(ctx.selectedTitle,'Egypt');await mockAI(ctx);parts.push('A brief written part.');}const before=7*JSON.stringify(old).length,after=seen.reduce((n,s)=>n+s.length,0);assert(after<before);console.log('F2 context characters before='+before+' after='+after);assert.match(seen.at(-1),/previousSummaries/);
+});
+
+test('F3 retired AI template discovery and media quota removed from runtime',async()=>{for(const path of ['studio/public/app.js','studio/server.mjs','studio/rx.mjs']){const text=await readFile(path,'utf8');for(const marker of ['detect'+'-templates','upload'+'Daily','stt'+'Model','Groq '+'viết phần'])assert(!text.includes(marker),path+': '+marker);}const app=await readFile('studio/public/app.js','utf8');const context=app.match(/function projectContext[^\n]+/)[0];assert(!context.includes('character'+'Description'));assert.match(app,/function videoTable/);assert.match(app,/function hookTable/);});
+
+test('F5 editorial notes deduplicate near matches, exclude source-only notes and cap five',async()=>{const {filterEditorNotes}=await import('./public/script-quality.mjs');const repeated=Array.from({length:7},()=>['Kiểm tra năm 1415 khi Portugal chiếm Ceuta.','Cần kiểm tra Portugal chiếm Ceuta vào năm 1415.','Kiểm tra tên nguồn History of Egypt.']).flat();const notes=filterEditorNotes([...repeated,...Array.from({length:8},(_,i)=>`Kiểm tra sự kiện ${1900+i} ở địa danh riêng ${i}.`)],['History of Egypt']);assert(notes.length<=5);assert.equal(notes.filter(x=>x.includes('Ceuta')).length,1);assert(!notes.some(x=>x.includes('History of Egypt')));});
+test('F5 concise hedge instruction and collapsed notes with saved channel switch',async()=>{const app=await readFile('studio/public/app.js','utf8'),server=await readFile('studio/server.mjs','utf8');assert.match(app,/channel.hideVerificationNotes/);assert.match(app,/Ghi chú biên tập/);assert(!server.includes('mọi số liệu vẫn phải có nguồn'));assert.match(server,/một trong những/);assert.match(server,/tối đa 2/);});
+
+test('F4 short section retries once and warns if still short',async()=>{const {writeCheckedPart}=await import('./public/script-quality.mjs');const seen=[];const result=await writeCheckedPart(async ctx=>{seen.push(ctx);return {narration:'Too short.'};},{targetWords:100});assert.equal(seen.length,2);assert.match(seen[1].lengthCorrection,/dài hơn/);assert(result.warning);});
+test('F4 narration labels removed and repeated five-grams detected',async()=>{const {cleanNarration,repeatedParts}=await import('./public/script-quality.mjs');assert.equal(cleanNarration('# Intro\n[Hook]\nCảnh 3: Hello there.\nScene 2: Story here.'),'Hello there.\nStory here.');const text='Ancient Egypt developed a system of law and taxes for its people';assert.equal(repeatedParts([text,text])[0].first,1);assert.equal(repeatedParts([text,text])[0].second,2);assert.deepEqual(repeatedParts(['one two three four five','six seven eight nine ten']),[]);});
+
+test('G1 chapters require zero start, three ascending timestamps',async()=>{const {parseChapters}=await import('./rx.mjs');assert.deepEqual(parseChapters('0:00 Intro\n1:20 Rise\n1:02:03 Fall'),[{t:0,label:'Intro'},{t:80,label:'Rise'},{t:3723,label:'Fall'}]);for(const text of ['0:00 Intro\n1:20 End','1:00 Intro\n2:00 Rise\n3:00 Fall','0:00 Intro\n2:00 Rise\n1:00 Fall'])assert.deepEqual(parseChapters(text),[]);});
+test('G1 imported optional metadata bounded without storing description',async()=>{const {normalizeImport}=await import('./core.mjs');const rows=normalizeImport([{title:'test',channelId:'c',publishedAt:'2020-01-01',views:100,description:'never store me',tags:Array.from({length:20},()=> 't'.repeat(70)),likes:5,comments:2,chapters:[{t:0,label:'Intro'}]}]);assert.equal(rows[0].tags.length,15);assert.equal(rows[0].tags[0].length,40);assert.equal(rows[0].engagement,.07);assert.equal(rows[0].description,undefined);assert.equal(rows[0].chapters[0].t,0);});
+
+test('G2 title DNA lift requires five videos per group and reflects feature advantage',async()=>{const {titleDNA,tagStats}=await import('./rx.mjs');const videos=[...Array.from({length:5},(_,i)=>({title:`History of Egypt ${1900+i}`,multiple:3,tags:['Egypt','history']})),...Array.from({length:5},()=>({title:'History of Rome',multiple:1,tags:['Rome']}))];const dna=titleDNA(videos,'History of');assert(dna.lift.numbers>0);assert.equal(dna.characters.median,18);assert.equal(titleDNA(videos.slice(0,4),'History of').lift.reason,'chưa đủ mẫu');const tags=tagStats(videos,'History of');assert.equal(tags.winnerTags[0].count,5);assert.equal(tags.averageTags,1.5);assert(tags.entityTags.some(x=>x.tag==='Egypt'));});
+
+test('G6 title flags length/template/entity overlap and tag list capped at 500',async()=>{const {checkTitle,limitTags}=await import('./rx.mjs');const dna={characters:{p25:15,p75:35}};assert(checkTitle('X','History of',dna,[]).some(x=>x.includes('ngắn')));assert(checkTitle('History of '+ 'Egypt '.repeat(20),'History of',dna,[]).some(x=>x.includes('dài')));assert(checkTitle('History of Egypt','History of',dna,['History of Ancient Egypt']).some(x=>x.includes('trùng')));assert.equal(checkTitle('History of Rome','History of',dna,[]).length,0);assert(limitTags(Array.from({length:40},(_,i)=>'tag '+i+' '+ 'x'.repeat(30))).join(', ').length<=500);});
+
+test('H1 deletion requires project consent, preserves surveys and undo restores exact records',async()=>{const {deleteChannels,undoChannels,draftChannels}=await import('./public/channel-management.mjs');const state={channels:[{id:'a',name:'',ideas:[{title:'x'}]},{id:'b',name:'B',nicheLock:{}}],projects:[{id:'p',channelId:'a'}],surveys:[{id:'survey'}]};assert.throws(()=>deleteChannels(state,['a'],false),/dự án/);const snapshot=deleteChannels(state,['a'],true);assert.deepEqual(state.channels.map(x=>x.id),['b']);assert.equal(state.projects.length,0);assert.equal(state.surveys[0].id,'survey');undoChannels(state,snapshot);assert.equal(state.channels[0].id,'a');assert.equal(state.projects[0].id,'p');assert.deepEqual(draftChannels(state).map(x=>x.id),['a']);const empty=deleteChannels(state,['b'],false);assert.equal(empty.projects.length,0);});
+test('H1 stale edited channel cannot resurrect after remote deletion',async()=>{const {mergeState}=await import('./sync.mjs');const base={channels:[{id:'a',name:'A'}],projects:[{id:'p',channelId:'a'}],surveys:[]};const local=structuredClone(base),remote={channels:[],projects:[],surveys:[]};local.channels[0].name='old tab edit';const merged=mergeState(base,local,remote);assert.equal(merged.state.channels.length,0);assert.equal(merged.state.projects.length,0);});
+
+test('F1 editable JSON/pipe research fields remain usable after user edits',()=>{const ctx=researchContext({researchFacts:'Population 10 | source-1 | supported\nUnknown 20 | source-2 | needs_check',researchTimeline:'[{"date":"1415","event":"Ceuta"}]',researchCast:'Cyrus | King | source-3'});assert.equal(ctx.researchFacts[0].status,'supported');assert.equal(ctx.researchFacts[1].assertable,false);assert.equal(ctx.researchTimeline[0].event,'Ceuta');assert.equal(ctx.researchCast[0].name,'Cyrus');});
+
+test('QA edits are reflected in memory before buttons execute',async()=>{const app=await readFile('studio/public/app.js','utf8');assert.match(app,/addEventListener\('input'/);assert.match(app,/syncInputBinding/);});
+
+test('QA TXT export carries exact narration and Markdown carries title/source',async()=>{const app=await readFile('studio/public/app.js','utf8'),line=app.split('\n').find(s=>s.startsWith('function download('));let blob,clicked=false,filename;const download=new Function('URL','Blob','document','setTimeout',line+';return download;')({createObjectURL(value){blob=value;return 'blob:test';},revokeObjectURL(){}},Blob,{createElement(){return {set href(v){},set download(v){filename=v;},click(){clicked=true;}};}},()=>{});download('narration.txt','Exact narration');assert(clicked);assert.equal(filename,'narration.txt');assert.equal(await blob.text(),'Exact narration');const markdownLine=app.split('\n').find(s=>s.startsWith('function markdownProject'));const markdown=new Function(markdownLine+';return markdownProject;')()({name:'Channel',angle:'Angle'},{topic:'Title',narration:'Exact narration',sources:[{name:'Source',text:'Evidence'}]});assert.match(markdown,/# Title/);assert.match(markdown,/Exact narration/);assert.match(markdown,/Evidence/);});
+test('selected opening is sent only to first part and CTA only to last',()=>{
+ const c={},p={includeCTA:true,packaging:[{title:'Egypt',hook:'Why did Egypt endure?'}]};
+ const first=scriptPartContext(c,p,{focus:{},targetWords:150},0,3);
+ const middle=scriptPartContext(c,p,{focus:{},targetWords:150},1,3);
+ const last=scriptPartContext(c,p,{focus:{},targetWords:150},2,3);
+ assert.equal(first.openingHook,'Why did Egypt endure?');
+ assert.equal(first.includeCTA,false);
+ assert.equal(middle.openingHook,undefined);
+ assert.equal(last.includeCTA,true);
+ assert.equal(scriptPartContext(c,{...p,openingHook:'Custom opening'},{focus:{}},0,1).openingHook,'Custom opening');
+});
+test('opening gets matching supported evidence and ending gets the opening question',()=>{
+ const p={topic:'Sumer',openingHook:'Why did Sumer collect grain?',outline:[{question:'Why collect grain?'}],researchFacts:[{claim:'Sumer collected grain',status:'supported'},{claim:'Sumer had aliens',status:'needs_check'}]};
+ const first=scriptPartContext({},p,{focus:{title:'Introduction'}},0,3);
+ assert.equal(first.openingEvidence.length,1);
+ assert.equal(first.openingEvidence[0].claim,'Sumer collected grain');
+ assert.equal(scriptPartContext({},p,{focus:{}},1,3).openingEvidence,undefined);
+ assert.equal(scriptPartContext({},p,{focus:{}},2,3).closingQuestion,'Why collect grain?');
+});

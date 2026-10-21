@@ -1,0 +1,85 @@
+import {scriptTargetOrZero} from '../production.mjs';
+import {repeatedParts} from './script-quality.mjs';
+import {researchRows} from './research-context.mjs';
+export const REVIEW_CRITERIA={hook:'Mở đầu / Hook',flow:'Mạch kể',clarity:'Dễ hiểu',novelty:'Thông tin mới / lặp ý',ending:'Kết thúc'};
+export function scriptEvidenceStatus(p={}){
+ const rows=[...researchRows(p.researchFacts,'facts'),...researchRows(p.claims,'facts')];
+ const supported=rows.filter(x=>x.status==='supported'&&typeof x.claim==='string'&&x.claim.trim()).length;
+ return {supported,sourceCount:Array.isArray(p.sources)?p.sources.length:0,status:supported?'provided':'missing',outlineIsEvidence:false};
+}
+const words=s=>String(s||'').trim().split(/\s+/).filter(Boolean).length;
+export function currentScriptParts(p){const text=p.narration?.trim()||(p.scriptDraft?.parts||[]).join('\n\n');return text.split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean);}
+function blocks(text){const rows=[];let cursor=0;for(const paragraph of String(text).split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean)){let start=text.indexOf(paragraph,cursor);cursor=start+paragraph.length;for(let i=0;i<paragraph.length;){let end=Math.min(paragraph.length,i+1700);if(end<paragraph.length){const slice=paragraph.slice(i,end);let at=-1;for(let j=slice.length-1;j>=600;j--){if(/[.!?…]/.test(slice[j])&&(j===slice.length-1||/\s/.test(slice[j+1]))){at=j;break;}}if(at>=0)end=i+at+1;else{const space=paragraph.lastIndexOf(' ',end);if(space>i+800)end=space;}}const raw=paragraph.slice(i,end),value=raw.trim();if(value)rows.push({index:rows.length+1,text:value,start:start+i+raw.indexOf(value)});i=end;}}return rows;}
+const excerpt=(text,size,complete=false)=>{if(text.length<=size)return text;const cut=text.slice(0,size),at=Math.max(cut.lastIndexOf('. '),cut.lastIndexOf('! '),cut.lastIndexOf('? '),cut.lastIndexOf('\n'));if(at>0)return cut.slice(0,at+1).trim();if(!complete)return cut.replace(/\s+\S*$/,'').trim();const rest=text.slice(size),next=rest.match(/[.!?…](?=\s|$)/);if(next)return text.slice(0,size+next.index+1).trim();return cut.replace(/\s+\S*$/,'').trim();};
+export function sanitizeReviewContext(value){
+ if(!Array.isArray(value.paragraphs)||!value.paragraphs.length||value.paragraphs.length>60||value.paragraphs.some(x=>!Number.isInteger(x.index)||x.index<1||typeof x.text!=='string'||!x.text.trim()||x.text.length>2000)||new Set(value.paragraphs.map(x=>x.index)).size!==value.paragraphs.length)throw Error('Cần các đoạn lời kể hợp lệ để đánh giá.');
+ const paragraphs=value.paragraphs.map(({index,text})=>({index,text}));if(paragraphs.reduce((n,x)=>n+x.text.length,0)>50000)throw Error('Kịch bản quá dài cho một lượt đánh giá. Chọn chế độ tiết kiệm.');
+ return {reviewCorrection:String(value.reviewCorrection||'').slice(0,260),evidenceStatus:{supported:Math.max(0,Number(value.evidenceStatus?.supported)||0),sourceCount:Math.max(0,Number(value.evidenceStatus?.sourceCount)||0),status:Number(value.evidenceStatus?.supported)>0?'provided':'missing',outlineIsEvidence:false},reviewStage:['overview','detail'].includes(value.reviewStage)?value.reviewStage:'complete',title:String(value.title||'').slice(0,300),angle:String(value.angle||'').slice(0,300),audience:String(value.audience||'').slice(0,200),language:String(value.language||'vi').slice(0,30),scope:value.scope==='full'?'full':'sampled',coveragePercent:Math.max(0,Math.min(100,Number(value.coveragePercent)||0)),paragraphs,facts:(Array.isArray(value.facts)?value.facts:[]).filter(x=>['supported','needs_check'].includes(x.status)&&typeof x.claim==='string'&&x.claim.length<=500).slice(0,6).map(({claim,status,sourceId})=>({claim,status,sourceId:String(sourceId||'').slice(0,100)})),localChecks:{words:Number(value.localChecks?.words)||0,targetWords:Number(value.localChecks?.targetWords)||0,problems:(Array.isArray(value.localChecks?.problems)?value.localChecks.problems:[]).filter(x=>typeof x==='string').slice(0,8).map(x=>x.slice(0,200)),repeatedPairs:(Array.isArray(value.localChecks?.repeatedPairs)?value.localChecks.repeatedPairs:[]).slice(0,5).map(({first,second,ratio})=>({first,second,ratio}))}};
+}
+export function reviewContext(c,p){
+ const text=p.narration?.trim();if(!text)throw Error('Hoàn thiện lời kể trước khi đánh giá.');if(text.length>50000)throw Error('Kịch bản quá dài cho một lượt đánh giá.');const all=blocks(text);if(all.length>60)throw Error('Có quá nhiều đoạn cho một lượt đánh giá.');
+ const full=p.reviewFull===true||text.length<=7000,budget=Math.max(50,Math.floor(5200/Math.max(1,all.length-2)));
+ const paragraphs=all.map((row,i)=>({index:row.index,text:full?row.text:excerpt(row.text,i===0||i===all.length-1?650:budget,i===0||i===all.length-1)}));const shown=paragraphs.reduce((n,x)=>n+x.text.length,0);
+ return sanitizeReviewContext({evidenceStatus:scriptEvidenceStatus(p),title:p.packaging?.[p.selectedPackaging||0]?.title||p.topic,angle:p.nicheLock?.angle||c.angle,audience:c.audience,language:c.language,scope:full?'full':'sampled',coveragePercent:full?100:Math.round(shown/all.reduce((n,x)=>n+x.text.length,0)*100),paragraphs,facts:[...researchRows(p.researchFacts,'facts'),...researchRows(p.claims,'facts')],localChecks:{words:words(text),targetWords:scriptTargetOrZero(p),repeatedPairs:repeatedParts(currentScriptParts(p))}});
+}
+function basis(c,p){const text=JSON.stringify([p.narration,p.reviewFull===true,p.topic,p.packaging?.[p.selectedPackaging||0]?.title,p.nicheLock?.angle||c.angle,c.audience,c.language,p.minutes,p.researchFacts,p.claims]);let a=2166136261,b=5381;for(const ch of text){a=Math.imul(a^ch.charCodeAt(0),16777619);b=Math.imul(b,33)^ch.charCodeAt(0);}return text.length+':'+(a>>>0).toString(16)+':'+(b>>>0).toString(16);}
+export const reviewIsCurrent=(c,p)=>Boolean(p.scriptReview&&p.scriptReview.basis===basis(c,p));
+const clean=(s,max,label='')=>{if(typeof s!=='string'||!s.trim()||s.length>max)throw Error(`AI trả nhận xét không hợp lệ hoặc quá dài${label?` (${label} ${typeof s==='string'?s.length:0}/${max})`:''}.`);return s.trim();};
+function resolveQuote(text,raw){
+ if(typeof raw!=='string')return '';
+ const q=raw.trim().replace(/^[“”"'‘’…\s]+/,'').replace(/[“”"'‘’…\s]+$/,'');
+ if(!q)return '';
+ const at=text.indexOf(q);if(at>=0)return text.slice(at,at+q.length);
+ // Model thường đổi khoảng trắng/xuống dòng nhưng vẫn giữ nguyên chữ.
+ const pattern=q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&').replace(/\s+/g,'\\s+');
+ const match=text.match(new RegExp(pattern));return match?match[0]:'';
+}
+function validateReview(result,ctx){
+ if(!['ready','revise'].includes(result?.overall)||!Array.isArray(result.rubric)||result.rubric.length!==5||new Set(result.rubric.map(x=>x.criterion)).size!==5||result.rubric.some(x=>!REVIEW_CRITERIA[x.criterion]||!['good','watch','fix'].includes(x.verdict)))throw Error('AI trả tiêu chí đánh giá không hợp lệ.');
+ const parseList=v=>{if(Array.isArray(v))return v;if(typeof v==='string'){try{const p=JSON.parse(v);return Array.isArray(p)?p:p?[p]:[]}catch{return v.trim()?[v]:[]}}return v&&typeof v==='object'?[v]:[]};
+ const issueList=parseList(result.issues),strengthList=parseList(result.strengths);
+ const rank={high:0,medium:1,low:2};
+ const issueRows=[...issueList].sort((a,b)=>(rank[a.priority]??3)-(rank[b.priority]??3)).slice(0,5),strengths=strengthList.slice(0,3);
+ const issues=issueRows.map(item=>{const x={...item,paragraph:typeof item.paragraph==='string'&&/^\d+$/.test(item.paragraph)?Number(item.paragraph):item.paragraph};const priority=['high','medium','low'].includes(x.priority)?x.priority:'medium';let quote=typeof x.quote==='string'?x.quote.trim():'';let row=ctx.paragraphs.find(r=>r.index===x.paragraph);if(row&&quote&&quote.length<=800)quote=resolveQuote(row.text,quote);else if(!row)quote='';if(!row||!quote){const hits=ctx.paragraphs.map(r=>({row:r,quote:resolveQuote(r.text,x.quote)})).filter(x=>x.quote);if(hits.length===1){row=hits[0].row;quote=hits[0].quote;}}if(!quote||quote.includes('[…]')||quote.length>800)quote='';const why=typeof x.why==='string'&&x.why.trim()?comment(x.why,300,'Lý do'):'AI không nêu lý do cụ thể.';const suggestion=typeof x.suggestion==='string'&&x.suggestion.trim()?comment(x.suggestion,300,'Hướng sửa'):'Cần đối chiếu thủ công.';let rawRewrite=typeof x.rewrite==='string'?x.rewrite.trim():'';if(!quote)rawRewrite='';if(rawRewrite&&(rawRewrite.length>1600||words(rawRewrite)>140))rawRewrite='';const rewrite=rawRewrite?clean(rawRewrite,1600,'rewrite'):'';return {priority,paragraph:x.paragraph,quote,why,suggestion,rewrite,manual:!quote||!rewrite};}).sort((a,b)=>(rank[a.priority]-rank[b.priority]));
+ return {overall:result.overall,summary:comment(result.summary,500,'Tóm tắt nhận xét'),strengths:strengths.map(x=>comment(x,200,'Điểm tốt')),rubric:result.rubric.map(x=>({criterion:x.criterion,verdict:x.verdict,reason:comment(x.reason,280,'Lý do tiêu chí')})),issues,scope:ctx.scope,coveragePercent:ctx.coveragePercent};
+}
+function comment(text,max,label){if(typeof text!=='string'||!text.trim())throw Error(label+': AI cần trả văn bản không rỗng.');const value=text.trim();return value.length<=max?value:value.slice(0,max-1).trimEnd()+'…';}
+export function validateScriptReview(result,ctx){try{return validateReview(result,ctx);}catch(e){e.reviewFormatError=true;throw e;}}
+async function requestReview(ctx,generate){
+ let last;
+ for(let attempt=0;attempt<2;attempt++){try{return validateScriptReview(await generate('scriptReview',attempt?{...ctx,reviewCorrection:'Lượt trước sai định dạng. Trả đủ summary và rubric.reason không rỗng; paragraph là số; quote nguyên văn tối đa 800 ký tự; rewrite tối đa 140 từ, không thêm sự kiện.'}:ctx),ctx);}catch(e){last=e;if(!e.reviewFormatError&&e.status!==422)throw e;if(attempt===1)throw Error('AI chưa trả được nhận xét hợp lệ sau 2 lần'+(last?.message?`: ${last.message}`:'')+'. Bản nháp đã lưu; có thể tiếp tục lượt duyệt còn thiếu.');}}
+}
+export async function runScriptReview(c,p,{generate,save}){if(reviewIsCurrent(c,p))return {cached:true};const ctx=reviewContext(c,p),signature=basis(c,p);p.scriptReviewDraft||={};const result=await reviewInBatches(ctx,{generate,cache:p.scriptReviewDraft,save});delete p.scriptReviewDraft;p.scriptReview={...result,basis:signature,checkedAt:new Date().toISOString()};await save();return {cached:false};}
+export function locateReviewQuote(p,issue){if(!issue?.quote)return -1;const row=blocks(p.narration||'').find(x=>x.index===issue.paragraph);if(!row)return -1;const at=row.text.indexOf(issue.quote);return at<0?-1:row.start+at;}
+export function renderScriptReview(c,p,{esc,btn}){
+ const evidence=scriptEvidenceStatus(p),notices=(evidence.status==='missing'?'<div class="notice warning">Research chưa có chứng cứ supported. Dàn ý do AI viết chưa phải bằng chứng; cần bổ sung và kiểm tra nguồn trước khi thu âm.</div>':'')+(!c.name?.trim()?'<div class="notice warning">Kênh chưa có tên; cấu hình mở–kết của Tích Thông Thái chưa được áp dụng. Kiểm tra Bản sắc của đúng kênh dự án.</div>':'');
+ const r=p.scriptReview;if(!r)return notices+'<p class="muted">Đánh giá biên tập chỉ chạy khi bấm nút; có dùng token. Chọn chế độ tiết kiệm để đọc trích đoạn mở, giữa và kết.</p>';
+ return notices+`<section class="panel"><h3>Đánh giá trước khi xuất</h3>${reviewIsCurrent(c,p)?'':'<div class="notice warning">Lời kể hoặc định hướng đã đổi. Nhận xét cũ cần đánh giá lại.</div>'}<p>${r.scope==='full'?'Đọc toàn bộ lời kể đã gửi.':`Đọc trích đoạn · khoảng ${Number(r.coveragePercent)||0}% ký tự. Chưa kiểm hết từng câu.`} Đây là nhận xét biên tập, không bảo đảm chất lượng hoặc lượt xem; không thay đối chiếu nguồn.</p><strong>${r.overall==='ready'?'Có thể xuất bản nháp để đọc thử':'Nên sửa trước khi xuất'}</strong><p>${esc(r.summary)}</p>${(r.strengths||[]).map(x=>`<p>✓ ${esc(x)}</p>`).join('')}<div class="grid2">${(r.rubric||[]).map(x=>`<p><strong>${esc(REVIEW_CRITERIA[x.criterion])}</strong> · ${esc({good:'Ổn',watch:'Cần xem',fix:'Cần sửa'}[x.verdict])}<br>${esc(x.reason)}</p>`).join('')}</div><h4>Sửa trước · theo ưu tiên</h4>${(r.issues||[]).map((x,i)=>`<article class="panel"><strong>${esc({high:'Ưu tiên cao',medium:'Ưu tiên vừa',low:'Tinh chỉnh'}[x.priority])} · đoạn ${x.paragraph}</strong>${x.quote?`<blockquote>${esc(x.quote)}</blockquote>`:'<p class="muted">AI không trích được nguyên văn; cần đối chiếu thủ công.</p>'}<p>${esc(x.why)}</p><p><strong>Nên sửa:</strong> ${esc(x.suggestion)}</p><details><summary>Câu viết thử · bạn tự cân nhắc</summary><p>${esc(x.rewrite||'Không có câu thay; cần sửa tay.')}</p></details>${x.quote?btn('Tìm câu trong lời kể','locate-review-quote','small',`data-index="${i}"`):''} ${x.rewrite?btn('Chép gợi ý sửa','copy-review-rewrite','small',`data-index="${i}"`):''}</article>`).join('')||'<p>Không có chỗ sửa cụ thể trong phần đã xem; bạn vẫn cần đọc lại toàn bài.</p>'}</section>`;
+}
+
+// Review long scripts in bounded requests; cache only against the exact context.
+export async function reviewInBatches(ctx,{generate,cache={},save=async()=>{},onProgress=()=>{}}){
+ const size=ctx.paragraphs.reduce((n,x)=>n+x.text.length,0);
+ if(size<=7000)return requestReview(ctx,generate);
+ const basis=JSON.stringify(ctx);
+ if(cache.basis!==basis){cache.basis=basis;cache.results=[];}
+ const overviewSize=Math.max(120,Math.floor(7000/ctx.paragraphs.length));
+ const overview={...ctx,reviewStage:'overview',scope:'sampled',coveragePercent:0,paragraphs:ctx.paragraphs.map(row=>({...row,text:excerpt(row.text,overviewSize)}))};
+ overview.coveragePercent=Math.round(overview.paragraphs.reduce((n,x)=>n+x.text.length,0)/size*100);
+ const batches=[overview];let paragraphs=[],used=0;
+ for(const row of ctx.paragraphs){
+  if(used+row.text.length>6000&&paragraphs.length){batches.push({...ctx,reviewStage:'detail',scope:'sampled',paragraphs,coveragePercent:Math.round(used/size*100)});paragraphs=[];used=0;}
+  paragraphs.push(row);used+=row.text.length;
+ }
+ if(paragraphs.length)batches.push({...ctx,reviewStage:'detail',scope:'sampled',paragraphs,coveragePercent:Math.round(used/size*100)});
+ for(let i=cache.results.length;i<batches.length;i++){
+  onProgress(i===0?'Đang kiểm tra mạch kể tổng thể':`Đang duyệt chi tiết ${i}/${batches.length-1} · các phần đã duyệt được giữ`);
+  const result=await requestReview(batches[i],generate);
+  cache.results.push(result);await save();
+ }
+ const results=cache.results,rank={good:0,watch:1,fix:2};
+ const rubric=results[0].rubric.map(row=>['hook','ending'].includes(row.criterion)?row:results.map(r=>r.rubric.find(x=>x.criterion===row.criterion)).sort((a,b)=>rank[b.verdict]-rank[a.verdict])[0]);
+ const issues=results.flatMap(x=>x.issues).filter((x,i,rows)=>rows.findIndex(y=>y.paragraph===x.paragraph&&y.quote===x.quote)===i).sort((a,b)=>({high:0,medium:1,low:2}[a.priority]-{high:0,medium:1,low:2}[b.priority])).slice(0,5);
+ return {...results[0],scope:ctx.scope,coveragePercent:ctx.coveragePercent,rubric,issues,overall:results.every(x=>x.overall==='ready')&&rubric.every(x=>x.verdict==='good')&&!issues.length?'ready':'revise'};
+}
+

@@ -1,0 +1,31 @@
+# Repo nay chi chua phan script duoc chon.
+# Chan toan bo Desktop, sau do mo lai (whitelist) tung muc can day len.
+/*
+
+# --- Muc duoc phep day len ---
+!/.gitignore
+!/CODE_AUTO_FLOW.txt
+!/Chay_Tu_Dong_Flow.bat
+!/Video-scripts/
+
+# --- Loai tru chung ---
+node_modules/
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+dist/
+build/
+*.log
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Bí mat / cau hinh cuc bo ---
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+config.local.*
