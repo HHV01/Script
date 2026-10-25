@@ -1,0 +1,12 @@
+node_modules/
+.env
+.env.*
+!.env.example
+.video-studio-data/
+.studio-data/
+tmp/
+outputs/
+tools/ffmpeg/
+__pycache__/
+.venv/
+*.log
