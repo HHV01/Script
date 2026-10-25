@@ -5,11 +5,8 @@
   "type": "module",
   "description": "Ứng dụng riêng: prompt cảnh, căn voice/SRT và dựng MP4",
   "scripts": {
-    "start": "node studio/video-server.mjs",
-    "video": "node studio/video-server.mjs",
-    "test": "node --test studio/video-workspace.test.mjs studio/video-import.test.mjs studio/video-app.test.mjs studio/scene-workflow.test.mjs studio/scene-cards.test.mjs studio/scene-character.test.mjs studio/bible-scenes.test.mjs studio/scene-prompts.test.mjs studio/scene-review.test.mjs studio/voice-timing.test.mjs studio/voice-align-integration.test.mjs studio/prompt-translation.test.mjs studio/roster.test.mjs studio/video-build.test.mjs studio/render-jobs.test.mjs studio/timeline.test.mjs studio/html-scenes.test.mjs studio/wan-client.test.mjs studio/ai-providers.test.mjs studio/model-fallback.test.mjs studio/task-tiers.test.mjs studio/clipboard.test.mjs studio/public/character-bible.test.mjs studio/public/voice-align.test.mjs studio/public/build-panel.test.mjs",
-    "test:app": "node --test studio/video-workspace.test.mjs studio/video-import.test.mjs studio/video-app.test.mjs",
-    "test:render": "node --test studio/video-render.test.mjs"
+    "start": "node app/server.mjs",
+    "test": "node --test app/workflow.test.mjs app/server.test.mjs app/public/voice-align.test.mjs"
   },
   "dependencies": {
     "playwright-core": "^1.64.0"
