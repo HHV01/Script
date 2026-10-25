@@ -1,4 +1,4 @@
-import {spawn} from 'node:child_process';import os from 'node:os';import path from 'node:path';import {existsSync} from 'node:fs';import {mkdir,readFile,writeFile,rename,readdir,stat,rm,copyFile} from 'node:fs/promises';import {createHash,randomUUID} from 'node:crypto';import {wanAvailable,generateWanClip} from './wan-client.mjs';import {stageHtml,validateHtmlScene} from './html-scenes.mjs';
+import {spawn} from 'node:child_process';import os from 'node:os';import path from 'node:path';import {existsSync} from 'node:fs';import {mkdir,readFile,writeFile,rename,readdir,stat,rm,copyFile} from 'node:fs/promises';import {createHash,randomUUID} from 'node:crypto';import {stageHtml,validateHtmlScene} from './html-scenes.mjs';
 export function createRenderer({root,dataRoot,assets}){
 const failure=(message,status=400)=>Object.assign(Error(message),{status});
 let chromiumPromise;function loadChromium(){return chromiumPromise ||=import('playwright-core').then(m=>m.chromium);}
@@ -116,29 +116,14 @@ async function probeSeconds(file) {
 // Dựng MP4 từ ảnh từng cảnh + voice: mỗi ảnh giữ đúng duration ở khung hình
 // chuẩn (mặc định 1920x1080),
 // nối lại rồi mux voice (aac), cắt theo bên ngắn hơn (-shortest).
-// Wan cho cảnh cần nhân vật cử động: chạy lần lượt trên GPU, duyệt động tác
-// bằng mắt sau khi có clip. Cảnh thường dùng ảnh để tiết kiệm thời gian.
-async function generateWanScene(w) {
-  const motion = String(w?.motionPrompt || '').trim();
-  if (!motion) throw failure('Nhập mô tả chuyển động cho cảnh Wan.');
-  if (motion.length > 2000) throw failure('Mô tả chuyển động tối đa 2000 ký tự.');
-  if (w?.image == null) throw failure('Cảnh Wan cần ảnh khởi đầu. Nhập ảnh cảnh trước.');
-  const img = resolveRenderInput(w.image, ['image/png', 'image/jpeg', 'image/webp'], 12 * 1024 * 1024, 'Ảnh khởi đầu', 'data:image');
-  const duration = w?.durationSeconds == null ? 2 : Number(w.durationSeconds);
-  const width = w?.width == null ? 640 : Number(w.width);
-  const height = w?.height == null ? 352 : Number(w.height);
-  if (!(await wanAvailable())) throw failure('Chưa nối được ComfyUI Wan ở 127.0.0.1:8188. Mở ComfyUI (node Wan22ImageToVideoLatent + model wan2.2) rồi thử lại.', 503);
-  const clip = await generateWanClip({ imageBytes: img.bytes, imageExt: img.mime.includes('png') ? 'png' : 'jpg', positive: motion, negative: w?.negative, width, height, durationSeconds: duration });
-  const stored = await assets.put(`data:video/mp4;base64,${clip.bytes.toString('base64')}`);
-  return { url: stored.url, duration: clip.duration, width: clip.width, height: clip.height, fps: clip.fps, frames: clip.frames };
-}
+// Clip do người dùng nhập; cảnh ảnh giữ nguyên hình theo thời lượng.
 function validateRenderRequest(b) {
   if(!Array.isArray(b?.scenes)||!b.scenes.length||b.scenes.length>1000)throw failure('Cần 1–1000 cảnh để dựng.');
   if((b.width!=null&&Number(b.width)!==1920)||(b.height!=null&&Number(b.height)!==1080))throw failure('Video luôn xuất 1920 × 1080 (1080p).');
   if(!b.voice)throw failure('Thiếu voice để ghép.');
   b.scenes.forEach((s,i)=>{
     const kind=s?.kind||s?.buildKind||'image';
-    if(!['image','html','wan'].includes(kind))throw failure(`Cảnh ${i+1} sai loại dựng.`);
+    if(!['image','html','clip'].includes(kind))throw failure(`Cảnh ${i+1} sai loại dựng.`);
     if(kind==='html'){try{validateHtmlScene({html:s?.html??s?.htmlSnippet,duration:s?.duration});}catch(e){throw failure(e.message);}}
     else {
       if(!Number.isFinite(Number(s.duration))||Number(s.duration)<0.5||Number(s.duration)>30)throw failure(`Cảnh ${i+1} cần thời lượng 0,5–30 giây.`);
@@ -152,7 +137,7 @@ async function renderVideo(b, progress = () => {}) {
   if (!Array.isArray(scenes) || !scenes.length || scenes.length > 1000) throw failure('Cần 1–1000 cảnh để dựng.');
   const parsed = scenes.map((s, i) => {
     const kind = s?.kind || s?.buildKind || 'image';
-    if (!['image', 'html', 'wan'].includes(kind)) throw failure(`Cảnh ${i + 1} sai loại dựng (chọn image, html hoặc wan).`);
+    if (!['image', 'html', 'clip'].includes(kind)) throw failure(`Cảnh ${i + 1} sai loại dựng (chọn image, html hoặc clip).`);
     if (kind === 'html') {
       let checked;
       try {
@@ -164,7 +149,7 @@ async function renderVideo(b, progress = () => {}) {
     }
     const duration = Number(s?.duration);
     if (!Number.isFinite(duration) || duration < 0.5 || duration > 30) throw failure(`Cảnh ${i + 1} cần thời lượng 0,5–30 giây.`);
-    if (kind === 'wan') {
+    if (kind === 'clip') {
       const raw = s?.clip ?? null;
       // Không bỏ cảnh: thiếu clip sẽ làm lệch voice.
       if (raw == null) throw failure(`Cảnh ${i + 1} thiếu nội dung; cần nhập đủ trước khi dựng để giữ khớp voice.`);
@@ -202,7 +187,7 @@ async function renderVideo(b, progress = () => {}) {
     for (const original of rendered) {
       const s={...original};
       if(s.kind==='image')s.img=resolveRenderInput(s.img,['image/png','image/jpeg','image/webp'],6*1024*1024,'Ảnh cảnh','data:image');
-      if(s.kind==='wan')s.clip=resolveRenderInput(s.clip,['video/'],50*1024*1024,'Clip cảnh','data:video');
+      if(s.kind==='clip')s.clip=resolveRenderInput(s.clip,['video/'],50*1024*1024,'Clip cảnh','data:video');
       const seg = path.join(tmp, `seg${segFiles.length}.mp4`);
       const hash=createHash('sha256').update('1080p-v1-crf18-fast-30fps').update(await ffmpegVersion()).update(String(s.duration)).update(s.kind).update(s.html || s.img?.bytes || s.clip?.bytes).digest('hex');
       const cached=path.join(cacheRoot,hash+'.mp4');
@@ -210,8 +195,8 @@ async function renderVideo(b, progress = () => {}) {
       if (s.kind === 'html') {
         const made = await renderHtmlSegment(s.html, s.duration, tmp, { width: VW, height: VH });
         await rename(made.file, seg);
-      } else if (s.kind === 'wan') {
-        const clipFile = path.join(tmp, `wan${segFiles.length}.mp4`);
+      } else if (s.kind === 'clip') {
+        const clipFile = path.join(tmp, `clip${segFiles.length}.mp4`);
         await writeFile(clipFile, s.clip.bytes);
         await runTool(ffmpegBin, ['-y', '-stream_loop', '-1', '-t', String(s.duration), '-i', clipFile, '-vf', SEG_VF, '-an', '-c:v', 'libx264', '-preset', 'fast', '-crf', '18', '-threads', '2', '-pix_fmt', 'yuv420p', '-r', '30', seg], 300000);
       } else {
@@ -239,7 +224,7 @@ async function renderVideo(b, progress = () => {}) {
     const saved=path.join(dataRoot,'renders',randomUUID()+'.mp4');
     await mkdir(path.dirname(saved),{recursive:true});await copyFile(outFile,saved);
     const fileName = `${name}.mp4`;
-    const kinds = { image: 0, html: 0, wan: 0 };
+    const kinds = { image: 0, html: 0, clip: 0 };
     for (const s of rendered) kinds[s.kind] += 1;
     return { fileName, file: saved, sizeBytes, cacheHits, scenesSeconds, voiceSeconds, scenesRendered: rendered.length, droppedScenes: parsed.length - rendered.length, kinds, size: { width: VW, height: VH }, probe: { duration } };
   } finally {
@@ -247,5 +232,5 @@ async function renderVideo(b, progress = () => {}) {
   }
 }
 
-return {renderVideo,validateRenderRequest,ffmpegAvailable,ffmpegVersion,htmlExecutable,generateWanScene};
+return {renderVideo,validateRenderRequest,ffmpegAvailable,ffmpegVersion,htmlExecutable};
 }

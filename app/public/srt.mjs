@@ -223,7 +223,7 @@ export function buildExportPackage({ scenes, voiceSeconds = null, ceiling = 8 } 
   return { srt, csv: lines.join('\n') + '\n', json, total, drift, warnings };
 }
 
-// Khóa cache từng cảnh: clip cảnh là video câm (ảnh/HTML/Wan + overlay + thời lượng).
+// Khóa cache từng cảnh: clip cảnh là video câm (ảnh/HTML/clip + overlay + thời lượng).
 // Voice/nhạc mux ở bước ghép cuối nên đổi nhạc chỉ ghép lại, không dựng lại cảnh.
 export function sceneCacheKey(scene) {
   const src = JSON.stringify({ n: scene.narration || '', img: scene.image || scene.image_prompt || '', ov: scene.overlay || '', d: Number(scene.duration) || 0, k: scene.buildKind || 'image', html: scene.htmlSnippet || '', clip: scene.clip || '' });
