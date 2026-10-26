@@ -22,7 +22,7 @@ chủ đề ─────────┴─► 1 script ─► script.txt ─�
 ```
 pip install -r requirements.txt     # gồm cả VieNeu-TTS; + cài ffmpeg và để trong PATH
 # Có GPU NVIDIA: cài thêm bản torch CUDA trước khi cài vieneu (xem hướng dẫn của VieNeu-TTS) để voice nhanh hơn ~25 lần
-cp .env.example .env                # điền ANTHROPIC_API_KEY
+cp .env.example .env                # điền OPENCODE_API_KEY (OpenCode Go: https://opencode.ai/console → API keys)
 ```
 Extension: Chrome → `chrome://extensions` → bật Developer mode → *Load unpacked* → chọn thư mục `flow_extension/`.
 

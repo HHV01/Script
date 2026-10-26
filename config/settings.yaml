@@ -1,6 +1,6 @@
 # Cấu hình chung cho mọi project. Có thể ghi đè từng mục trong projects/<tên>/project.yaml (khóa "settings").
 llm:
-  model: claude-sonnet-4-5        # đổi theo model thật trong tài khoản Anthropic của bạn
+  model: deepseek-v4-pro          # model OpenCode Go; danh sách: https://opencode.ai/inference/go/v1/models
 
 script:
   words_per_minute: 160        # tốc độ đọc tiếng Việt ước lượng, dùng để tính độ dài kịch bản
