@@ -1,0 +1,58 @@
+# CHARACTER BIBLE: "Vua Sumer"
+
+## 1. STYLE LOCK
+2D cartoon historical documentary illustration, stylized big-head proportions, thick dark outlines, flat colors with two-tone shading, minimal detail, warm earthy palette of sand, ochre, brick red, lapis blue and olive, clean readable silhouette, 16:9, no text, no watermark.
+
+## 2. IDENTITY BLOCK
+Vua Sumer, a Sumerian king, adult man, three and a half heads tall, tan skin, thick black beard, tall blue and gold crown, blue robe with gold trim, gold armbands, white pleated skirt, bull-head staff.
+
+## 3. DO NOT CHANGE
+- Three and a half heads tall, always taller than Tích.
+- Tall blue and gold crown, never removed.
+- Thick black beard with tight curls.
+- Blue robe with gold trim over a white pleated skirt.
+- Gold armbands on both wrists.
+- Carries the bull-head staff in formal scenes.
+- Thick dark outline weight stays the same as the other characters.
+- No Greek cloak, no laurel wreath, no Roman armor.
+
+## 4. TAG MENU
+EXPRESSIONS (biểu cảm):
+- neutral (bình thường): relaxed mouth, eyes open, brows level
+- happy (vui vẻ): small smile, eyes bright, chin up
+- curious (tò mò): head tilted, one brow raised
+- thinking (suy nghĩ): eyes up, mouth to one side
+- worried (lo lắng): brows up in the middle, small frown
+- sad (buồn): brows down at the sides, mouth small
+- angry (tức giận): brows down hard, teeth clenched
+- determined (quyết tâm): brows level and low, mouth tight
+- shocked (sốc): jaw dropped, eyes bulging
+- awe (kinh ngạc): mouth slightly open, eyes wide, brows lifted
+- exhausted (kiệt sức): eyelids half closed, shoulders down
+- skeptical (hoài nghi): one brow up, mouth flat, eyes sideways
+
+POSES (dáng):
+- standing (đứng): weight on one leg, staff planted
+- throne (ngồi ngai): seated on a low mudbrick throne, staff across the knees
+- pointing (chỉ tay): one arm straight out, index finger extended
+- arms-raised (giơ hai tay): both arms up, palms open
+- holding-staff (cầm quyền trượng): both hands on the staff, staff vertical
+- inspecting (quan sát): leaning forward, one hand on the chin
+- walking (đi bộ): one foot forward, robe swinging
+- decreeing (ban lệnh): one arm raised with a clay tablet, chin up
+
+OUTFITS (trang phục):
+- default (mặc định): blue robe with gold trim, white pleated skirt, gold armbands, tall blue and gold crown
+- war (ra trận): same crown, copper helmet under it, plain blue tunic, leather belt, no skirt
+- ritual (nghi lễ): white robe with gold trim, wide gold collar, same crown
+- mourning (để tang): plain undyed robe, no gold, same crown
+
+PROPS (đạo cụ):
+- staff (quyền trượng): tall staff with a bull-head top and a wrapped grip
+- mace (chùy): stone mace head on a wooden handle
+- clay-tablet (bảng đất sét): large clay tablet covered in wedge marks
+- cylinder-seal (con dấu trụ): carved stone cylinder with a rolled clay strip
+- model-ziggurat (mô hình đền): small clay model of a stepped temple
+- tribute-basket (giỏ cống nạp): woven basket filled with grain and small jars
+
+GRAPHICS: sun rays, exclamation mark, arrow, red annotation circle, dust puff, cuneiform marks
