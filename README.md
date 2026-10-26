@@ -23,3 +23,19 @@ Dữ liệu/media nằm trong .video-studio-data/, không đưa vào Git. App kh
 
 ## Kiểm thử
 npm test: mẫu prompt, giữ sửa tay, phủ lời kể, căn voice, server và dựng MP4 thật khi có FFmpeg. Không gọi dịch vụ AI.
+
+## Cấu hình Paper Collage Documentary
+Nguồn tham khảo do người dùng chọn: https://chat.deepseek.com/share/0j2vd5mzzydlm0q4ej (tài liệu PDF 8 trang trong cuộc trò chuyện).
+
+Áp dụng phần sản xuất sau khi đã có kịch bản: bảng beat (phần 6), prompt ảnh (phần 7), Universal Video Prompt (phần 8), ba mẫu thumbnail (phần 9). Phần ý tưởng, viết lời dẫn và tạo voice trong tài liệu không chạy trong app. Không có API hoặc AI sinh nội dung.
+
+- Dự án mới dùng cấu hình collage tiếng Việt: giấy báo/bản đồ cũ, ảnh cắt halftone, thớ giấy thật, điểm nhấn đỏ và vàng mù tạt tiết chế; camera/ánh sáng nhất quán.
+- Nhịp mặc định 2,5 giây, ưu tiên dấu câu gần ranh giới, bảo toàn lời kể. Với voice thực tế, mốc vẫn cần căn theo file/SRT. Nếu kịch bản quá ít từ so với thời lượng, beat có thể dài hơn nhịp; xem cảnh báo thay vì giả sử đã khớp.
+- Một chủ thể chính khoảng 70%, ít chi tiết hỗ trợ, nền tiết chế; chủ thể và chi tiết có ô nhập riêng cho từng beat. Không có AI tự hiểu hoặc tự chọn chủ thể.
+- Nhãn ảnh mặc định không có, nếu nhập thì tối đa 4 từ. Thumbnail có tối đa hai cụm chữ, mỗi cụm tối đa 3 từ. Mô tả đối tượng lặp lại dùng ô nhân vật/vật thể nhất quán do người dùng nhập.
+- Nút Nạp cấu hình không thay lời kể hoặc cảnh hiện có. Muốn dùng nhịp mới cho cảnh cũ, bấm chia lại, bản trước vẫn được lưu để phục hồi.
+- Copy tất cả và TXT ảnh chỉ gồm prompt đầy đủ, mỗi prompt một đoạn, cách nhau đúng một dòng trống. Không thêm tiêu đề, số beat hoặc timecode. CSV và bảng beat giữ thông tin đối chiếu theo thứ tự.
+- Prompt chuyển động dùng chung giữ bố cục ảnh cuối, camera khóa, ráp giấy 0-7 giây và giữ poster sống 7-10 giây. Prompt này chỉ được copy/xuất, không gọi công cụ sinh clip. Không kéo dài beat 2,5 giây thành 10 giây khi dựng.
+- Ba thumbnail là mẫu bố cục ghép bằng code từ chủ thể/nhãn người dùng nhập. Không tạo ảnh, không tự bịa nội dung video.
+
+Mô tả phong cách và prompt chuyển động được diễn giải bằng tiếng Việt để chỉnh sửa dễ dàng, không tuyên bố là bản chép nguyên văn tiếng Anh của tài liệu.
