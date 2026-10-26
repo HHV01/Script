@@ -2,9 +2,19 @@
 import json
 import os
 import subprocess
+import sys
 from pathlib import Path
 
 import yaml
+
+# Windows: khi chạy qua pipe/redirect, stdout mặc định là cp1252 -> in tiếng Việt bị
+# UnicodeEncodeError. Ép UTF-8 (chạy sớm vì mọi bước đều print tiếng Việt).
+for _s in (sys.stdout, sys.stderr):
+    if _s and hasattr(_s, "reconfigure"):
+        try:
+            _s.reconfigure(encoding="utf-8", errors="replace")
+        except Exception:
+            pass
 
 ROOT = Path(__file__).resolve().parents[2]
 CONFIG = ROOT / "config"
