@@ -1,0 +1,7 @@
+# Sao chép thư mục này thành projects/<tên> (hoặc dùng: python run.py new <tên>)
+topic: "Điền chủ đề video ở đây"
+minutes: 8                # độ dài mục tiêu (phút) cho bước viết kịch bản
+characters: [tich]        # id file trong config/characters/
+flow_url: ""              # URL project Google Flow đã tạo sẵn (để trống nếu tự mở tay)
+# settings:               # (tuỳ chọn) ghi đè config/settings.yaml cho riêng project
+#   voice: {vieneu: {voice: "Mai Anh"}}

@@ -1,0 +1,41 @@
+# Cấu hình chung cho mọi project. Có thể ghi đè từng mục trong projects/<tên>/project.yaml (khóa "settings").
+llm:
+  model: claude-sonnet-4-5        # đổi theo model thật trong tài khoản Anthropic của bạn
+
+script:
+  words_per_minute: 160        # tốc độ đọc tiếng Việt ước lượng, dùng để tính độ dài kịch bản
+  dedupe_threshold: 0.85       # câu giống nhau >= ngưỡng này sẽ bị loại
+
+voice:
+  provider: vieneu             # vieneu = VieNeu-TTS chạy local | manual = tự bỏ voice.mp3 vào thư mục project
+  vieneu:
+    mode: v3turbo              # v3turbo (48kHz, chất lượng cao) | v3nano (máy rất yếu, chất lượng thấp hơn)
+    voice: "Hải Đăng"          # tên giọng có sẵn (25 giọng). Danh sách: Vieneu().list_preset_voices()
+    ref_audio: ""              # (tuỳ chọn) clip giọng mẫu 3-8s để nhân bản; đường dẫn tương đối tính từ thư mục project
+    precision: null            # CPU có VNNI có thể đặt int8 cho nhanh hơn ~1.6x; để null nếu không chắc
+    gap_seconds: 0.3           # khoảng lặng giữa các câu
+  whisper:                     # chỉ dùng khi provider = manual
+    model: small
+    language: vi
+
+scenes:
+  min_seconds: 4               # cảnh ngắn hơn mức này sẽ được gộp tiếp câu sau
+  max_seconds: 8               # cảnh dài hơn mức này sẽ được tách theo dấu phẩy/chấm phẩy
+
+prompts:
+  batch_size: 20
+
+flow:
+  port: 8765
+  token: ""                    # (tuỳ chọn) token bảo vệ cầu nối localhost; để "" nếu không cần. Nếu đặt, phải khớp flow_extension/config.js
+  delay_seconds: [3, 8]        # nghỉ ngẫu nhiên giữa 2 lần gửi prompt
+  retries: 2
+  submit_timeout: 180          # tối đa chờ 1 prompt ra ảnh (giây)
+  pick: first                  # nếu 1 prompt ra nhiều ảnh: lấy ảnh đầu tiên
+
+render:
+  width: 1920
+  height: 1080
+  fps: 30
+  ken_burns: true              # zoom nhẹ cho mỗi cảnh
+  burn_subtitles: true         # in chữ kịch bản lên video (luôn xuất thêm subtitles.srt)

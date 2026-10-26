@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "Flow Pipeline Bridge",
+  "version": "1.0.0",
+  "description": "Nhận prompt từ pipeline Python (127.0.0.1) và điền/bấm tạo ảnh trong Google Flow.",
+  "permissions": ["tabs", "alarms"],
+  "host_permissions": [
+    "http://127.0.0.1:8765/*",
+    "https://labs.google/*",
+    "https://flow.google/*",
+    "https://*.google/*",
+    "https://*.googleusercontent.com/*",
+    "https://*.googleapis.com/*"
+  ],
+  "background": { "service_worker": "background.js" },
+  "content_scripts": [{
+    "matches": ["https://labs.google/*", "https://flow.google/*"],
+    "js": ["selectors.js", "content.js"],
+    "run_at": "document_idle"
+  }]
+}

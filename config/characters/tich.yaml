@@ -1,0 +1,16 @@
+# BIBLE NHÂN VẬT — chỉnh lại cho đúng nhân vật thật của bạn.
+id: tich
+name: Tích
+role: Người dẫn chuyện, xuất hiện trong các cảnh minh họa
+
+# "Vibe" dùng khi viết kịch bản (bước 1)
+vibe:
+  tone: "tò mò, điềm tĩnh, hơi hài hước kiểu người kể chuyện lịch sử"
+  pov: "ngôi thứ nhất số nhiều ('chúng ta') khi dẫn dắt, ngôi thứ ba khi kể sự kiện"
+  hook: "mở đầu bằng một câu hỏi hoặc nghịch lý gây tò mò trong 10 giây đầu"
+  ending: "kết bằng một câu hỏi để người xem bình luận"
+  avoid: "lặp ý, sáo rỗng, giảng đạo, câu quá 35 từ"
+
+# Mô tả ngoại hình CỐ ĐỊNH (tiếng Anh) — được chèn nguyên văn vào mọi prompt ảnh có Tích.
+# Đây là thứ giữ cho nhân vật giống nhau giữa các cảnh, hãy mô tả thật cụ thể.
+visual: "Tich, a young man with short black hair, round glasses, wearing a navy blue vest over a white shirt, friendly expression, slim build"

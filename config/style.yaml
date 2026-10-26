@@ -1,0 +1,5 @@
+# Phong cách ảnh dùng chung cho toàn bộ cảnh. Chỉnh theo kênh của bạn.
+aspect_ratio: "16:9"
+prefix: "Flat vector illustration, clean bold outlines, warm muted palette, cinematic composition"
+suffix: "no text, no captions, no watermark"
+avoid: "photorealism, blurry, extra fingers, distorted face, text overlay"
