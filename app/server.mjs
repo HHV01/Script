@@ -1,5 +1,5 @@
 import http from 'node:http';import path from 'node:path';import {fileURLToPath} from 'node:url';import {readFile,writeFile,mkdir,rename,stat} from 'node:fs/promises';import {createReadStream} from 'node:fs';import {randomUUID} from 'node:crypto';
-import {createAssetStore} from './assets.mjs';import {createRenderJobs} from './render-jobs.mjs';import {createRenderer} from './renderer.mjs';
+import {createAssetStore} from './assets.mjs';import {createRenderJobs} from './render-jobs.mjs';import {createRenderer} from './renderer.mjs';import {createStudio} from './studio.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),publicRoot=path.join(root,'app/public'),port=Number(process.env.VIDEO_PORT||3211),dataRoot=path.resolve(root,process.env.VIDEO_DATA_DIR||'.video-studio-data');
 if(!dataRoot.startsWith(root+path.sep))throw Error('Thư mục dữ liệu phải nằm trong app.');await mkdir(dataRoot,{recursive:true});
 async function load(name,fallback){try{return JSON.parse(await readFile(path.join(dataRoot,name),'utf8'));}catch(e){if(e.code==='ENOENT')return fallback;throw Error('Không đọc được '+name+'; giữ file gốc để phục hồi.');}}
@@ -7,9 +7,11 @@ let state=await load('workspace.json',{revision:0,projects:[]}),queue=Promise.re
 async function store(name,value){const temp=path.join(dataRoot,randomUUID()+'.tmp');await writeFile(temp,JSON.stringify(value),{mode:0o600});await rename(temp,path.join(dataRoot,name));}
 const assets=createAssetStore(path.join(dataRoot,'assets')),renderer=createRenderer({root,dataRoot,assets}),jobs=await createRenderJobs({directory:path.join(dataRoot,'renders'),render:renderer.renderVideo});
 const json=(res,status,data)=>{res.writeHead(status,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'});res.end(JSON.stringify(data));};
+const studio=createStudio({root,dataRoot,assets,json});
 async function body(req){const chunks=[];let size=0;for await(const chunk of req){size+=chunk.length;if(size>100*1024*1024)throw Object.assign(Error('Dữ liệu vượt 100 MB.'),{status:413});chunks.push(chunk);}try{return JSON.parse(Buffer.concat(chunks).toString()||'{}');}catch{throw Object.assign(Error('JSON không hợp lệ.'),{status:400});}}
 const server=http.createServer(async(req,res)=>{try{const hosts=[`localhost:${port}`,`127.0.0.1:${port}`];if(!hosts.includes(req.headers.host))return json(res,403,{error:'Host không hợp lệ.'});if(req.headers.origin&&!hosts.map(h=>'http://'+h).includes(req.headers.origin))return json(res,403,{error:'Origin không hợp lệ.'});const url=new URL(req.url,'http://'+req.headers.host);
 if(url.pathname.startsWith('/api/')){if(!['GET','HEAD'].includes(req.method)&&req.headers['x-video-request']!=='1')return json(res,403,{error:'Thiếu xác nhận yêu cầu local.'});
+if(await studio.route(req,res,url,body)!==false)return;
 if(url.pathname==='/api/state'&&req.method==='GET')return json(res,200,state);
 if(url.pathname==='/api/state'&&req.method==='PUT'){const input=await body(req);const task=queue.then(async()=>{if(input.revision!==state.revision)throw Object.assign(Error('Dữ liệu đã đổi ở tab khác. Tải lại trước khi lưu.'),{status:409});if(!Array.isArray(input.projects))throw Object.assign(Error('Danh sách dự án không hợp lệ.'),{status:400});const next={revision:state.revision+1,projects:input.projects};await assets.externalize(next);await store('workspace.json',next);state=next;return next;});queue=task.catch(()=>{});return json(res,200,await task);}
 if(url.pathname==='/api/assets'&&req.method==='POST')return json(res,200,await assets.put((await body(req)).data));

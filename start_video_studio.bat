@@ -1,5 +1,5 @@
 @echo off
 cd /d "%~dp0"
-start "" http://localhost:3211
+start "" powershell -NoProfile -WindowStyle Hidden -Command "Start-Sleep -Seconds 2; Start-Process 'http://localhost:3211'"
 node app/server.mjs
 pause

@@ -8,6 +8,8 @@ const extensions = Object.fromEntries(Object.entries(types).map(([ext,mime])=>[m
 Object.assign(extensions, {'audio/mp3':'mp3','audio/x-wav':'wav','audio/m4a':'m4a','audio/x-m4a':'m4a'});
 const fields = new Set(['image','voiceData','musicData','thumbnailImage','characterRef','clip']);
 const fail = (message,status=422)=>Object.assign(new Error(message),{status});
+// Voice 64 MB; ảnh/clip 10 MB. Giữ tương thích với giới hạn cũ.
+const limitFor = (mime) => (String(mime).startsWith('audio/') ? 64 : 10) * 1024 * 1024;
 
 export function createAssetStore(root) {
   function info(url) {
@@ -20,16 +22,23 @@ export function createAssetStore(root) {
     if(!`data:${asset.mime}`.startsWith(prefix))throw fail('Loại file không phù hợp.');
     try{return {...asset,bytes:readFileSync(asset.file)};}catch(e){if(e.code==='ENOENT')throw fail('File media không còn trên máy.',404);throw e;}
   }
+  async function putBuffer(bytes, mime) {
+    const ext = extensions[mime];
+    if(!ext) throw fail('Chỉ lưu ảnh PNG/JPEG/WebP, âm thanh hoặc clip MP4 hỗ trợ.');
+    if(!bytes?.length) throw fail('File rỗng.');
+    if(bytes.length > limitFor(mime)) throw fail('File vượt giới hạn (ảnh/clip 10 MB, voice 64 MB).',413);
+    const name=`${createHash('sha256').update(bytes).digest('hex')}.${ext}`;
+    await mkdir(root,{recursive:true});
+    try{await writeFile(path.join(root,name),bytes,{flag:'wx',mode:0o600});}catch(e){if(e.code!=='EEXIST')throw e;}
+    return {url:`/api/assets/${name}`,mime:types[ext],bytes:bytes.length};
+  }
   async function put(data) {
     const match=String(data).match(/^data:([^;,]+);base64,([A-Za-z0-9+/]+={0,2})$/);
     if(!match||!extensions[match[1]])throw fail('Chỉ lưu ảnh PNG/JPEG/WebP, âm thanh hoặc clip MP4 hỗ trợ.');
     const bytes=Buffer.from(match[2],'base64');
-    if(!bytes.length||bytes.length>(match[1].startsWith('audio/')?64:10)*1024*1024)throw fail('File rỗng hoặc vượt giới hạn (ảnh/clip 10 MB, voice 64 MB).',413);
+    if(!bytes.length||bytes.length>limitFor(match[1]))throw fail('File rỗng hoặc vượt giới hạn (ảnh/clip 10 MB, voice 64 MB).',413);
     if(bytes.toString('base64').replace(/=+$/,'')!==match[2].replace(/=+$/,''))throw fail('Base64 không hợp lệ.');
-    const ext=extensions[match[1]],name=`${createHash('sha256').update(bytes).digest('hex')}.${ext}`;
-    await mkdir(root,{recursive:true});
-    try{await writeFile(path.join(root,name),bytes,{flag:'wx',mode:0o600});}catch(e){if(e.code!=='EEXIST')throw e;}
-    return {url:`/api/assets/${name}`,mime:types[ext],bytes:bytes.length};
+    return putBuffer(bytes, match[1]);
   }
   async function externalize(value) {
     const refs=[];
@@ -44,5 +53,5 @@ export function createAssetStore(root) {
     }
     await walk(value);return refs;
   }
-  return {put,read,info,externalize};
+  return {put, putBuffer, read, info, externalize};
 }

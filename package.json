@@ -6,7 +6,7 @@
   "description": "Ứng dụng riêng: prompt cảnh, căn voice/SRT và dựng MP4",
   "scripts": {
     "start": "node app/server.mjs",
-    "test": "node --test app/workflow.test.mjs app/server.test.mjs app/public/voice-align.test.mjs app/paper-preset.test.mjs app/flow-link.test.mjs"
+    "test": "node --test app/workflow.test.mjs app/server.test.mjs app/public/voice-align.test.mjs app/paper-preset.test.mjs app/flow-link.test.mjs app/pipeline.test.mjs"
   },
   "dependencies": {
     "playwright-core": "^1.64.0"

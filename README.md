@@ -1,44 +1,140 @@
 # Video Studio
 
-Ứng dụng chạy trên máy: nhập kịch bản → chia cảnh → ghép prompt bằng mẫu → căn voice/SRT → ghép ảnh/clip thành video. Không gọi AI, không cần API key.
+Ứng dụng chạy local để sản xuất video: bible nhân vật → kịch bản → voice → phân cảnh → prompt ảnh → Google Flow → kiểm tra ảnh → ghép MP4 1080p.
 
-## Chạy
-Bấm start_video_studio.bat hoặc npm start. Mở http://localhost:3211. Cần Node.js 22 trở lên.
+Có hai luồng:
 
-## Các bước
-1. Nhập kịch bản, thời lượng voice, nhịp cảnh và mẫu prompt.
-2. Bấm Chia cảnh bằng code. Mỗi cảnh nhận một phần lời kể, prompt được ghép ngay từ mẫu. Có thể sửa từng prompt hoặc áp lại mẫu cho riêng một cảnh.
-3. Tải voice để căn ngắt nghỉ trong trình duyệt, nhập SRT, hoặc căn ước lượng theo tổng thời lượng.
-4. Nhập ảnh/clip theo số cảnh, bấm Dựng MP4 1080p. Xuất TXT/CSV/SRT/JSON khi cần.
+- **Studio** (`/`): 4 tab offline cũ — kịch bản, prompt, căn voice/SRT, ghép ảnh/clip. Không cần AI/API.
+- **Pipeline AI** (`/pipeline.html`): luồng tự động mới, có AI text, VieNeu-TTS local, Flow Playwright và bước verify ảnh trước khi dựng.
 
-## Mẫu prompt
-Các biến hỗ trợ: {loi_ke}, {phong_cach}, {nhan_vat}, {so_canh}, {bat_dau}, {ket_thuc}, {thoi_luong}. Mẫu bắt buộc có {loi_ke}. Code thay biến nguyên văn; không sáng tạo hình ảnh hay suy luận nội dung.
+## Yêu cầu
 
-Ví dụ: Minh họa: {loi_ke}. Phong cách {phong_cach}, nhân vật {nhan_vat}, khung 16:9, không chèn chữ.
+- Node.js 22 trở lên.
+- FFmpeg/ffprobe: dùng `tools/ffmpeg/bin/` (Windows) hoặc FFmpeg trong `PATH`.
+- Chrome hoặc Edge để dựng cảnh HTML và chạy Flow.
+- VieNeu-TTS: Python 3.12 + `uv`; GPU NVIDIA là tùy chọn nhưng nhanh hơn nhiều. Máy đã test: RTX 3060 12 GB.
 
-Đổi mẫu chung chỉ cập nhật prompt ghép bằng code, giữ prompt đã sửa tay. Nút Áp mẫu cho cảnh này thay prompt của riêng cảnh được chọn. Khi căn thời gian, biến mốc thời gian của prompt ghép bằng code được cập nhật.
+## Chạy nhanh
 
-## Dữ liệu và công cụ
-Dữ liệu/media nằm trong .video-studio-data/, không đưa vào Git. App không đọc khóa, cấu hình AI hoặc dữ liệu kênh. File ảnh/clip và voice do người dùng cung cấp; app tự nối theo thời lượng cảnh bằng FFmpeg. Clone mới: npm ci, cài FFmpeg/ffprobe trong PATH hoặc tools/ffmpeg/bin/. Cảnh HTML cần Chrome.
+```bat
+npm ci
+tools\start-vieneu.bat
+npm start
+```
+
+Mở:
+
+- Studio: http://localhost:3211
+- Pipeline AI: http://localhost:3211/pipeline.html
+
+`tools\start-vieneu.bat` tạo venv ở `%LOCALAPPDATA%\VideoStudio\vieneu-venv` (ngoài OneDrive) và tải model VieNeu v3 Turbo ở lần chạy đầu. Server VieNeu mặc định ở `http://127.0.0.1:8000`.
+
+## Cấu hình AI
+
+AI dùng API OpenAI-compatible. Có thể cấu hình bằng `.env`:
+
+```env
+OPENAI_BASE_URL=http://localhost:20128/v1
+OPENAI_API_KEY=...
+OPENAI_MODEL=gpt-4o-mini
+```
+
+Hoặc lưu trong Pipeline → Cài đặt (file `.video-studio-data/pipeline-settings.json`, quyền `0600`). Key chỉ nằm ở server, API `GET /api/pipeline/settings` chỉ trả `hasKey`, không trả key.
+
+Nếu gateway local không kết nối được và có `GROQ_API_KEY`, app tự fallback sang Groq với model `openai/gpt-oss-120b`. Lưu ý: fallback này gửi nội dung kịch bản lên Groq.
+
+## Pipeline AI — 6 bước
+
+1. **Bible**
+   - Import roster từ `Video-scripts/bibles/*.json` (ví dụ `sumer-roster.json`, `ve-voi-roster.json`).
+   - Sửa nhân vật, bối cảnh, style lock, negative prompt, template prompt, ảnh tham chiếu.
+   - Biến template: `{loi_ke}`, `{nhan_vat}`, `{boi_canh}`, `{style_lock}`, `{negative}`, `{chi_tiet}`, `{chu_the}`, `{quy_tac_nhan}`, `{so_canh}`, `{bat_dau}`, `{ket_thuc}`, `{thoi_luong}`. Bắt buộc có `{loi_ke}`.
+
+2. **Kịch bản**
+   - Nhập brief, thời lượng, giọng điệu, khán giả, dàn ý.
+   - Bấm **Sinh bằng AI**, sửa bản nháp, rồi **Duyệt & dùng kịch bản**.
+   - Xuất TXT chỉ có lời đọc, không header/timecode, để đưa qua TTS.
+
+3. **Voice**
+   - Chọn base URL, model, voice của VieNeu.
+   - Clone giọng từ mẫu 3–8 giây (WAV/MP3/M4A/OGG/WebM), rồi dùng tên giọng đó.
+   - Tạo voice cho toàn kịch bản; app chia nhỏ text, ghép các đoạn, chuyển MP3 và lưu vào assets.
+   - `voiceSeconds` lấy từ ffprobe, dùng cho bước phân cảnh và render.
+
+4. **Phân cảnh**
+   - Chia câu thành cảnh theo nhịp tối đa/tối thiểu.
+   - Căn mốc theo chỗ ngắt nghỉ thật của voice; nếu không đủ ngắt nghỉ thì fallback theo số từ.
+   - Ghép prompt toàn bộ từ bible; sửa tay từng prompt nếu cần.
+   - Xuất `queue.json`, `prompts.txt`, `queue.csv` cho Flow.
+
+5. **Flow ảnh**
+   - Nhập URL project Flow, profile Chrome, thư mục tải, thời gian chờ.
+   - **Chạy tự động**: Playwright mở Chrome với profile đã đăng nhập, nhập prompt, bấm tạo, tải ảnh, lưu `beat-001.png`, `beat-002.png`… Adapter **chỉ chọn chế độ Image/Hình ảnh** và chỉ nhận file PNG/JPEG/WebP; không bấm Video/Clip và không tải video.
+   - Lần đầu chạy nên để headed để đăng nhập Google. Nếu gặp login/captcha, job dừng với trạng thái `needs_login`.
+   - Có thể bỏ qua automation: tải ảnh thủ công, đặt tên `beat-NNN.png`, rồi **Upload & kiểm tra**.
+
+6. **Ghép video**
+   - Chỉ cho dựng khi đủ ảnh, đủ prompt, tổng thời lượng cảnh khớp voice (sai số 0,5 giây).
+   - Xuất MP4 1920×1080, 30 fps, audio AAC.
+   - Giới hạn: 1–1.000 cảnh; mỗi cảnh 0,5–30 giây.
+
+## Kiểm tra ảnh trước khi dựng
+
+Một batch chỉ được chấp nhận khi:
+
+- Đủ số ảnh bằng số prompt.
+- Tên file đọc được số beat (`beat-001.png`, `beat_2.jpg`, `scene-3.webp`…).
+- Không trùng số beat, không có file thừa, không có file không đọc được số.
+- Định dạng PNG/JPEG/WebP.
+- Tối thiểu 1280×720 và tỉ lệ 16:9 (sai số 2%).
+- Với ảnh do Flow tự động tải: `promptHash` phải khớp prompt hiện tại, tránh dùng ảnh của prompt cũ.
+
+Nếu chưa đạt, app không gắn ảnh vào cảnh và hiển thị bảng thiếu/lỗi/trùng/thừa.
+
+## Bảo mật và dữ liệu
+
+- `workspace.json`, assets, voice, render nằm trong `.video-studio-data/` (gitignore).
+- Key AI nằm trong `.env` hoặc `.video-studio-data/pipeline-settings.json`; không lưu trong workspace và không gửi xuống client.
+- Profile Chrome của Flow chứa cookie đăng nhập; mặc định nằm trong `.video-studio-data/flow/chrome-profile` và không được commit.
+- `.env`, `tools/vieneu/`, `.video-studio-data-test/` đã được gitignore.
+
+## Google Flow — lưu ý
+
+Automation Flow là **thử nghiệm**:
+
+- UI Flow thay đổi thường xuyên; selector mặc định có thể phải sửa trong Pipeline → Flow → Selector nâng cao.
+- Tự động hoá có thể vi phạm điều khoản của Google và ảnh hưởng tài khoản; dùng có trách nhiệm.
+- Không có cơ chế vượt captcha. Khi Flow yêu cầu xác minh, job dừng để người dùng xử lý.
+- Flow có thể giới hạn credit/tốc độ; app chạy tuần tự và có resume theo `manifest.json`.
+- Tải ảnh tham chiếu lên Flow có thể không hoạt động với mọi phiên bản UI.
+
+## API chính
+
+- `GET/PUT /api/pipeline/settings` — cấu hình AI/TTS/Flow (key được che).
+- `GET /api/bibles`, `POST /api/bibles/import` — roster.
+- `POST /api/ai/script` — sinh kịch bản.
+- `GET /api/voice/status`, `POST /api/voice/synthesize`, `POST /api/voice/clone`.
+- `POST /api/scenes/split` — chia cảnh theo voice.
+- `POST /api/prompts/build`, `POST /api/flow/queue`.
+- `POST /api/flow/verify`, `POST /api/flow/run`, `GET /api/flow/jobs/:id`.
+- `POST /api/render`, `GET /api/renders/:id`, `GET /api/renders/:id/download` — luồng render cũ.
 
 ## Kiểm thử
-npm test: mẫu prompt, giữ sửa tay, phủ lời kể, căn voice, server và dựng MP4 thật khi có FFmpeg. Không gọi dịch vụ AI.
 
-## Cấu hình Paper Collage Documentary
-Nguồn tham khảo do người dùng chọn: https://chat.deepseek.com/share/0j2vd5mzzydlm0q4ej (tài liệu PDF 8 trang trong cuộc trò chuyện).
+```bat
+npm test
+```
 
-Áp dụng phần sản xuất sau khi đã có kịch bản: bảng beat (phần 6), prompt ảnh (phần 7), Universal Video Prompt (phần 8), ba mẫu thumbnail (phần 9). Phần ý tưởng, viết lời dẫn và tạo voice trong tài liệu không chạy trong app. Không có API hoặc AI sinh nội dung.
+Test gồm: prompt template cũ, căn voice, server, render MP4 thật (nếu có FFmpeg), bible/prompt builder, script parser, chia cảnh, queue Flow và verify ảnh.
 
-- Dự án mới dùng cấu hình collage tiếng Việt: giấy báo/bản đồ cũ, ảnh cắt halftone, thớ giấy thật, điểm nhấn đỏ và vàng mù tạt tiết chế; camera/ánh sáng nhất quán.
-- Nhịp mặc định 2,5 giây, ưu tiên dấu câu gần ranh giới, bảo toàn lời kể. Với voice thực tế, mốc vẫn cần căn theo file/SRT. Nếu kịch bản quá ít từ so với thời lượng, beat có thể dài hơn nhịp; xem cảnh báo thay vì giả sử đã khớp.
-- Một chủ thể chính khoảng 70%, ít chi tiết hỗ trợ, nền tiết chế; chủ thể và chi tiết có ô nhập riêng cho từng beat. Không có AI tự hiểu hoặc tự chọn chủ thể.
-- Nhãn ảnh mặc định không có, nếu nhập thì tối đa 4 từ. Thumbnail có tối đa hai cụm chữ, mỗi cụm tối đa 3 từ. Mô tả đối tượng lặp lại dùng ô nhân vật/vật thể nhất quán do người dùng nhập.
-- Nút Nạp cấu hình không thay lời kể hoặc cảnh hiện có. Muốn dùng nhịp mới cho cảnh cũ, bấm chia lại, bản trước vẫn được lưu để phục hồi.
-- Copy tất cả và TXT ảnh chỉ gồm prompt đầy đủ, mỗi prompt một đoạn, cách nhau đúng một dòng trống. Không thêm tiêu đề, số beat hoặc timecode. CSV và bảng beat giữ thông tin đối chiếu theo thứ tự.
-- Prompt chuyển động dùng chung giữ bố cục ảnh cuối, camera khóa, ráp giấy 0-7 giây và giữ poster sống 7-10 giây. Prompt này chỉ được copy/xuất, không gọi công cụ sinh clip. Không kéo dài beat 2,5 giây thành 10 giây khi dựng.
-- Ba thumbnail là mẫu bố cục ghép bằng code từ chủ thể/nhãn người dùng nhập. Không tạo ảnh, không tự bịa nội dung video.
+## Giới hạn đã biết
 
-Mô tả phong cách và prompt chuyển động được diễn giải bằng tiếng Việt để chỉnh sửa dễ dàng, không tuyên bố là bản chép nguyên văn tiếng Anh của tài liệu.
+- Chưa burn phụ đề vào video; SRT có thể xuất từ Studio nhưng Pipeline chưa ghép phụ đề.
+- Chưa có nhạc nền/transition/thumbnail tự động trong Pipeline.
+- TTS tối đa 120.000 ký tự/lần; voice tối đa 64 MB.
+- Flow automation chưa được kiểm chứng trên mọi tài khoản/UI Flow.
+- Fallback Groq gửi kịch bản lên cloud; muốn offline hoàn toàn thì dùng Studio 4 tab.
 
-## Liên kết Google Flow
-Ở bước 1, lưu liên kết dự án Flow riêng rồi dùng nút Mở dự án Flow. Link chỉ lưu trong dự án trên máy, không lưu vào mã nguồn. App không đọc cookie hoặc mật khẩu Google, không tự gửi prompt hay bấm tạo nội dung. Đây là liên kết mở dự án; tự điền/tự gửi hàng loạt từ app chưa được triển khai. Trong phiên hỗ trợ có thể thao tác Flow bằng trình duyệt đã đăng nhập, theo yêu cầu cụ thể của người dùng.
+## Paper Collage Documentary (luồng cũ)
+
+Giữ nguyên trong Studio: nhịp 2,5 giây, prompt ghép bằng code, Universal Video Prompt và 3 thumbnail mẫu. Luồng này không gọi AI và không tự gửi prompt lên dịch vụ ngoài.
