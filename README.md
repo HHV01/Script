@@ -39,3 +39,6 @@ Nguồn tham khảo do người dùng chọn: https://chat.deepseek.com/share/0j
 - Ba thumbnail là mẫu bố cục ghép bằng code từ chủ thể/nhãn người dùng nhập. Không tạo ảnh, không tự bịa nội dung video.
 
 Mô tả phong cách và prompt chuyển động được diễn giải bằng tiếng Việt để chỉnh sửa dễ dàng, không tuyên bố là bản chép nguyên văn tiếng Anh của tài liệu.
+
+## Liên kết Google Flow
+Ở bước 1, lưu liên kết dự án Flow riêng rồi dùng nút Mở dự án Flow. Link chỉ lưu trong dự án trên máy, không lưu vào mã nguồn. App không đọc cookie hoặc mật khẩu Google, không tự gửi prompt hay bấm tạo nội dung. Đây là liên kết mở dự án; tự điền/tự gửi hàng loạt từ app chưa được triển khai. Trong phiên hỗ trợ có thể thao tác Flow bằng trình duyệt đã đăng nhập, theo yêu cầu cụ thể của người dùng.
