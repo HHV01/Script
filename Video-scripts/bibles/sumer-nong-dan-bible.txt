@@ -1,0 +1,61 @@
+# CHARACTER BIBLE: "Nông Dân"
+
+## 1. STYLE LOCK
+2D cartoon historical documentary illustration, stylized big-head proportions, thick dark outlines, flat colors with two-tone shading, minimal detail, warm earthy palette of sand, ochre, brick red, lapis blue and olive, clean readable silhouette, 16:9, no text, no watermark.
+
+## 2. IDENTITY BLOCK
+Nông Dân, a Sumerian farmer, adult man, three and a half heads tall, tan skin, thick black beard, black hair under a cream headband, plain cream tunic, bare feet, strong arms.
+
+## 3. DO NOT CHANGE
+- Three and a half heads tall, always taller than Tích.
+- Thick black beard and cream headband in every scene.
+- Plain cream tunic, knee length, no patterns.
+- Bare feet, never sandals or boots.
+- Tan skin, do not lighten or shift to gray.
+- Thick dark outline weight stays the same as the other characters.
+- No jewelry, no gold, no crown. He is a worker, not a noble.
+
+## 4. TAG MENU
+EXPRESSIONS (biểu cảm):
+- neutral (bình thường): relaxed mouth, eyes open, brows level
+- happy (vui vẻ): wide smile, eyes bright, cheeks up
+- curious (tò mò): head tilted, one brow raised, eyes to one side
+- thinking (suy nghĩ): eyes up, mouth to one side
+- worried (lo lắng): brows up in the middle, small frown
+- sad (buồn): brows down at the sides, mouth small
+- angry (tức giận): brows down hard, mouth open, cheeks red
+- determined (quyết tâm): brows level and low, mouth tight
+- shocked (sốc): jaw dropped, eyes bulging, sweat drops
+- awe (kinh ngạc): mouth slightly open, eyes wide, brows lifted
+- exhausted (kiệt sức): eyelids half closed, shoulders down, sweat on the forehead
+- skeptical (hoài nghi): one brow up, mouth flat, eyes sideways
+
+POSES (dáng):
+- standing (đứng): weight on one leg, arms loose
+- digging (đào đất): bent over, both hands on a hoe, one foot pressing the blade
+- carrying-load (vác nặng): basket on the back, both hands steadying the strap
+- harvesting (gặt lúa): bent at the waist, one hand holding stalks, one hand with a sickle
+- crouching (ngồi xổm): knees bent, forearms on knees
+- pointing (chỉ tay): one arm straight out, index finger extended
+- shielding-eyes (che nắng): one hand flat above the brows, face turned up
+- drinking (uống nước): head tilted back, jar at the mouth
+- sleeping (ngủ): lying on the side, one arm under the head
+- running (chạy): both feet off the ground, body tilted forward
+
+OUTFITS (trang phục):
+- default (mặc định): plain cream tunic, cream headband, bare feet
+- flood (mùa lũ): same tunic, soaked and darker, mud to the knees, hair wet
+- festival (lễ hội): clean white tunic with a red sash, headband replaced by a woven band
+- cold (đêm lạnh): same tunic plus a rough wool cloak over one shoulder
+
+PROPS (đạo cụ):
+- hoe (cái cuốc): wooden hoe with a stone blade and worn handle
+- sickle (liềm): curved wooden handle with a flint blade
+- barley (lúa mạch): bundle of barley stalks with heavy seed heads
+- basket (cái giỏ): woven reed basket
+- clay-pot (nồi đất): round unglazed pot with a chipped rim
+- water-jar (bình nước): tall clay jar with a narrow neck
+- mudbrick (gạch bùn): rectangular mudbrick with straw flecks
+- seed-bag (túi hạt): small cloth bag tied at the neck
+
+GRAPHICS: dust puff, sweat drops, sun rays, motion lines, question mark, exclamation mark

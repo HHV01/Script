@@ -1,0 +1,253 @@
+Beat 1 | 0.0s | Bạn đang đứng trên một đồng bằng không có đá.
+Beat 2 | 2.4s | Không có gỗ. Không có quặng. Không có một ngọn núi nào để lấy đá mà xây.
+Beat 3 | 6.8s | Chỉ có bùn, nắng, và hai con sông chảy song song về phía biển.
+Beat 4 | 10.5s | Đây là nơi con người lần đầu tiên viết ra chữ. Lần đầu tiên xây thành phố. Lần đầu tiên nghĩ ra khái niệm nợ, khái niệm lương, khái niệm giờ.
+Beat 5 | 18.8s | Và cũng là nơi con người lần đầu tiên hiểu ra một điều rất khó chịu: mọi thứ mình dựng lên đều có thể bị lấy đi.
+Beat 6 | 24.9s | Không phải bởi chiến tranh. Không phải bởi thần linh.
+Beat 7 | 27.8s | Mà bởi thứ mặn nhất, tầm thường nhất, và không thể nhìn thấy bằng mắt thường.
+Beat 8 | 33.2s | Muối.
+Beat 9 | 33.8s | Câu chuyện này không bắt đầu bằng một vị vua. Nó bắt đầu bằng một vùng đất mà không ai muốn sống.
+Beat 10 | 39.5s | Nếu bạn được chọn một nơi để khởi đầu một nền văn minh, đây là nơi cuối cùng bạn nên chọn.
+Beat 11 | 44.5s | Vùng đất này nằm giữa hai con sông lớn, Tigris ở phía đông, Euphrates ở phía tây. Người Hy Lạp sau này gọi nó là Mesopotamia, nghĩa là vùng đất giữa các con sông.
+Beat 12 | 54.2s | Người Sumer không gọi mình như vậy. Họ gọi vùng đất của mình là ki-en-gir, gần nghĩa với "vùng đất của những người có văn hóa".
+Beat 13 | 60.6s | Nhưng nhìn bằng mắt thường, nó không giống nơi của người có văn hóa.
+Beat 14 | 64.4s | Mùa hè, nhiệt độ có thể vượt bốn mươi độ. Mặt đất nứt thành những đường như mai rùa. Gió thổi cát vào mắt, vào tai, vào thức ăn.
+Beat 15 | 72.5s | Ruồi sinh sản quanh mọi vũng nước tù.
+Beat 16 | 74.6s | Mùa xuân, hai con sông dâng lên. Nước không dâng đúng lịch. Có năm đến sớm, cuốn trôi ruộng vừa gieo.
+Beat 17 | 80.8s | Có năm đến muộn, đất khô đến mức hạt giống nằm chết dưới lớp bùn cứng.
+Beat 18 | 84.5s | Và quan trọng nhất: ở đây không có đá.
+Beat 19 | 86.8s | Không có đá để làm tường. Không có gỗ để làm mái. Không có quặng đồng trong lòng đất.
+Beat 20 | 92.0s | Mọi thứ cần thiết để xây một thành phố đều phải mang từ nơi khác đến, bằng lưng người hoặc bằng thuyền.
+Beat 21 | 98.3s | Người ta vẫn thường kể rằng các nền văn minh lớn sinh ra bên những con sông màu mỡ. Điều đó đúng, nhưng chưa đủ.
+Beat 22 | 104.6s | Sông chỉ cho phù sa. Phù sa chỉ cho lúa. Lúa chỉ nuôi được người khi có ai đó đứng ra tổ chức.
+Beat 23 | 110.0s | Ở đây, thứ được tổ chức đầu tiên không phải là chiến tranh, không phải là tôn giáo.
+Beat 24 | 114.7s | Là nước.
+Beat 25 | 115.6s | Nhưng trước khi nói về nước, hãy nhìn vào thứ họ có quá nhiều: bùn.
+Beat 26 | 119.1s | Bùn ở đây không phải thứ bẩn. Nó là vật liệu xây dựng duy nhất. Họ trộn bùn với rơm, đổ vào khuôn gỗ, phơi nắng.
+Beat 27 | 125.4s | Thành một viên gạch. Gạch bùn rẻ, dễ làm, và rất yếu.
+Beat 28 | 128.9s | Một trận mưa lớn có thể làm tan chân tường. Một trận lụt có thể xóa sạch cả khu phố.
+Beat 29 | 133.6s | Sau vài chục năm, một ngôi nhà thường phải đập đi làm lại. Thành phố không đứng yên. Nó lớn lên theo kiểu chồng các lớp đổ nát lên nhau.
+Beat 30 | 140.9s | Các nhà khảo cổ ngày nay gọi đó là tell, những gò đất cao dần lên vì người ta xây lại trên chính đống đổ của mình.
+Beat 31 | 147.0s | Trong khi bùn là vật liệu của tường, sậy là vật liệu của mọi thứ còn lại.
+Beat 32 | 151.0s | Sậy mọc dày ở đầm lầy, cao hơn đầu người. Người ta bó sậy làm mái nhà, đan thành thuyền, bện thành giỏ, làm cột, làm bàn, làm giường.
+Beat 33 | 159.2s | Nhựa bitum, thứ đen và dính rỉ ra từ lòng đất, được dùng như keo và như lớp chống thấm.
+Beat 34 | 164.4s | Con thuyền đầu tiên ở đây có thể chỉ là một bó sậy phủ bitum.
+Beat 35 | 167.6s | Một nền văn minh được xây bằng thứ mọc lên và thứ rỉ ra.
+Beat 36 | 170.7s | Đó là lý do thành phố ở đây trông như một mớ hỗn độn gồm bùn, sậy và tro.
+Beat 37 | 174.7s | Bạn sống trong một ngôi nhà mà bạn biết chắc nó sẽ tan. Bạn xây lại. Nó lại tan. Con bạn xây lại. Cháu bạn xây lại.
+Beat 38 | 182.6s | Một nền văn minh hình thành từ thói quen xây lại.
+Beat 39 | 185.1s | Và để xây lại đúng cách, bạn cần nhớ. Cần biết ai đã đóng góp bao nhiêu. Cần biết mùa nào trồng gì. Cần biết ai nợ ai.
+Beat 40 | 191.8s | Sự tạm bợ sinh ra sổ sách. Sổ sách sinh ra chữ.
+Beat 41 | 196.5s | Nhưng chúng ta đang đi trước quá nhanh.
+Beat 42 | 198.3s | Nước ở Mesopotamia không hiền.
+Beat 43 | 200.7s | Vào mùa lũ, nước dâng cao hơn đồng bằng vài mét.
+Beat 44 | 203.6s | Nếu để tự nhiên, nó sẽ tràn qua bờ, đọng lại thành những đầm lầy rộng, rồi rút đi, để lại một lớp phù sa và một vùng nước tù đầy muỗi.
+Beat 45 | 211.2s | Nước tràn là nước chết. Nước đứng yên là nước chết.
+Beat 46 | 214.1s | Người Sumer học được một điều mà sau này mọi nền văn minh tưới tiêu đều phải học: nước phải chảy.
+Beat 47 | 219.1s | Họ đào kênh. Không phải một con kênh. Một mạng kênh. Kênh chính dẫn từ sông vào đồng bằng. Kênh nhánh tỏa ra từng cánh đồng.
+Beat 48 | 226.8s | Cống nhỏ đưa nước vào từng thửa. Đê chặn nước lũ. Cửa cống mở đúng lúc.
+Beat 49 | 231.8s | Nghe thì đơn giản. Nhưng để làm được, cần một thứ chưa từng tồn tại: một lịch.
+Beat 50 | 236.8s | Bạn phải biết khi nào lũ đến. Bạn phải biết khi nào mở cống.
+Beat 51 | 240.4s | Bạn phải biết bao nhiêu người cần có mặt để đào một đoạn kênh dài vài trăm mét.
+Beat 52 | 244.5s | Và bạn phải biết ai chịu trách nhiệm khi đoạn kênh đó bị bồi.
+Beat 53 | 247.9s | Vì kênh ở đây không tự làm sạch. Phù sa lắng xuống đáy. Sau một mùa, lòng kênh nông đi.
+Beat 54 | 253.5s | Sau vài mùa, nước không vào được nữa. Mỗi năm, hàng nghìn người phải ra đào bùn, khiêng đất, đắp lại bờ.
+Beat 55 | 260.6s | Đào kênh không phải việc của một làng. Nó là việc của nhiều làng, trong nhiều tuần, dưới một người chỉ huy.
+Beat 56 | 266.3s | Các tấm bảng ghi lại những đội lao động, số ngày công, khẩu phần phát ra. Có người làm việc cho đền.
+Beat 57 | 272.0s | Có người bị trưng tập theo mùa. Cái mà chúng ta gọi là thuế, nghĩa vụ công dân, hay dịch vụ công, đều có tổ tiên ở đây.
+Beat 58 | 278.6s | Và thời gian bắt đầu được đo bằng một thứ khác ngoài mặt trời: bằng số ngày người ta phải làm.
+Beat 59 | 283.9s | Đây là công việc tập thể đầu tiên trong lịch sử nhân loại ở quy mô lớn.
+Beat 60 | 287.7s | Và bất cứ khi nào con người phải làm việc tập thể ở quy mô lớn, họ cần một trung tâm.
+Beat 61 | 292.7s | Trung tâm đó là ngôi đền.
+Beat 62 | 294.3s | Người Sumer tin rằng đất thuộc về thần. Mỗi thành phố có một vị thần bảo hộ. Thần sở hữu ruộng, kênh, kho lúa, đàn cừu.
+Beat 63 | 301.7s | Người dân chỉ là người canh tác trên đất của thần. Đền không chỉ là nơi cầu nguyện. Nó là kho. Là xưởng. Là văn phòng. Là ngân hàng.
+Beat 64 | 308.7s | Các thầy tư tế ghi lại mọi thứ: ai nộp bao nhiêu lúa, ai lấy bao nhiêu bia, ai làm việc mấy ngày, ai nợ bao nhiêu.
+Beat 65 | 315.1s | Nghe quen không?
+Beat 66 | 316.4s | Đó là bộ máy hành chính đầu tiên. Và nó ra đời không phải để cai trị con người. Nó ra đời để quản lý nước.
+Beat 67 | 322.4s | Ai giữ cổng nước, người đó giữ thành.
+Beat 68 | 324.7s | Nhưng nước chỉ là một nửa câu chuyện. Nửa còn lại là thứ mà nước tạo ra khi được dắt đúng chỗ.
+Beat 69 | 330.1s | Lúa.
+Beat 70 | 331.1s | Một héc ta lúa mạch thời đó, trong một năm tốt, có thể nuôi được nhiều người hơn một héc ta rừng săn bắn.
+Beat 71 | 336.5s | Đó là một phép tính đơn giản nhưng thay đổi mọi thứ.
+Beat 72 | 339.5s | Nếu bạn trồng lúa, bạn không cần đi săn mỗi ngày. Bạn không cần di chuyển theo đàn thú. Bạn ở yên một chỗ.
+Beat 73 | 345.9s | Bạn có thể dự trữ. Bạn có thể cho người khác ăn, và đổi lại, họ làm việc cho bạn.
+Beat 74 | 350.5s | Dư thừa là thứ sinh ra mọi thứ còn lại.
+Beat 75 | 352.6s | Với dư thừa, một người có thể chuyên tâm làm đồ gốm. Một người khác dệt vải. Một người khác rèn đồng.
+Beat 76 | 358.4s | Một người khác đứng ra ghi chép. Một người khác chỉ huy.
+Beat 77 | 361.5s | Và một người có thể sống mà không tự trồng ra thức ăn.
+Beat 78 | 364.7s | Lần đầu tiên trong lịch sử, đó là một nghề.
+Beat 79 | 367.3s | Thành phố lớn lên từ đây. Eridu, có lẽ là nơi được người Sumer coi là thành phố đầu tiên.
+Beat 80 | 373.2s | Uruk, lớn hơn, có tường, có đền, có chợ. Vào khoảng năm 3000 trước Công nguyên, Uruk có thể là nơi tập trung đông người nhất trên Trái Đất.
+Beat 81 | 381.7s | Ước tính rất khác nhau, nhưng có thể lên tới vài chục nghìn người.
+Beat 82 | 384.9s | Hãy hình dung con số đó.
+Beat 83 | 386.9s | Vài chục nghìn người sống trong một khu vực mà bạn có thể đi bộ qua trong một buổi sáng.
+Beat 84 | 390.8s | Không ai ở đó tự nuôi mình hoàn toàn. Người làm gốm đổi nồi lấy lúa. Người dệt vải đổi vải lấy bia.
+Beat 85 | 397.7s | Người chăn cừu đổi len lấy dao đồng. Người ghi chép đổi chữ lấy khẩu phần.
+Beat 86 | 401.8s | Thành phố là một cỗ máy biến lúa thành người, và biến người thành những thứ khác.
+Beat 87 | 406.3s | Chợ không cần tiền xu. Ở Sumer, đơn vị tính thường là lúa mạch. Một cái nồi đáng bao nhiêu lúa, một con cừu đáng bao nhiêu lúa.
+Beat 88 | 415.2s | Lúa mạch là tiền, là lương, là thước đo. Nhưng lúa không để được lâu.
+Beat 89 | 419.5s | Nó sinh ra một vấn đề mà mọi nền kinh tế sau này đều gặp: làm sao giữ giá trị qua thời gian.
+Beat 90 | 424.6s | Kho lúa, tem niêm phong, người giữ kho, và cuối cùng là chữ, tất cả đều ra đời để trả lời câu hỏi đó.
+Beat 91 | 430.3s | Thành phố không chỉ là nơi trao đổi hàng hóa. Nó là nơi trao đổi lời hứa.
+Beat 92 | 434.3s | Nhưng cỗ máy nào cũng có giá.
+Beat 93 | 436.3s | Khi mọi người sống chen nhau, nước thải chảy ra đâu? Rác đổ ở đâu? Xác chết chôn ở đâu?
+Beat 94 | 441.3s | Những câu hỏi này chưa ai từng phải trả lời ở quy mô này. Dịch bệnh lây nhanh hơn bất kỳ tin đồn nào.
+Beat 95 | 446.8s | Trẻ con chết nhiều. Phụ nữ chết khi sinh. Người yếu chết khi mùa màng thất bát.
+Beat 96 | 451.6s | Và có một thứ mới, không thể tránh khỏi: bất bình đẳng.
+Beat 97 | 454.7s | Trong làng săn bắn, của cải không tích lũy được nhiều. Bạn giỏi săn hơn, bạn vẫn không thể giữ được mười con hươu.
+Beat 98 | 461.2s | Thịt sẽ hỏng. Ở thành phố, bạn có thể giữ được kho lúa. Kho lúa tạo ra quyền lực. Quyền lực tạo ra kho lúa lớn hơn.
+Beat 99 | 468.3s | Rồi chiến tranh. Thành phố này cần đất của thành phố kia. Người bại trận không bị giết hết. Họ bị bắt làm việc.
+Beat 100 | 474.8s | Chế độ nô lệ xuất hiện cùng lúc với chữ viết, gần như cùng một thế hệ.
+Beat 101 | 478.7s | Lần đầu tiên, một con người có thể được ghi trong một tấm bảng như một món tài sản.
+Beat 102 | 483.3s | Và cũng lần đầu tiên, một người có thể chết vì một con số.
+Beat 103 | 486.9s | Con số đó là nợ.
+Beat 104 | 488.2s | Trước khi có chữ, người ta dùng những viên đất sét nhỏ.
+Beat 105 | 491.4s | Một viên hình tròn có thể là một con cừu. Một viên hình nón có thể là một bình dầu.
+Beat 106 | 496.3s | Người ta bỏ những viên này vào một cái hộp đất sét, niêm phong lại, và vẽ lên vỏ hộp vài ký hiệu để biết bên trong có gì.
+Beat 107 | 502.9s | Rồi ai đó nghĩ ra một ý tưởng tiết kiệm hơn: thay vì bỏ viên đất vào hộp, hãy vẽ luôn viên đất lên mặt hộp.
+Beat 108 | 509.3s | Đó là khoảnh khắc chữ viết ra đời.
+Beat 109 | 511.4s | Không phải một bài thơ. Không phải một lời cầu nguyện.
+Beat 110 | 514.5s | Một danh sách.
+Beat 111 | 515.1s | Khoảng năm 3200 trước Công nguyên, ở Uruk, người ta bắt đầu ấn một cây sậy vát nhọn lên đất sét ướt.
+Beat 112 | 522.0s | Đầu sậy tạo ra một vết hình nêm. Ghép nhiều vết lại, thành một dấu. Ghép nhiều dấu lại, thành một từ. Ghép nhiều từ lại, thành một câu.
+Beat 113 | 528.5s | Chữ hình nêm ra đời như vậy. Tên gọi của nó đến từ chữ Latin cuneus, nghĩa là cái nêm.
+Beat 114 | 533.2s | Và những tấm bảng đầu tiên, gần như tất cả, là sổ sách.
+Beat 115 | 536.5s | Năm con cừu. Ba trăm lít lúa mạch. Mười hai người làm công. Hai bình bia. Một mảnh ruộng bên kênh phía bắc.
+Beat 116 | 542.9s | Đọc những tấm bảng đó hôm nay, bạn không thấy thần thoại. Bạn thấy một người quản lý kho đang cố nhớ xem tháng trước mình đã giao cho ai bao nhiêu.
+Beat 117 | 550.8s | Đó là khởi đầu của văn học nhân loại. Một phiếu xuất kho.
+Beat 118 | 554.7s | Nhưng một khi bạn có thể ghi lại quá khứ, bạn có thể làm một việc nguy hiểm hơn: bắt người khác nhớ.
+Beat 119 | 560.0s | Một lời hứa miệng có thể bị quên. Một lời hứa khắc trên đất sét thì không. Nó nằm đó, trong kho, hai mươi năm sau vẫn còn.
+Beat 120 | 566.9s | Con bạn sẽ đọc nó. Chủ nợ của bạn sẽ đọc nó.
+Beat 121 | 569.7s | Chữ biến ký ức thành tài sản.
+Beat 122 | 571.3s | Hãy tưởng tượng một người nông dân. Mùa trước mất mùa. Ông ta vay ba trăm lít lúa từ đền, hứa trả sau vụ tới, lấy mảnh ruộng làm vật đảm bảo.
+Beat 123 | 578.6s | Vụ tới, nước đến muộn. Ông ta trả không đủ. Món nợ cộng thêm lãi. Đến mùa thứ ba, mảnh ruộng không còn là của ông. Ông thành người làm thuê trên đất cũ của mình.
+Beat 124 | 588.2s | Tất cả được ghi trên một tấm bảng, rõ ràng, hợp pháp, có người làm chứng, có con dấu. Không ai làm sai. Hệ thống vận hành đúng.
+Beat 125 | 595.8s | Và đó chính là điều đáng sợ.
+Beat 126 | 597.4s | Và nó tạo ra một tầng lớp mới: người biết chữ.
+Beat 127 | 600.0s | Ở Sumer, đó là các thư lại. Họ học trong một ngôi nhà gọi là edubba, nghĩa là nhà bảng.
+Beat 128 | 605.0s | Trẻ em vào đó từ nhỏ, tập ấn sậy lên đất sét, chép đi chép lại những danh sách từ, những câu mẫu, những bài học đạo đức.
+Beat 129 | 611.5s | Thầy giáo có quyền đánh. Học trò học thuộc lòng. Ai không theo được thì bị đuổi về làm ruộng.
+Beat 130 | 617.1s | Nghe như trường học hiện đại, nhưng mục đích khác. Họ không học để hiểu thế giới. Họ học để kiểm soát nó.
+Beat 131 | 622.9s | Một người biết chữ có thể ghi ai nợ ai. Một người biết chữ có thể viết lại một thỏa thuận theo cách có lợi cho mình.
+Beat 132 | 629.7s | Một người biết chữ có thể đọc được lệnh của vua.
+Beat 133 | 632.5s | Và vua thì cần chữ hơn ai hết.
+Beat 134 | 635.2s | Khoảng năm 2100 trước Công nguyên, một vị vua của Ur tên là Ur-Nammu cho khắc lên đất sét một bộ luật.
+Beat 135 | 641.2s | Đó là bộ luật cổ nhất còn lại đến hôm nay. Trong đó có những điều khoản về bồi thường, về hôn nhân, về đất đai, về tội giết người.
+Beat 136 | 648.5s | Luật không phải để công bằng. Luật là để một người cai trị hàng chục nghìn người mà không cần có mặt ở mọi nơi.
+Beat 137 | 654.9s | Bạn không cần đứng trước mặt kẻ trộm để trừng phạt hắn. Bạn chỉ cần viết ra hình phạt. Người khác sẽ thi hành.
+Beat 138 | 660.8s | Chữ là công nghệ cai trị đầu tiên.
+Beat 139 | 662.6s | Và nó cũng là công nghệ ghi nhớ cuối cùng. Khi mọi thứ khác biến mất, chữ vẫn nằm đó.
+Beat 140 | 668.3s | Ở giữa mỗi thành phố Sumer có một ngọn tháp.
+Beat 141 | 670.5s | Không phải tháp để nhìn xa. Cũng không phải lăng mộ. Đó là ziggurat, một nền đất hình bậc thang, càng lên cao càng nhỏ, trên đỉnh có một ngôi đền nhỏ.
+Beat 142 | 679.2s | Người ta tin rằng thần ngự trên đỉnh. Thầy tư tế lên đó để dâng lễ. Dân chúng đứng dưới chân tháp, nhìn lên, và thấy mình nhỏ.
+Beat 143 | 687.5s | Ziggurat không chỉ là kiến trúc tôn giáo. Nó là một tuyên bố chính trị. Nó nói rằng thành phố này có thần bảo hộ, có kho lúa, có người tổ chức.
+Beat 144 | 695.2s | Nó nói rằng nơi đây không phải một đám dân du mục tụ tập. Nó là một trật tự.
+Beat 145 | 699.6s | Và trật tự đó cần một người đứng đầu.
+Beat 146 | 701.9s | Các vua Sumer không nói rằng mình được dân bầu. Họ nói rằng vương quyền từ trời xuống. Đó là một câu rất tiện.
+Beat 147 | 708.3s | Nếu quyền lực từ trời, thì chống lại vua là chống lại trời.
+Beat 148 | 711.5s | Nhưng các thành phố vẫn đánh nhau. Vì đất. Vì nước. Vì tuyến đường thương mại. Vì một vị thần của thành này muốn lấn sang thành khác.
+Beat 149 | 719.0s | Trong lúc đánh nhau, họ vẫn trao đổi hàng hóa. Đồng từ Magan, có lẽ là Oman ngày nay. Thiếc từ phương đông.
+Beat 150 | 725.6s | Đá lapis từ Afghanistan. Gỗ từ vùng núi phía bắc. Vải, gia vị, và có thể cả những ý tưởng.
+Beat 151 | 731.5s | Để chở hàng.
+Beat 152 | 732.5s | Bánh xe không phát minh để đi xa. Nó ra đời để chở đất, chở lúa, chở người. Một bánh xe bằng gỗ ghép, viền đồng, gắn vào trục.
+Beat 153 | 739.7s | Một con lừa kéo. Một người đứng sau. Tốc độ không nhanh hơn đi bộ. Nhưng nó chở được nhiều gấp nhiều lần.
+Beat 154 | 745.4s | Cùng với bánh xe là cái cày. Cày bằng gỗ, đầu đồng, do lừa kéo. Một người có thể cày một mảnh ruộng mà trước đó cần vài người.
+Beat 155 | 752.5s | Năng suất tăng. Dân số tăng. Thành phố lại lớn hơn.
+Beat 156 | 755.5s | Và bia.
+Beat 157 | 756.0s | Ở Sumer, bia không phải thứ uống giải trí cuối tuần. Nó là khẩu phần. Bảng lương ghi cả lúa và bia.
+Beat 158 | 762.4s | Một người lao động có thể nhận khoảng một đến hai lít bia mỗi ngày, tùy công việc. Bia nhẹ, an toàn hơn nước sông, và cung cấp calo.
+Beat 159 | 769.3s | Nó là thực phẩm, là tiền, là phần thưởng.
+Beat 160 | 772.0s | Hãy nhớ điều này, vì nó sẽ quay lại ở cuối câu chuyện.
+Beat 161 | 775.4s | Đến khoảng năm 2334 trước Công nguyên, một người tên Sargon, xuất thân từ Akkad, phía bắc Sumer, làm một việc chưa ai làm được.
+Beat 162 | 783.4s | Ông đánh chiếm từng thành phố Sumer, rồi giữ chúng lại dưới một chính quyền duy nhất.
+Beat 163 | 787.8s | Đó là một trong những đế chế đầu tiên trong lịch sử.
+Beat 164 | 791.2s | Sargon không xóa người Sumer. Ông dùng họ. Ông đặt quan cai trị, thu thuế, xây dựng đường giao thông, và giữ tiếng Akkad làm ngôn ngữ hành chính.
+Beat 165 | 800.1s | Tiếng Sumer vẫn được nói, vẫn được viết, nhưng nó không còn là ngôn ngữ của quyền lực.
+Beat 166 | 805.0s | Một thành phố có thể chọn vua. Một đế chế thì không.
+Beat 167 | 808.0s | Và một khi đế chế xuất hiện, chiến tranh không còn là chuyện của hai thành phố. Nó là chuyện của cả một vùng đất.
+Beat 168 | 814.8s | Sargon chết. Đế chế của ông giữ được khoảng hai thế kỷ rồi tan. Nhưng ý tưởng về đế chế thì không tan.
+Beat 169 | 820.4s | Một triều đại sau đó, Ur III, dựng lại một nhà nước tập trung ở miền nam.
+Beat 170 | 824.7s | Họ làm một việc mà chưa ai làm ở quy mô này: biến cả vùng đất thành một guồng máy kế toán.
+Beat 171 | 829.7s | Mỗi xưởng, mỗi đàn cừu, mỗi người thợ, mỗi chuyến hàng đều có bảng kê. Có những bảng ghi từng bữa ăn của từng người lao động.
+Beat 172 | 837.1s | Nhà nước biết ai đang ở đâu, làm gì, ăn bao nhiêu.
+Beat 173 | 839.9s | Đó là lần đầu tiên trong lịch sử, một chính quyền cố gắng biết mọi thứ về mọi người. Và cũng là lần đầu tiên, con người có thể bị quản lý bằng giấy tờ.
+Beat 174 | 848.4s | Khoảng năm 2700 trước Công nguyên, có một vị vua ở Uruk.
+Beat 175 | 852.6s | Tên ông được ghi lại là Gilgamesh. Chúng ta không biết chắc ông đã làm gì.
+Beat 176 | 856.9s | Nhưng chúng ta biết rằng, vài trăm năm sau, người ta kể về ông nhiều đến mức câu chuyện của ông trở thành một trong những tác phẩm văn học dài nhất còn lại từ thời cổ đại Lưỡng Hà.
+Beat 177 | 867.0s | Sử thi Gilgamesh không bắt đầu bằng chiến công. Nó bắt đầu bằng một vị vua trẻ, mạnh, đẹp, và kiêu ngạo.
+Beat 178 | 873.6s | Ông xây tường thành, nhưng cũng bắt dân làm việc quá sức. Ông không sợ gì, vì ông chưa từng mất gì.
+Beat 179 | 879.0s | Rồi các thần tạo ra Enkidu, một người hoang dã, để đối đầu với ông. Hai người đánh nhau. Không ai thắng. Rồi họ trở thành bạn.
+Beat 180 | 886.1s | Đây là điểm mà câu chuyện rẽ sang một hướng khác với mọi câu chuyện về anh hùng.
+Beat 181 | 890.2s | Gilgamesh và Enkidu đi giết Humbaba, con quái vật canh rừng tuyết tùng. Rồi họ giết cả bò thần do nữ thần Ishtar sai đến. Họ chiến thắng. Và rồi Enkidu chết.
+Beat 182 | 900.1s | Không phải chết trong trận đánh. Chết vì bệnh. Chết vì các thần quyết định rằng phải có một người trả giá.
+Beat 183 | 906.3s | Gilgamesh nhìn thấy bạn mình chết. Lần đầu tiên, ông hiểu rằng mình cũng sẽ chết.
+Beat 184 | 910.9s | Và ông bắt đầu sợ.
+Beat 185 | 912.4s | Ông đi tìm người duy nhất biết bí mật của sự bất tử, Utnapishtim, người sống sót sau trận đại hồng thủy.
+Beat 186 | 918.0s | Ông đi qua núi, qua biển, qua vùng tối. Ông đến nơi. Ông hỏi.
+Beat 187 | 922.6s | Utnapishtim nói với ông một điều rất đơn giản: không ai sống mãi. Các thần giữ sự sống cho riêng mình. Con người chỉ có cái chết.
+Beat 188 | 929.2s | Nhưng vợ của Utnapishtim thương ông, và chỉ cho ông một loại cây mọc dưới đáy biển, có thể làm người già trẻ lại.
+Beat 189 | 935.9s | Gilgamesh lặn xuống, hái được cây. Trên đường về, ông dừng lại tắm. Một con rắn bò tới, ăn cây, và bỏ đi, để lại lớp da cũ.
+Beat 190 | 942.8s | Đó là lý do loài rắn lột da, và con người thì không.
+Beat 191 | 946.6s | Gilgamesh trở về Uruk với hai bàn tay trắng.
+Beat 192 | 948.8s | Và đây là đoạn kết, có lẽ là đoạn kết hay nhất trong văn học cổ đại.
+Beat 193 | 953.3s | Ông không chết trong tuyệt vọng. Ông đứng trước bức tường thành của mình, và nói với người lái thuyền: hãy nhìn bức tường này.
+Beat 194 | 959.8s | Hãy sờ vào nó. Hãy xem nó được xây bằng gạch nung, kiên cố đến mức nào.
+Beat 195 | 964.2s | Ông không còn sự bất tử. Nhưng ông còn một thứ khác.
+Beat 196 | 967.5s | Ông còn thành phố.
+Beat 197 | 968.7s | Câu chuyện về Gilgamesh được khắc lên đất sét. Nó được chép lại, truyền qua nhiều thế hệ, qua nhiều đế chế, qua nhiều ngôn ngữ.
+Beat 198 | 975.8s | Phiên bản đầy đủ nhất mà chúng ta có được tìm thấy trong thư viện của vua Assyria Ashurbanipal, khoảng 700 năm trước Công nguyên.
+Beat 199 | 983.7s | Một vị vua cố gắng bất tử bằng cách xây tường.
+Beat 200 | 986.4s | Một người khác cố gắng bất tử bằng cách chép lại câu chuyện về ông.
+Beat 201 | 990.0s | Người thứ hai thành công.
+Beat 202 | 991.2s | Bây giờ hãy quay lại với thứ tôi đã nói ở đầu.
+Beat 203 | 993.9s | Muối.
+Beat 204 | 995.0s | Nước sông ở đây không chỉ mang phù sa. Nó mang muối hòa tan, lấy từ đất và đá mà nó chảy qua.
+Beat 205 | 1000.5s | Khi bạn tưới ruộng, nước thấm xuống. Cây hút nước. Muối ở lại.
+Beat 206 | 1004.3s | Nếu đất có hệ thống thoát nước tự nhiên, muối bị rửa trôi. Nhưng ở Mesopotamia, đất bằng phẳng đến mức nước gần như không chảy đi đâu.
+Beat 207 | 1011.9s | Kênh tưới đưa nước vào, nhưng nước ngầm dâng lên. Mực nước ngầm dâng đến gần mặt đất. Nước bốc hơi. Muối đọng lại thành một lớp trắng trên mặt ruộng.
+Beat 208 | 1019.9s | Nhìn từ xa, nó giống như sương muối. Nhìn gần, nó là cái chết.
+Beat 209 | 1023.8s | Lúa mì là loại cây nhạy cảm với muối. Lúa mạch chịu mặn tốt hơn. Nên khi đất bắt đầu mặn, người nông dân chuyển từ lúa mì sang lúa mạch.
+Beat 210 | 1031.4s | Nhưng lúa mạch cũng có giới hạn. Đến một ngưỡng, không cây nào sống được.
+Beat 211 | 1036.2s | Các nhà nghiên cứu đã đọc được dấu vết này trong đất và trong các tấm bảng. Những cánh đồng ghi là tốt ở thế kỷ này, vài thế kỷ sau được ghi là bỏ hoang.
+Beat 212 | 1044.9s | Năng suất giảm dần, không phải vì lười, mà vì đất không còn nuôi được cây.
+Beat 213 | 1049.5s | Đây là một trong những bài học sớm nhất, và vẫn còn đúng đến hôm nay: một nền văn minh có thể tự đầu độc nguồn đất của mình bằng chính thành tựu lớn nhất của nó.
+Beat 214 | 1058.2s | Nhưng muối không phải nguyên nhân duy nhất.
+Beat 215 | 1060.4s | Kênh bị phù sa lấp. Dòng sông đổi dòng. Chiến tranh phá hủy hệ thống tưới. Các bộ tộc từ phía tây tràn vào.
+Beat 216 | 1067.0s | Thành phố bị cướp, bị đốt, bị bỏ. Mỗi thế kỷ, một chút ít. Không có một ngày tận thế nào cả.
+Beat 217 | 1072.3s | Đế chế không sụp trong một trận đánh. Nó sụp trong từng mùa màng kém đi.
+Beat 218 | 1076.7s | Đến khoảng năm 2000 trước Công nguyên, tiếng Sumer không còn là ngôn ngữ mẹ đẻ của ai.
+Beat 219 | 1081.8s | Nó vẫn được dùng trong đền, trong trường học, trong văn bản pháp luật, giống như tiếng Latinh ở châu Âu thời Trung cổ.
+Beat 220 | 1088.2s | Nhưng ngoài đường, người ta nói tiếng Akkad, rồi tiếng Amorite, rồi những ngôn ngữ khác.
+Beat 221 | 1094.0s | Một nền văn minh chết không phải khi thành phố cuối cùng bị đốt.
+Beat 222 | 1097.1s | Nó chết khi đứa trẻ cuối cùng không còn nói tiếng mẹ đẻ của nó.
+Beat 223 | 1100.4s | Câu chuyện đó không kết thúc ở Sumer. Miền nam Iraq ngày nay vẫn có đất bị mặn hóa. Đồng bằng sông Cửu Long cũng đang vật lộn với nước mặn xâm nhập.
+Beat 224 | 1108.6s | Cùng một cơ chế: nước đến, muối ở lại. Chúng ta chỉ giỏi hơn ở chỗ gọi nó bằng một cái tên kỹ thuật và lập một ủy ban.
+Beat 225 | 1115.8s | Nhưng có một điều kỳ lạ đã xảy ra.
+Beat 226 | 1117.8s | Đất sét không bền. Nó tan trong nước. Nếu để ngoài trời, một tấm bảng sẽ mềm ra và biến thành bùn sau vài trận mưa.
+Beat 227 | 1124.4s | Nhưng đất sét đã nung thì thành đá.
+Beat 228 | 1126.4s | Nhiều tấm bảng Sumer còn đến hôm nay không phải vì ai đó cẩn thận cất giữ. Mà vì thành phố chứa chúng bị đốt.
+Beat 229 | 1132.8s | Lửa thiêu rụi mọi thứ, nhưng nung cứng những tấm bảng. Chúng nằm dưới đống đổ nát hàng nghìn năm, chờ người đọc.
+Beat 230 | 1139.0s | Đến thế kỷ 19, các nhà khảo cổ châu Âu bắt đầu đào những gò đất ở Iraq. Họ tìm thấy hàng chục nghìn tấm bảng.
+Beat 231 | 1145.7s | Ban đầu không ai đọc được. Rồi từng người, từng người một, giải mã được chữ hình nêm.
+Beat 232 | 1150.5s | Một sĩ quan Anh tên Henry Rawlinson đã trèo lên một vách đá ở Behistun, chép lại ba thứ chữ khắc song song, và dùng chúng như chìa khóa.
+Beat 233 | 1158.8s | Khi chữ hình nêm được đọc, lịch sử không còn là truyền thuyết. Nó trở thành biên lai.
+Beat 234 | 1163.7s | Một thế giới hiện ra: hợp đồng, thư từ, bài thơ, lời cầu nguyện, đơn kiện, thực đơn, bài tập của học trò.
+Beat 235 | 1170.6s | Những tấm bảng đó nói với chúng ta nhiều hơn bất kỳ tượng đài nào.
+Beat 236 | 1173.6s | Và chúng ta vẫn đang dùng đồ của họ.
+Beat 237 | 1175.6s | Một giờ có 60 phút. Một phút có 60 giây. Một vòng tròn có 360 độ.
+Beat 238 | 1180.3s | Đó là hệ đếm cơ số 60 của người Sumer, được truyền qua Babylon, qua Hy Lạp, đến tận đồng hồ trên tay bạn.
+Beat 239 | 1186.6s | Bánh xe. Cái cày. Thành phố có tường. Chữ viết. Luật thành văn. Trường học. Khái niệm nợ được ghi thành văn bản.
+Beat 240 | 1193.7s | Tất cả đều bắt đầu ở đây, hoặc được ghi lại lần đầu ở đây.
+Beat 241 | 1197.0s | Nhưng có một thứ khác, ít được nhắc hơn.
+Beat 242 | 1199.3s | Người Sumer là những người đầu tiên ghi lại cảm giác rằng thế giới này không dành cho mình. Rằng mình sẽ chết.
+Beat 243 | 1205.5s | Rằng thành phố mình xây sẽ đổ. Rằng nước mình dắt sẽ cạn. Rằng đất mình cày sẽ mặn.
+Beat 244 | 1210.2s | Và họ vẫn tiếp tục xây.
+Beat 245 | 1211.7s | Họ vẫn đào kênh. Vẫn nung gạch. Vẫn dạy trẻ con viết.
+Beat 246 | 1215.1s | Vẫn kể câu chuyện về một người đi tìm sự bất tử và trở về tay trắng, rồi đứng trước bức tường của mình và nói: hãy nhìn những gì ta đã làm.
+Beat 247 | 1223.0s | Ba mươi thế kỷ sau, chúng ta vẫn đứng trước những bức tường đó.
+Beat 248 | 1226.9s | Chúng không còn nguyên. Chúng chỉ là những gò đất cao, phủ đầy bụi, giữa một đồng bằng khô.
+Beat 249 | 1232.2s | Nhưng mỗi lần bạn nhìn đồng hồ, chia một giờ thành sáu mươi phút, bạn đang đọc một dấu vết của họ.
+Beat 250 | 1237.4s | Mỗi lần bạn ký một hợp đồng, ghi một khoản nợ, bạn đang làm một việc mà một người Sumer đã làm trên một tấm đất sét, hơn năm nghìn năm trước.
+Beat 251 | 1245.0s | Và mỗi lần bạn xây một thứ gì đó, biết rằng nó sẽ không tồn tại mãi, bạn đang làm đúng việc mà họ đã làm.
+Beat 252 | 1251.0s | Không phải vì bạn tin nó sẽ bền.
+Beat 253 | 1253.0s | Mà vì bạn tin nó đáng để xây.

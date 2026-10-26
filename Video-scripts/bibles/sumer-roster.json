@@ -1,0 +1,57 @@
+{
+  "main": "Tích",
+  "characters": [
+    {
+      "name": "Tích",
+      "role": "Người dẫn chuyện",
+      "description": "Tích, a Vietnamese boy around ten, round face, big dark eyes, short messy black hair, yellow hoodie, dark blue jeans, white sneakers, small brown backpack, three heads tall."
+    },
+    {
+      "name": "Nông Dân",
+      "role": "Nông dân Sumer",
+      "description": "Nông Dân, a Sumerian farmer, adult man, three and a half heads tall, tan skin, thick black beard, black hair under a cream headband, plain cream tunic, bare feet, strong arms."
+    },
+    {
+      "name": "Thư Lại",
+      "role": "Thư lại Sumer",
+      "description": "Thư Lại, a Sumerian scribe, young adult, three and a half heads tall, tan skin, black hair in a topknot, cream tunic with blue trim, blue sash, bare feet, clay tablet in one hand."
+    },
+    {
+      "name": "Vua Sumer",
+      "role": "Vua thành bang",
+      "description": "Vua Sumer, a Sumerian king, adult man, three and a half heads tall, tan skin, thick black beard, tall blue and gold crown, blue robe with gold trim, gold armbands, white pleated skirt, bull-head staff."
+    }
+  ],
+  "backgrounds": [
+    {
+      "name": "Cổng thành Uruk",
+      "description": "mudbrick city gate of Uruk, two gate towers, dark archway, dust haze, date palms"
+    },
+    {
+      "name": "Ziggurat xa",
+      "description": "stepped mudbrick ziggurat with a long ramp, sun-baked plaza, date palms"
+    },
+    {
+      "name": "Kênh đào",
+      "description": "straight irrigation canal, wet clay banks, reeds, date palms, thin morning mist"
+    },
+    {
+      "name": "Nhà bảng",
+      "description": "scribal school interior, clay tablets stacked on low benches, oil lamp, mudbrick walls"
+    },
+    {
+      "name": "Bến sông",
+      "description": "muddy river dock, reed boats, cargo baskets, low wooden walkway, palm grove"
+    },
+    {
+      "name": "Đồng muối",
+      "description": "cracked salt-crusted field, dead palms, empty dry canal, pale sky"
+    }
+  ],
+  "lighting": [
+    { "name": "Trưa gắt", "description": "high noon, short shadows, bleached sand, high contrast" },
+    { "name": "Chiều vàng", "description": "low sun from the west, long shadows to the east, amber light" },
+    { "name": "Đêm lửa", "description": "single warm fire source, deep brown shadows, cool blue rim light" },
+    { "name": "Trắng muối", "description": "overcast pale sky, low saturation, white ground, flat light" }
+  ]
+}

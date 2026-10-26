@@ -1,0 +1,125 @@
+# NHẬT KÝ MERER: 2,3 TRIỆU KHỐI ĐÁ VÀ CÂU HỎI KHÔNG CÓ SẮT
+
+Phiên bản mới: phim tài liệu 10 đến 11 phút, mở đầu bằng nhật ký của Merer, ngôi thứ ba, hình ảnh cinematic, bản đồ và sơ đồ.
+
+Bản cũ 25:08 vẫn được giữ nguyên, không bị thay thế.
+
+## 1. CUỐN NHẬT KÝ BÊN BIỂN ĐỎ
+
+Một cuốn nhật ký hơn 4.500 năm tuổi ghi lại những chuyến chở đá đến kim tự tháp Khufu.
+
+Người viết không phải nhà vua. Ông là người giám sát một đội thuyền. Tên ông là Merer.
+
+Trong ghi chép của ông có những ngày làm việc, những chặng đường và nơi đội của ông dừng lại. Những việc rất bình thường. Vậy mà chúng dẫn đến một công trình cao 147 mét, khiến người ta phải ngửa đầu mới nhìn thấy đỉnh.
+
+Đại kim tự tháp Giza. Ước tính khoảng 2,3 triệu khối đá. Mỗi cạnh đáy dài khoảng 230 mét. Không sắt. Không cần cẩu. Không xe tải.
+
+Làm thế nào?
+
+Câu trả lời quen thuộc là nô lệ. Một đoàn người bị roi vọt, kéo đá dưới nắng, chết dần bên chân công trình. Nhưng dấu tích dưới chân kim tự tháp không khớp với hình ảnh đó.
+
+Có khu định cư, bếp, xưởng bánh, xương bò, cừu, dê. Có những vết gãy đã lành trên xương người lao động, nghĩa là họ từng được chăm sóc để sống tiếp.
+
+Và có những mảnh papyrus của Merer, tìm thấy năm 2013 tại Wadi el-Jarf, bên bờ Biển Đỏ.
+
+Chúng không kể về một phép màu. Chúng kể về một hệ thống.
+
+## 2. SA MẠC KHÔNG NUÔI ĐƯỢC CÔNG TRƯỜNG
+
+Giza nằm trên cao nguyên đá vôi, rìa sa mạc. Ở đây không có đồng ruộng, không có nước ngọt, không có rừng để lấy gỗ. Hàng nghìn người đã sống và làm việc ở đây.
+
+Một đội thợ cần bánh, bia, thịt, cá, nước. Một công trường cần lương thực đến đúng ngày, đúng chỗ.
+
+Câu trả lời nằm ở dòng sông.
+
+Mỗi năm, sông Nile dâng nước, phủ phù sa lên hai bên bờ. Nước rút đi, đất được gieo. Những cánh đồng ấy nuôi cả Ai Cập.
+
+Lương thực được thu vào kho, đưa lên thuyền, chở đến công trường. Ở Giza, người ta nướng bánh, nấu bia. Những mảnh xương bò, cừu, dê vẫn kể được chuyện ấy.
+
+Kim tự tháp không chỉ được xây bằng đá. Nó được nuôi bằng một hệ thống nông nghiệp, vận chuyển và phân phối.
+
+## 3. ĐÁ KHÔNG NẰM SẴN Ở CHÂN CÔNG TRÌNH
+
+Đá vôi làm lõi có thể lấy ngay tại Giza. Nhưng lớp đá vôi trắng phủ bên ngoài đến từ Tura, bên kia sông. Granite cho các căn phòng bên trong đến từ Aswan, gần 800 cây số.
+
+Mỗi nguồn đá là một bài toán riêng.
+
+Ở mỏ, người thợ dùng dụng cụ đồng và chất mài để tách đá khỏi vách. Một khối đá chỉ có thể rời mỏ khi đúng kích thước.
+
+Khối đá phải đến bờ sông. Nó được đặt lên xe trượt, kéo qua đường đã chuẩn bị. Những tranh vẽ cho thấy người ta đổ chất lỏng trước đường kéo để giảm ma sát. Thí nghiệm hiện đại cho thấy cát ẩm giúp xe trượt nhẹ hơn.
+
+Đến bờ, khối đá được đưa xuống thuyền. Thuyền phải giữ thăng bằng. Một khối đá rơi xuống nước là thất bại đắt.
+
+## 4. SÔNG NILE LÀ CON ĐƯỜNG CAO TỐC
+
+Vào mùa lũ, sông Nile là con đường vận chuyển tốt nhất. Nước dâng cao, thuyền đi xa hơn, gần công trường hơn. Vì thế công việc xây dựng thường diễn ra vào mùa nước dâng, khi đồng ruộng ngập.
+
+Nhật ký của Merer ghi lại những chuyến đi ấy. Đội của ông chở đá vôi trắng từ Tura. Chúng không kể về một phép màu. Chúng kể về một lịch làm việc.
+
+Đến Giza, đá rời thuyền. Đường lên cao nguyên phải được dọn. Công việc chuyển từ người làm việc trên nước sang người làm việc trên đất.
+
+Đằng sau một khối đá là một chuỗi bàn tay. Người tách đá. Người đẽo. Người kéo xe. Người lái thuyền. Người bốc dỡ. Người làm đường. Người ghi chép. Không ai xuất hiện trên mặt tiền của kim tự tháp.
+
+## 5. 147 MÉT MÀ KHÔNG CÓ CẦN CẨU
+
+Đây là câu hỏi khó nhất: làm sao đưa đá lên cao?
+
+Không có cần cẩu. Chỉ có sức người, gỗ, dây thừng, đòn bẩy và những con dốc.
+
+Các nhà nghiên cứu đã đề xuất nhiều hệ thống đường dốc. Dốc thẳng từ một phía. Dốc men theo các mặt. Dốc xoắn ốc bên trong hoặc bên ngoài. Chưa có một lời giải duy nhất được chứng minh.
+
+Nhưng có một điều chắc chắn: càng lên cao, bài toán càng khó.
+
+Mặt bằng thu lại. Một khối đá đi lên phải nhường đường cho người khác đi xuống. Độ dốc phải đủ thoải để kéo, nhưng đủ ngắn để không tốn nhiều vật liệu.
+
+Các hành lang và căn phòng đặt ra một bài toán khác: trình tự. Một căn phòng phải được đặt đúng lúc, trước khi những hàng đá phía trên khép lại. Một sai sót về thời điểm có thể làm hỏng một phần công trình.
+
+Người xây dựng không chỉ đối mặt với trọng lượng. Họ đối mặt với thời gian.
+
+## 6. THÀNH PHỐ PHÍA SAU TƯỢNG NHÂN SƯ
+
+Muốn hiểu ai đã xây kim tự tháp, phải rời mắt khỏi kim tự tháp.
+
+Phía nam tượng Nhân Sư có dấu tích của một khu định cư lớn. Dấu tích cho thấy cư dân được cung cấp lương thực.
+
+Xương của những người lao động giữ lại dấu vết của lao động nặng, bệnh tật và chấn thương. Những vết gãy đã lành. Nghĩa là sau tai nạn, người ấy sống đủ lâu để xương liền lại. Ai đó đã chăm sóc họ.
+
+Những tên đội được ghi trên đá cho thấy người lao động được tổ chức thành các nhóm, có tên và phần việc. Họ không phải đám đông vô danh bị lùa đi như gia súc.
+
+Nhưng được tổ chức không có nghĩa là cuộc sống dễ dàng. Người có phần ăn vẫn có thể kiệt sức. Người được chăm sóc vẫn có thể đau. Người tự hào vẫn có thể muốn về nhà.
+
+## 7. VÌ SAO PHẢI XÂY?
+
+Nếu chỉ cần một ngôi mộ, có thể xây nhỏ hơn. Vì sao phải là một ngọn núi nhân tạo?
+
+Câu trả lời nằm trong niềm tin về cái chết.
+
+Với người Ai Cập, cái chết không phải là kết thúc. Đó là một chuyến đi. Nhà vua phải đi qua thế giới bên kia và tiếp tục trật tự của vũ trụ. Kim tự tháp là cỗ máy cho chuyến đi ấy. Nó bảo vệ thi thể. Nó định hướng linh hồn. Nó khẳng định vị trí của nhà vua giữa con người và thần linh.
+
+Một công trình như thế là một lời tuyên bố: trật tự này là vĩnh cửu.
+
+Nhưng để xây một lời tuyên bố vĩnh cửu, cần nhiều thời gian của những người không vĩnh cửu.
+
+## 8. CÁI GIÁ ẨN
+
+Ai đã trả giá?
+
+Nông dân bị huy động vào mùa lũ. Thợ đá làm việc nhiều năm. Người nấu bánh, người lái thuyền. Gia đình họ ở xa. Những vụ mùa vẫn phải tiếp tục. Những đứa trẻ vẫn lớn lên trong lúc cha mẹ vắng nhà.
+
+Cả một hệ thống kinh tế được dồn vào một công trình. Lương thực, gỗ, đồng, vải, sức người. Mỗi thứ có giới hạn.
+
+Và khi công trình hoàn thành, tên nhà vua được khắc lên đá. Tên những người xây thì biến mất.
+
+Merer là một ngoại lệ. Nhờ những mảnh papyrus, chúng ta biết một người đã đi trên sông, chở đá, ghi ngày, ghi chặng đường. Nhưng còn bao nhiêu người khác đã mất tên?
+
+## 9. CÂU HỎI CUỐI
+
+Hơn 4.500 năm sau, kim tự tháp vẫn đứng đó. Chúng ta ngửa đầu nhìn lên. Chúng ta gọi nó là kỳ quan.
+
+Nhưng một kỳ quan không chỉ là đá. Nó là một hệ thống. Là lương thực. Là thuyền. Là đường dốc. Là những người đã dành đời cho một công trình mà họ không được chôn trong đó.
+
+Có thể vừa khâm phục, vừa nhớ đến cái giá.
+
+Câu hỏi không phải là: họ đã xây kim tự tháp như thế nào?
+
+Câu hỏi là: nếu hôm nay chúng ta xây một công trình như thế, ai sẽ trả giá, và chúng ta có nhớ tên họ không?
