@@ -5,12 +5,69 @@ provider "vieneu"  : đọc bằng VieNeu-TTS chạy local (pip install vieneu).
 provider "manual"  : bạn tự đưa script.txt qua voice AI khác, lưu thành voice.mp3; timestamp lấy bằng whisper.
 """
 import json
+import sys
 from pathlib import Path
 
 from .common import audio_duration, need
 from .s1_script import split_sentences
 
 SAMPLE_RATES = {"v3turbo": 48000, "v3nano": 24000}
+
+
+def preset_pairs(tts):
+    """[(label, id)] giọng có sẵn của VieNeu; bỏ mục thiếu id."""
+    try:
+        pairs = tts.list_preset_voices() or []
+    except Exception as e:
+        raise SystemExit(f"Không đọc được danh sách giọng VieNeu: {e}")
+    out = []
+    for item in pairs:
+        try:
+            label, vid = item[0], item[1]
+        except (TypeError, IndexError):
+            continue
+        vid = str(vid or "").strip()
+        if vid:
+            out.append((str(label or vid).strip(), vid))
+    return out
+
+
+def pick_voice(presets, raw):
+    """Chọn id giọng từ số thứ tự hoặc tên. Trả None nếu không hợp lệ."""
+    raw = str(raw or "").strip()
+    if not raw:
+        return None
+    if raw.isdigit():
+        i = int(raw)
+        return presets[i - 1][1] if 1 <= i <= len(presets) else None
+    key = raw.casefold()
+    for label, vid in presets:
+        if key in (label.casefold(), vid.casefold()):
+            return vid
+    return None
+
+
+def choose_voice(tts, ask=None):
+    """Chưa cấu hình voice: liệt kê giọng có sẵn và hỏi chọn cho lần chạy này."""
+    presets = preset_pairs(tts)
+    if not presets:
+        raise SystemExit("Chưa chọn voice và không đọc được danh sách giọng. "
+                         "Đặt voice.vieneu.voice trong config/settings.yaml rồi chạy lại.")
+    print("[voice] Chưa chọn voice. Các giọng có sẵn:")
+    for i, (label, vid) in enumerate(presets, 1):
+        extra = f" — {label}" if label and label != vid else ""
+        print(f"  {i:2d}. {vid}{extra}")
+    print("  (đặt voice.vieneu.voice trong config/settings.yaml hoặc project.yaml để lần sau không phải chọn)")
+    if ask is None:
+        if not sys.stdin.isatty():
+            raise SystemExit("Chưa chọn voice. Đặt voice.vieneu.voice trong config/settings.yaml "
+                             "(hoặc project.yaml) rồi chạy lại.")
+        ask = input
+    choice = pick_voice(presets, ask("Chọn số hoặc tên giọng: "))
+    if not choice:
+        raise SystemExit("Chưa chọn được voice hợp lệ. Chạy lại và chọn một số trong danh sách ở trên.")
+    print(f"[voice] dùng giọng '{choice}' cho lần chạy này.")
+    return choice
 
 
 def word_timeline(sentences, durations, gap):
@@ -41,13 +98,15 @@ def synth_vieneu(project):
     if cfg.get("precision"):
         kwargs["precision"] = cfg["precision"]           # chỉ có tác dụng khi chạy CPU (ONNX)
     tts = Vieneu(**kwargs)
-    voice = cfg["voice"]
+    voice = str(cfg.get("voice") or "").strip()
     if cfg.get("ref_audio"):                              # nhân bản giọng từ clip 3-8 giây
         ref = Path(cfg["ref_audio"])
         ref = ref if ref.is_absolute() else project.dir / ref
         need(ref.exists(), f"Không thấy ref_audio: {ref}")
         voice = f"{project.name}_voice"
         tts.add_voice(voice, str(ref))
+    elif not voice:                                       # chưa chọn giọng -> hỏi người dùng
+        voice = choose_voice(tts)
     print(f"[voice] VieNeu {cfg['mode']} — đang đọc {len(sentences)} câu bằng giọng '{voice}'...")
     audios = [np.asarray(a, dtype=np.float32).reshape(-1) for a in tts.infer_batch(sentences, voice=voice)]
     need(len(audios) == len(sentences), "VieNeu trả về số đoạn audio không khớp số câu")

@@ -13,6 +13,7 @@ class FakeVieneu:
     """Giả lập API trong README của VieNeu: infer_batch(texts, voice=) -> list[np.float32], save(audio, path)."""
     def __init__(self, **kw): self.kw = kw
     def add_voice(self, name, path): self.voice_added = (name, path)
+    def list_preset_voices(self): return [("Mai Anh", "Mai Anh"), ("⭐ Hải Đăng", "Hải Đăng")]
     def infer_batch(self, texts, voice=None):
         return [np.sin(np.linspace(0, 200, int(48000 * (0.05 * len(t))))).astype(np.float32) for t in texts]
     def save(self, audio, path):
@@ -50,6 +51,20 @@ class VieneuStep(unittest.TestCase):
         t = self.p.voice.stat().st_mtime_ns
         s2_voice.run(self.p)
         self.assertEqual(self.p.voice.stat().st_mtime_ns, t)
+
+    def test_pick_voice_by_number_or_name(self):
+        presets = [("Mai Anh", "Mai Anh"), ("⭐ Hải Đăng", "Hải Đăng")]
+        self.assertEqual(s2_voice.pick_voice(presets, "2"), "Hải Đăng")
+        self.assertEqual(s2_voice.pick_voice(presets, "hải đăng"), "Hải Đăng")
+        self.assertEqual(s2_voice.pick_voice(presets, "Mai Anh"), "Mai Anh")
+        self.assertIsNone(s2_voice.pick_voice(presets, "99"))
+        self.assertIsNone(s2_voice.pick_voice(presets, ""))
+
+    def test_missing_voice_asks_user_to_choose(self):
+        self.assertEqual(s2_voice.choose_voice(FakeVieneu(), ask=lambda _: "2"), "Hải Đăng")
+        with self.assertRaises(SystemExit) as e:
+            s2_voice.choose_voice(FakeVieneu(), ask=lambda _: "")
+        self.assertIn("Chưa chọn", str(e.exception))
 
     def test_wrong_sample_rate_is_caught(self):
         class BadSR(FakeVieneu):

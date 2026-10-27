@@ -38,9 +38,10 @@ python run.py run tich_duc                 # chạy tất cả
 python run.py run tich_duc --from prompts  # chạy từ một bước
 python run.py run tich_duc --only ping     # kiểm tra extension ↔ tab Flow
 ```
-- **Voice**: mặc định dùng [VieNeu-TTS](https://github.com/pnnbao97/VieNeu-TTS) chạy local (Apache-2.0), cài bằng `pip install vieneu`, không cần API key. Đổi giọng ở `voice.vieneu.voice` (25 giọng có sẵn) hoặc đặt `ref_audio` để nhân bản giọng từ clip 3–8 giây. Mỗi câu được đọc riêng nên pipeline biết chính xác thời điểm từng câu, không cần whisper.
+- **Voice**: mặc định dùng [VieNeu-TTS](https://github.com/pnnbao97/VieNeu-TTS) chạy local (Apache-2.0), cài bằng `pip install vieneu`, không cần API key. Đổi giọng ở `voice.vieneu.voice` (25 giọng có sẵn) hoặc đặt `ref_audio` để nhân bản giọng từ clip 3–8 giây. Nếu để trống `voice`, pipeline liệt kê các giọng có sẵn và hỏi bạn chọn trước khi đọc. Mỗi câu được đọc riêng nên pipeline biết chính xác thời điểm từng câu, không cần whisper.
 - **Dùng voice AI khác**: đặt `voice.provider: manual`, đưa `script.txt` qua dịch vụ của bạn, lưu thành `projects/<tên>/voice.mp3` rồi chạy lại (lúc này cần `pip install faster-whisper` để lấy timestamp).
 - **Tự viết kịch bản**: bỏ sẵn `script.txt` vào project, bước 1 sẽ tự bỏ qua.
+- **Đăng nhập Flow**: nếu tab Flow chưa đăng nhập hoặc chưa mở đúng project, bước `generate`/`collect` dừng ngay và báo bạn đăng nhập rồi chạy lại — không gửi prompt trong trạng thái sai.
 
 ## Chỗ cần chỉnh
 | File | Chỉnh gì |

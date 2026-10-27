@@ -10,7 +10,7 @@ voice:
   provider: vieneu             # vieneu = VieNeu-TTS chạy local | manual = tự bỏ voice.mp3 vào thư mục project
   vieneu:
     mode: v3turbo              # v3turbo (48kHz, chất lượng cao) | v3nano (máy rất yếu, chất lượng thấp hơn)
-    voice: "Hải Đăng"          # tên giọng có sẵn (25 giọng). Danh sách: Vieneu().list_preset_voices()
+    voice: "Hải Đăng"          # tên giọng có sẵn (25 giọng). Để trống để pipeline liệt kê và hỏi chọn.
     ref_audio: ""              # (tuỳ chọn) clip giọng mẫu 3-8s để nhân bản; đường dẫn tương đối tính từ thư mục project
     precision: null            # CPU có VNNI có thể đặt int8 cho nhanh hơn ~1.6x; để null nếu không chắc
     gap_seconds: 0.3           # khoảng lặng giữa các câu

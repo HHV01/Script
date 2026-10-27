@@ -177,7 +177,7 @@ voice:
   provider: vieneu
   vieneu:
     mode: v3turbo        # v3turbo: 48 kHz, chất lượng cao | v3nano: máy yếu, nhẹ hơn
-    voice: "Hải Đăng"    # tên giọng có sẵn
+    voice: "Hải Đăng"    # tên giọng có sẵn; để trống để pipeline hỏi chọn
     ref_audio: ""        # clip 3–8 giây để nhân bản giọng (tuỳ chọn)
     precision: null      # CPU có VNNI: int8 để nhanh hơn; không chắc thì để null
     gap_seconds: 0.3     # khoảng lặng giữa các câu
@@ -190,6 +190,8 @@ python run.py run ten_video --only voice
 ```
 
 Lần đầu sẽ tải model (vài GB) và có thể mất vài phút. Các lần sau chỉ còn thời gian đọc.
+
+> **Chưa chọn voice?** Nếu `voice.vieneu.voice` để trống (và không dùng `ref_audio`), pipeline in danh sách giọng có sẵn, hỏi bạn chọn số hoặc tên rồi mới đọc. Khi chạy không tương tác (CI, script tự động), pipeline dừng và yêu cầu điền `voice` vào cấu hình thay vì treo chờ.
 
 #### Danh sách giọng có sẵn
 
@@ -374,6 +376,8 @@ python run.py run ten_video --only ping
 
 Kết quả tốt: `kết nối OK` và số `tiles` (ảnh đang có trong project Flow). Nếu `tiles = 0` dù project đã có ảnh, chỉnh selector `tileImg` trong `flow_extension/selectors.js`.
 
+> **Chưa đăng nhập?** Pipeline kiểm tra tab Flow ngay khi kết nối. Nếu bị chuyển sang trang đăng nhập Google hoặc không thấy ô nhập prompt, bước `generate`/`collect` dừng và báo rõ: mở tab Flow, đăng nhập, mở đúng project rồi chạy lại. Không có prompt nào được gửi trong trạng thái chưa đăng nhập.
+
 Cấu hình trong `config/settings.yaml`:
 
 ```yaml
@@ -503,6 +507,8 @@ projects/ten_video/
 | Hiện tượng | Nguyên nhân / cách xử lý |
 |---|---|
 | `Extension chưa kết nối` | Chưa nạp extension, chưa mở tab Flow, hoặc sai `flow.port` |
+| `Chưa đăng nhập Google Flow` | Mở tab Flow trong Chrome, đăng nhập, mở đúng project rồi chạy lại |
+| `Chưa chọn voice` | Chọn trong danh sách pipeline in ra, hoặc điền `voice.vieneu.voice` vào cấu hình |
 | `tiles = 0` | Selector `tileImg` không khớp UI Flow hiện tại |
 | `Có cảnh chưa có image_prompt` | Chạy `--only prompts` trước `generate` |
 | `KHÔNG TẢI` ở bước collect | Thiếu ảnh/trùng ảnh/ảnh bị xóa — chạy lại `generate` |

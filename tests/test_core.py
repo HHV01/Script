@@ -2,7 +2,7 @@ import json, shutil, subprocess, sys, tempfile, threading, time, unittest, urlli
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from pipeline import s1_script, s3_scenes, s6_collect, s7_render, s4_prompts
+from pipeline import s1_script, s3_scenes, s5_generate, s6_collect, s7_render, s4_prompts
 from pipeline.bridge import Bridge, BridgeError
 
 SCRIPT = ("Một quyết định sai lầm có thể xóa sổ cả một đế chế. Hãy nhìn vào nước Đức năm 1871, nơi mọi quyền lực tập trung vào một người. "
@@ -67,6 +67,17 @@ class Core(unittest.TestCase):
         self.assertTrue(s6_collect.check(sc[:2] + [{"id": 3}], ["/t1", "/t2"]))                 # thiếu ảnh
         self.assertTrue(s6_collect.check(sc[:2] + [{"id": 3, "tile_key": "/t1"}], ["/t1", "/t2"]))  # trùng ảnh
         self.assertTrue(s6_collect.check(sc, ["/t1", "/t2"]))                                    # ảnh bị xóa khỏi Flow
+
+    def test_flow_login_is_reported(self):
+        with self.assertRaises(SystemExit) as e:
+            s5_generate.require_flow_ready(
+                {"url": "https://accounts.google.com/v3/signin/identifier", "promptBox": False})
+        self.assertIn("đăng nhập", str(e.exception).lower())
+        with self.assertRaises(SystemExit):
+            s5_generate.require_flow_ready(
+                {"url": "https://labs.google/fx/tools/flow/project/abc", "promptBox": False})
+        s5_generate.require_flow_ready(
+            {"url": "https://labs.google/fx/tools/flow/project/abc", "promptBox": True})
 
     def test_frame_counts_do_not_drift(self):
         scenes = [{"start": i * 6.37, "end": (i + 1) * 6.37} for i in range(140)]

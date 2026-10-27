@@ -6,18 +6,46 @@ from .bridge import BridgeError, get_bridge
 from .common import need
 
 
-def connect(project):
+def require_flow_ready(info):
+    """Chưa đăng nhập / chưa mở đúng project Flow -> dừng với hướng dẫn rõ ràng."""
+    if info.get("promptBox"):
+        return
+    url = str(info.get("url") or "")
+    if "accounts.google.com" in url or "/login" in url:
+        reason = "Chưa đăng nhập Google Flow."
+    else:
+        reason = ("Chưa đăng nhập Google Flow hoặc chưa mở đúng project Flow "
+                  "(không thấy ô nhập prompt).")
+    raise SystemExit(
+        reason + "\n"
+        "→ Mở tab Google Flow trong Chrome, đăng nhập bằng tài khoản Google, mở đúng project rồi chạy lại.\n"
+        "→ Nếu đã đăng nhập mà vẫn báo lỗi, kiểm tra selector promptBox trong flow_extension/selectors.js."
+    )
+
+
+def flow_info(b):
+    try:
+        return b.call("ping")
+    except BridgeError as e:
+        raise SystemExit(f"Không kết nối được tab Google Flow: {e}\n"
+                         "→ Mở tab Google Flow trong Chrome rồi chạy lại.")
+
+
+def connect(project, check=True):
     b = get_bridge(project)
     url = project.cfg.get("flow_url")
     print(f"[flow] đang đợi extension kết nối cổng {b.port}..."
           + (f" Mở: {url}" if url else " Hãy mở project Flow trong Chrome."))
     b.wait_connected()
+    if check:
+        require_flow_ready(flow_info(b))
     return b
 
 
 def ping(project):
-    b = connect(project)
-    info = b.call("ping")
+    b = connect(project, check=False)
+    info = flow_info(b)
+    require_flow_ready(info)
     print(f"[flow] kết nối OK — {info}")
     if not info.get("tiles"):
         print("[flow] ⚠ extension không thấy ảnh nào trong tab. Nếu project đã có ảnh, "
