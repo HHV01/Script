@@ -2,9 +2,11 @@
 
 Một lệnh, 7 bước. Mỗi bước đọc/ghi file trong `projects/<tên>/`, bước nào đã xong sẽ tự bỏ qua, bị ngắt giữa chừng thì chạy lại là tiếp tục.
 
+> **Hướng dẫn từ đầu đến cuối:** [HUONG-DAN.md](HUONG-DAN.md) — quy trình 7 bước, phần voice chi tiết (giọng có sẵn, nhân bản giọng, timestamp), checklist kiểm tra và lỗi thường gặp.
+
 ```
 bible nhân vật ─┐
-chủ đề ─────────┴─► 1 script ─► script.txt ─► 2 voice ─► voice.mp3 + voice.words.json
+chủ đề ─────────┴─► 1 script ─► script.txt ─► 2 voice ─► voice.wav (VieNeu) / voice.mp3 (manual) + voice.words.json
                                                               │
         3 scenes ◄────────────────────────────────────────────┘   (cắt cảnh theo câu + thời gian voice)
            │ scenes.json
