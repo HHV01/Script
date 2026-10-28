@@ -5,3 +5,7 @@ __pycache__/
 projects/*
 !projects/_template/
 !projects/.gitkeep
+
+.flow-profile/
+
+.studio/

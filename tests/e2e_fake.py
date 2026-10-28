@@ -15,7 +15,7 @@ d = PROJECTS / NAME
 shutil.rmtree(d, ignore_errors=True)
 shutil.copytree(PROJECTS / "_template", d)
 (d / "project.yaml").write_text(
-    "topic: demo\ncharacters: [tich]\nsettings:\n  flow: {delay_seconds: [0, 0], retries: 0}\n  render: {width: 640, height: 360, fps: 24}\n",
+    "topic: demo\ncharacters: [tich]\nsettings:\n  flow: {backend: extension, delay_seconds: [0, 0], retries: 0}\n  render: {width: 640, height: 360, fps: 24}\n",
     encoding="utf-8")
 text = " ".join(f"Đây là câu số {i} của kịch bản thử nghiệm, nói về một chủ đề nào đó." for i in range(1, 9))
 (d / "script.txt").write_text(text, encoding="utf-8")
@@ -56,7 +56,7 @@ def fake_extension():
                 urllib.request.urlopen(urllib.request.Request(
                     f"{base}/upload?scene={d_['scene']}&ext=png", data=store[d_["key"]], method="POST")); out = {}
             else:
-                out = {"url": "fake", "tiles": len(store)}
+                out = {"url": "fake", "tiles": len(store), "promptBox": True}
             res = {"id": c["id"], "ok": True, "data": out}
             urllib.request.urlopen(urllib.request.Request(base + "/result", data=json.dumps(res).encode(), method="POST"))
         except OSError:
@@ -67,6 +67,9 @@ threading.Thread(target=fake_extension, daemon=True).start()
 s5_generate.run(p)
 s6_collect.run(p)
 s7_render.run(p)
+assert p.final.stat().st_size > 10000, "Video output is empty"
+assert abs(audio_duration(p.final) - audio_duration(p.voice)) < 0.1, "Video does not cover narration"
+assert p.srt.read_text(encoding="utf-8").strip(), "Subtitles are missing"
 print("final.mp4:", f"{audio_duration(p.final):.2f}s", "(voice", f"{audio_duration(p.voice):.2f}s)")
 
 # thử kịch bản lỗi: xóa 1 ảnh khỏi project Flow -> collect phải TỪ CHỐI tải

@@ -2,3 +2,7 @@ pyyaml>=6.0
 openai>=1.0             # gọi OpenCode Go (OpenAI-compatible) để viết kịch bản + mô tả cảnh
 vieneu                  # voice AI chạy local (CPU được; GPU NVIDIA nhanh hơn rất nhiều)
 # faster-whisper>=1.0   # chỉ cần nếu dùng voice.provider: manual
+
+playwright>=1.49,<2
+pillow>=10
+google-auth-oauthlib>=1.2,<2

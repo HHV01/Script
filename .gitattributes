@@ -1,0 +1,2 @@
+# Preserve the owner's approved reference exactly, including Windows line endings.
+config/editorial/examples/giza.approved.txt -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

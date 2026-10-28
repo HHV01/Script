@@ -10,6 +10,7 @@ from pathlib import Path
 
 from .common import audio_duration, need
 from .s1_script import split_sentences
+from .script_review import require_approval, digest, write_json
 
 SAMPLE_RATES = {"v3turbo": 48000, "v3nano": 24000}
 
@@ -73,7 +74,8 @@ def choose_voice(tts, ask=None):
 def word_timeline(sentences, durations, gap):
     """Từ thời lượng từng câu -> [{w,start,end}] cho từng từ (chia theo độ dài chữ trong câu)."""
     words, t = [], 0.0
-    for s, dur in zip(sentences, durations):
+    gaps = gap if isinstance(gap, list) else [gap] * len(sentences)
+    for s, dur, pause in zip(sentences, durations, gaps):
         ws = s.split()
         total = sum(len(w) for w in ws) or 1
         cur = t
@@ -81,11 +83,11 @@ def word_timeline(sentences, durations, gap):
             d = dur * len(w) / total
             words.append({"w": w, "start": round(cur, 3), "end": round(cur + d, 3)})
             cur += d
-        t += dur + gap
+        t += dur + pause
     return words
 
 
-def synth_vieneu(project):
+def synth_vieneu(project, plan=None):
     import numpy as np
     try:
         from vieneu import Vieneu
@@ -93,7 +95,7 @@ def synth_vieneu(project):
         raise SystemExit("Chưa cài VieNeu-TTS: pip install vieneu   (GPU NVIDIA: xem README của VieNeu-TTS)")
     cfg = project.settings["voice"]["vieneu"]
     sr = SAMPLE_RATES.get(cfg["mode"], 48000)
-    sentences = split_sentences(project.script.read_text(encoding="utf-8"))
+    sentences = [s["text"] for s in plan["segments"]] if plan else split_sentences(project.script.read_text(encoding="utf-8"))
     kwargs = {"mode": cfg["mode"]}
     if cfg.get("precision"):
         kwargs["precision"] = cfg["precision"]           # chỉ có tác dụng khi chạy CPU (ONNX)
@@ -110,12 +112,13 @@ def synth_vieneu(project):
     print(f"[voice] VieNeu {cfg['mode']} — đang đọc {len(sentences)} câu bằng giọng '{voice}'...")
     audios = [np.asarray(a, dtype=np.float32).reshape(-1) for a in tts.infer_batch(sentences, voice=voice)]
     need(len(audios) == len(sentences), "VieNeu trả về số đoạn audio không khớp số câu")
-    gap = cfg["gap_seconds"]
-    silence = np.zeros(int(gap * sr), dtype=np.float32)
+    gap = [s["pause_after"] for s in plan["segments"]] if plan else [cfg["gap_seconds"]] * len(audios)
     parts = []
-    for a in audios:
-        parts += [a, silence]
-    full = np.concatenate(parts[:-1])
+    for index, a in enumerate(audios):
+        parts.append(a)
+        if index < len(audios)-1:
+            parts.append(np.zeros(int(gap[index] * sr), dtype=np.float32))
+    full = np.concatenate(parts)
     for old in project.dir.glob("voice.*"):
         old.unlink()
     out = project.dir / "voice.wav"
@@ -145,12 +148,22 @@ def transcribe(project):
 
 def run(project, force=False):
     need(project.script.exists(), "Chưa có script.txt — chạy bước 'script' trước.")
+    plan = require_approval(project)
+    source = {"script_sha256": digest(project.script.read_text(encoding="utf-8")),
+              "plan_sha256": digest(plan), "voice_config_sha256": digest(project.settings["voice"])}
     provider = project.settings["voice"]["provider"]
     if project.voice and project.words.exists() and not force:
+        if plan:
+            try:
+                previous = json.loads((project.dir / "voice.source.json").read_text(encoding="utf-8"))
+            except (OSError, ValueError):
+                previous = None
+            need(previous == source, "Giọng đọc cũ không khớp bản duyệt/kế hoạch thu. Chạy --from voice --force để tạo lại các bước sau (voice manual: thay file audio theo bản đã duyệt).")
         print(f"[voice] đã có {project.voice.name} + {project.words.name} — bỏ qua (--force để đọc lại)")
         return
     if provider == "vieneu":
-        synth_vieneu(project)
+        synth_vieneu(project, plan)
     else:
         need(project.voice, f"Đưa script.txt qua voice AI rồi lưu thành {project.dir}/voice.mp3, sau đó chạy lại.")
         transcribe(project)
+    write_json(project.dir / "voice.source.json", source)

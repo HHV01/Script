@@ -31,6 +31,7 @@ class VieneuStep(unittest.TestCase):
         (self.d / "script.txt").write_text(
             "Đây là câu thứ nhất của kịch bản. Câu thứ hai dài hơn một chút, có dấu phẩy. Câu cuối cùng?", encoding="utf-8")
         self.p = Project("_t_vieneu")
+        self.p.settings["review"]["enabled"] = False  # unit tests isolate the voice engine; review gate tested separately
 
     def tearDown(self):
         shutil.rmtree(self.d, ignore_errors=True)

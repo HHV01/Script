@@ -1,5 +1,7 @@
 # Sao chép thư mục này thành projects/<tên> (hoặc dùng: python run.py new <tên>)
 topic: "Điền chủ đề video ở đây"
+niche: "Lịch sử và dấu vết văn minh: sự kiện, nhân vật, đế chế và bài học từ quá khứ"
+audience: "Người xem Việt Nam yêu thích lịch sử, khảo cổ và các nền văn minh"
 minutes: 8                # độ dài mục tiêu (phút) cho bước viết kịch bản
 characters: [tich]        # id file trong config/characters/
 flow_url: ""              # URL project Google Flow đã tạo sẵn (để trống nếu tự mở tay)

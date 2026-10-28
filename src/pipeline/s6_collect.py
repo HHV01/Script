@@ -1,5 +1,6 @@
 """Bước 6 — KIỂM TRA số ảnh khớp số prompt, chỉ khi khớp mới tải nguyên project về images/."""
 from .common import need
+from .local_animation import is_local_scene
 from .s5_generate import connect
 
 
@@ -23,7 +24,11 @@ def check(scenes, live_keys):
 
 
 def run(project, force=False):
-    scenes = project.load_scenes()
+    all_scenes = project.load_scenes()
+    scenes = [s for s in all_scenes if not is_local_scene(s)]
+    if not scenes:
+        print('[collect] Cảnh animation cục bộ không cần tải ảnh.')
+        return
     b = connect(project)
     live = b.call("list_tiles", timeout=60)["keys"]
     errors = check(scenes, live)
@@ -45,5 +50,5 @@ def run(project, force=False):
     need(not bad, f"Tải xong nhưng thiếu/hỏng file ảnh cảnh {bad} — chạy lại 'collect'.")
     for s in scenes:
         s["image"] = project.image_path(s).name
-    project.save_scenes(scenes)
+    project.save_scenes(all_scenes)
     print(f"[collect] ✓ đã tải đủ {len(scenes)}/{len(scenes)} ảnh vào {project.images_dir}")

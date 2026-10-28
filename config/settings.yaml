@@ -6,6 +6,15 @@ script:
   words_per_minute: 160        # tốc độ đọc tiếng Việt ước lượng, dùng để tính độ dài kịch bản
   dedupe_threshold: 0.85       # câu giống nhau >= ngưỡng này sẽ bị loại
 
+review:
+  enabled: true
+  model: null                  # trống: dùng llm.model, vai trò duyệt tách khỏi vai trò viết
+  min_score: 7                 # mỗi tiêu chí đều phải đạt; điểm là đánh giá biên tập
+  max_revisions: 2             # sửa rồi duyệt lại, dừng nếu vẫn chưa đạt
+  max_sentence_words: 50       # mẫu chủ kênh có câu dẫn cảnh tới 48 từ; đa số vẫn ngắn
+  recent_days: 30              # lấy video mới trong cửa sổ này
+  research_max_age_hours: 24   # quá hạn phải cập nhật YouTube và duyệt lại
+
 voice:
   provider: vieneu             # vieneu = VieNeu-TTS chạy local | manual = tự bỏ voice.mp3 vào thư mục project
   vieneu:
@@ -26,6 +35,13 @@ prompts:
   batch_size: 20
 
 flow:
+  backend: playwright           # playwright (tự mở browser) | extension
+  playwright:
+    use_environment_proxy: true  # dùng HTTP(S)_PROXY khi cloud có proxy
+    headless: false              # lần đầu cần giao diện để đăng nhập Google
+    cdp_url: ""                 # hoặc kết nối Chrome đang chạy qua CDP localhost
+    profile_dir: .flow-profile   # hồ sơ đăng nhập cục bộ, không commit
+    executable_path: ""         # để trống dùng Chromium do Playwright cài
   port: 8765
   token: ""                    # (tuỳ chọn) token bảo vệ cầu nối localhost; để "" nếu không cần. Nếu đặt, phải khớp flow_extension/config.js
   delay_seconds: [3, 8]        # nghỉ ngẫu nhiên giữa 2 lần gửi prompt
@@ -39,3 +55,24 @@ render:
   fps: 30
   ken_burns: true              # zoom nhẹ cho mỗi cảnh
   burn_subtitles: true         # in chữ kịch bản lên video (luôn xuất thêm subtitles.srt)
+
+  subtitle_font_size: 10
+  subtitle_margin_bottom: 8
+
+youtube:
+  channel_handle: "@LsDấuVếtVănMinh"
+  research: false              # bật khi đã cấu hình YOUTUBE_API_KEY
+  region: VN
+  language: vi
+  max_results: 5
+
+manager:
+  enabled: false                # bật lịch tại giao diện; chỉ chạy khi server đang mở
+  auto_dispatch: true           # mỗi lượt báo cáo giao tối đa 1 video cho Minh
+  interval_hours: 24
+  minutes: 8
+  flow_url: ""                  # project Flow dùng cho công việc tự giao
+  niche_seeds:
+    - "Lịch sử các nền văn minh"
+    - "Bí ẩn khảo cổ có căn cứ"
+    - "Sự trỗi dậy và suy tàn của đế chế"
