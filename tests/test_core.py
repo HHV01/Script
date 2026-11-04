@@ -53,9 +53,9 @@ class Core(unittest.TestCase):
 
     def test_compose_prompt_injects_character_visual(self):
         style = {"prefix": "STYLE", "suffix": "SUF", "avoid": "bad"}
-        p = s4_prompts.compose(style, {"tich": {"visual": "TICH LOOKS"}}, "stands at a map.", ["tich"])
-        self.assertEqual(p, "STYLE. TICH LOOKS. stands at a map. SUF. Avoid: bad")
-        self.assertNotIn("TICH", s4_prompts.compose(style, {"tich": {"visual": "TICH LOOKS"}}, "a gear", []))
+        p = s4_prompts.compose(style, {"stick-orange": {"visual": "ORANGE LOOKS"}}, "sits at a desk.", ["stick-orange"])
+        self.assertEqual(p, "STYLE. ORANGE LOOKS. sits at a desk. SUF. Avoid: bad")
+        self.assertNotIn("ORANGE", s4_prompts.compose(style, {"stick-orange": {"visual": "ORANGE LOOKS"}}, "a gear", []))
 
     def test_validate_prompts_detects_missing_and_empty(self):
         batch = [{"id": 1}, {"id": 2}, {"id": 3}]

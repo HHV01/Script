@@ -15,7 +15,7 @@ d = PROJECTS / NAME
 shutil.rmtree(d, ignore_errors=True)
 shutil.copytree(PROJECTS / "_template", d)
 (d / "project.yaml").write_text(
-    "topic: demo\ncharacters: [tich]\nsettings:\n  flow: {backend: extension, delay_seconds: [0, 0], retries: 0}\n  render: {width: 640, height: 360, fps: 24}\n",
+    "topic: demo\ncharacters: [stick-orange]\nsettings:\n  flow: {backend: extension, delay_seconds: [0, 0], retries: 0}\n  render: {width: 640, height: 360, fps: 24}\n",
     encoding="utf-8")
 text = " ".join(f"Đây là câu số {i} của kịch bản thử nghiệm, nói về một chủ đề nào đó." for i in range(1, 9))
 (d / "script.txt").write_text(text, encoding="utf-8")

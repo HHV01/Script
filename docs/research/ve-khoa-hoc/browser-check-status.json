@@ -1,0 +1,52 @@
+{
+  "executor": "Browser Use read-only tool; current assistant retrieved returned report",
+  "run_id": "9971cad8-c945-44d6-8f35-418ef2a59f3b",
+  "status": "completed",
+  "video_url": "https://www.youtube.com/watch?v=vSQXuflK_UQ",
+  "visual_observation_seconds": [
+    0,
+    86.5
+  ],
+  "audio_listening_verified": false,
+  "transcript": "Vietnamese auto-generated panel read; not listening verification",
+  "checkpoints": [
+    {
+      "seconds": 0,
+      "visual": "1973 title, researchers, board, experiment label"
+    },
+    {
+      "seconds": 17.9,
+      "visual": "Novice, A-level player and master shown separately"
+    },
+    {
+      "seconds": 40.9,
+      "visual": "Experienced player, board, green check"
+    },
+    {
+      "seconds": 63.6,
+      "visual": "Random board, thinking figure, clipboard/stopwatch"
+    },
+    {
+      "seconds": 86.5,
+      "visual": "Narrowing-gap heading and compressed bars"
+    }
+  ],
+  "tool_reported_cross_video_links": {
+    "vSQXuflK_UQ": [
+      "mN6-9_wJEf8"
+    ],
+    "mN6-9_wJEf8": [
+      "vSQXuflK_UQ",
+      "XIcp5ZoETQM"
+    ],
+    "wIIJQXXn4SE": [
+      "mN6-9_wJEf8"
+    ]
+  },
+  "limits": [
+    "Current assistant did not personally watch this playback; visual observation attributed to Browser Use.",
+    "No full-video or audio review.",
+    "Checkpoints do not establish total cut count or average scene duration.",
+    "Cross-links show pathways, not measured click-through."
+  ]
+}

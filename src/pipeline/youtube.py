@@ -81,7 +81,7 @@ def review_research(project, force=False, now=None):
     window = max(1, min(90, int(cfg.get('recent_days', 30))))
     ttl = max(1, min(72, float(cfg.get('research_max_age_hours', 24))))
     query = ' '.join(str(project.cfg.get('topic', '')).split())[:180]
-    niche = ' '.join(str(project.cfg.get('niche', project.cfg.get('topic', 'lịch sử'))).split())[:180]
+    niche = ' '.join(str(project.cfg.get('niche', project.cfg.get('topic', 'khoa học cơ thể và hành vi đời thường'))).split())[:180]
     context = {'topic': query, 'niche': niche, 'days': window}
     key_hash = hashlib.sha256(json.dumps(context, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
     path = project.dir / 'review_research.json'
@@ -155,7 +155,7 @@ def review_research(project, force=False, now=None):
               'samples': samples, 'videos': videos,
               'limits': 'Mẫu video mới trong cửa sổ thời gian, không phải bảng xu hướng toàn YouTube. '
                         'Views/ngày là trung bình từ ngày đăng; chỉ view_change có hai mốc mới là thay đổi quan sát. '
-                        'Không có CTR, không xác minh sự kiện lịch sử hoặc phát hiện khảo cổ mới từ tiêu đề video.'}
+                        'Không có CTR, không xác minh cơ chế hoặc phát hiện khoa học từ tiêu đề video.'}
     temporary = path.with_suffix('.tmp')
     temporary.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding='utf-8')
     temporary.replace(path)

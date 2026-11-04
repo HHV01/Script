@@ -11,7 +11,9 @@ from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
 SCOPES = ['https://www.googleapis.com/auth/youtube.readonly',
-          'https://www.googleapis.com/auth/yt-analytics.readonly']
+          'https://www.googleapis.com/auth/yt-analytics.readonly',
+          'https://www.googleapis.com/auth/youtube.upload',
+          'https://www.googleapis.com/auth/youtube']
 
 
 class ChannelError(ValueError):
@@ -79,7 +81,7 @@ class ChannelClient:
             pending['flow'].fetch_token(code=code)
             credentials = pending['flow'].credentials
             if credentials.granted_scopes and not set(SCOPES).issubset(credentials.granted_scopes):
-                raise ChannelError('Cần cho phép cả quyền đọc YouTube và Analytics.')
+                raise ChannelError('Cần cho phép đọc YouTube, Analytics và upload cho chiến dịch tự vận hành.')
             write_private(self.token_path, credentials.to_json())
         except ChannelError:
             raise
@@ -92,7 +94,9 @@ class ChannelClient:
         from google.oauth2.credentials import Credentials
         from google.auth.transport.requests import Request as GoogleRequest
         try:
-            credentials = Credentials.from_authorized_user_file(str(self.token_path), scopes=SCOPES)
+            # Refresh only scopes actually granted. Newly requested scopes belong
+            # to the next consent flow and must not invalidate existing access.
+            credentials = Credentials.from_authorized_user_file(str(self.token_path))
             if not credentials.valid:
                 if not credentials.refresh_token:
                     raise ChannelError('Cần kết nối lại tài khoản chủ kênh.')

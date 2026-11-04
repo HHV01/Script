@@ -53,7 +53,10 @@ class StudioTests(unittest.TestCase):
         for name in ('../outside', '/tmp/project', '_template', ''):
             with self.subTest(name=name), self.assertRaises(ValueError):
                 server.project_path(name)
-        (self.projects/'link').symlink_to(self.root, target_is_directory=True)
+        try:
+            (self.projects/'link').symlink_to(self.root, target_is_directory=True)
+        except OSError:
+            self.skipTest('symlink creation requires elevated privileges on this platform')
         with self.assertRaises(ValueError):
             server.project_path('link')
 
@@ -69,7 +72,7 @@ raise SystemExit(2)
         self.assertEqual(result['exit_code'],2)
         self.assertEqual(result['stages']['scenes'],'failed')
         self.assertIn('A diagnostic line',[l['text'] for l in result['logs']])
-        persisted=json.loads((self.root/'.studio/last-run.json').read_text())
+        persisted=json.loads((self.root/'.studio/last-run.json').read_text(encoding='utf-8'))
         self.assertEqual(persisted['status'],'failed')
 
     def test_stop_terminates_worker_and_rejects_concurrent_run(self):

@@ -9,3 +9,5 @@ projects/*
 .flow-profile/
 
 .studio/
+
+tools/ffmpeg/

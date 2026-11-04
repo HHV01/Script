@@ -1,67 +1,83 @@
 #!/usr/bin/env python3
 """Pipeline: bible nhân vật -> kịch bản -> voice -> phân cảnh -> prompt -> Google Flow -> kiểm tra/tải -> video.
 
-  python run.py studio                         mở giao diện xưởng phim 3D
+  python run.py studio                         mở giao diện xưởng video khoa học
   python run.py new <tên>                       tạo project mới từ projects/_template
   python run.py run <tên>                       chạy toàn bộ các bước (bước nào đã xong sẽ tự bỏ qua)
   python run.py run <tên> --from prompts        chạy từ một bước trở đi
-  python run.py run <tên> --only review         Mai duyệt kịch bản trước khi thu
+  python run.py run <tên> --only review         kiểm tra kịch bản trước khi thu
   python run.py run <tên> --only render         chỉ chạy một bước
   python run.py run <tên> --only publish        xuất tiêu đề, mô tả, tag theo niche
-  python run.py run <tên> --only ping           kiểm tra kết nối extension với tab Flow
+  python run.py run <tên> --only ping           kiểm tra kết nối browser với tab Flow
   thêm --force để làm lại bước đó
 """
 import argparse
 import json
+import re
 import shutil
 import sys
 from importlib import import_module
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent / "src"))
-from pipeline.common import PROJECTS, Project, load_env  # noqa: E402
 
 from pipeline.stages import STAGES
+
+# CLI help and offline diagnostics must work before optional dependencies import.
+for stream in (sys.stdout, sys.stderr):
+    if stream and hasattr(stream, 'reconfigure'):
+        stream.reconfigure(encoding='utf-8', errors='replace')
 
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("new").add_argument("name")
-    studio = sub.add_parser("studio", help="Mở xưởng phim 3D và điều khiển pipeline")
+    sub.add_parser("menu", help="Menu mở xưởng và Google Flow")
+    studio = sub.add_parser("studio", help="Mở xưởng video khoa học và điều khiển pipeline")
     studio.add_argument("--port", type=int, default=8787)
     r = sub.add_parser("run")
     r.add_argument("name")
     r.add_argument("--from", dest="start", choices=STAGES)
     r.add_argument("--only", choices=[*STAGES, "ping"])
     r.add_argument("--force", action="store_true")
-    visual = sub.add_parser("research-visuals", help="Lấy mẫu video lịch sử có view cao để đối chiếu hình ảnh")
+    r.add_argument("--upload", action="store_true", help="Yêu cầu upload rõ ràng sau khi các cổng đạt")
+    doctor = sub.add_parser("doctor", help="Kiểm tra cục bộ; không mở browser hoặc tạo ảnh")
+    doctor.add_argument("project", nargs="?")
+    doctor.add_argument("--json", action="store_true", dest="as_json")
+    flow = sub.add_parser("flow", help="Mở, kiểm tra, hoặc tạo đúng một cảnh Google Flow")
+    flow.add_argument("project")
+    flow.add_argument("--action", choices=['open','check','generate-one'], default='check')
+    flow.add_argument("--timeout", type=int, default=60)
+    flow.add_argument("--scene", type=int, default=1)
+    flow.add_argument("--force", action="store_true", help="Tạo lại có chủ ý sau khi kiểm tra gallery")
+    visual = sub.add_parser("research-visuals", help="Lấy mẫu video tham khảo để đối chiếu hình ảnh")
     visual.add_argument("--days", type=int, default=90)
     visual.add_argument("--results", type=int, default=5)
     visual.add_argument("--min-views", type=int, default=50000)
     visual.add_argument("--duration", choices=['short','medium','long','any'], default='medium')
-    animation = sub.add_parser("animate", help="Xuất animation cục bộ, không gọi API")
-    animation.add_argument("--preset", choices=['stone_transport','stone_ramp','giza_cinematic'], default='stone_transport')
-    animation.add_argument("--output", required=True)
-    animation.add_argument("--duration", type=float, default=8)
-    animation.add_argument("--width", type=int, default=960)
-    animation.add_argument("--height", type=int, default=540)
-    animation.add_argument("--fps", type=int, default=24)
-    animation.add_argument("--sound", action="store_true")
-    source_animation = sub.add_parser("animate-babylon", help="Dựng đoạn hợp đồng Babylon từ video nguồn, giữ lời đọc")
-    source_animation.add_argument("--input", required=True)
-    source_animation.add_argument("--output", required=True)
     a = ap.parse_args()
-    load_env()
-
-    if a.cmd == "animate-babylon":
-        from pipeline.source_animation import main as source_main
-        source_main(["--input", a.input, "--output", a.output])
+    if a.cmd == "menu":
+        from pipeline.launcher import main as menu_main
+        menu_main()
         return
-
-    if a.cmd == "animate":
-        from pipeline.local_animation import main as animation_main
-        animation_main(["--preset", a.preset, "--output", a.output, "--duration", str(a.duration), "--width", str(a.width), "--height", str(a.height), "--fps", str(a.fps)]+(["--sound"] if a.sound else []))
+    if a.cmd == "doctor":
+        from pipeline.doctor import main as doctor_main
+        raise SystemExit(doctor_main(a.project, a.as_json))
+    from pipeline.common import PROJECTS, Project, load_env
+    load_env()
+    name = getattr(a, 'name', None) or getattr(a, 'project', None)
+    if name is not None:
+        if (not re.fullmatch(r'[\w-]{1,64}', name) or name.startswith('_')
+                or (PROJECTS/name).is_symlink() or (PROJECTS/name).resolve().parent != PROJECTS.resolve()):
+            raise SystemExit('Tên dự án không hợp lệ; chỉ dùng chữ, số, gạch nối/gạch dưới, không đường dẫn.')
+    if a.cmd == 'flow':
+        from pipeline.flow_cli import run as flow_main
+        from pipeline.bridge import BridgeError
+        try:
+            flow_main(Project(a.project), a.action, a.timeout, a.scene, a.force)
+        except BridgeError as error:
+            raise SystemExit(str(error)) from None
         return
 
     if a.cmd == "research-visuals":
@@ -95,7 +111,7 @@ def main():
         print(f"\n=== {n} ===")
         print('@@STUDIO ' + json.dumps({'stage': n, 'status': 'running'}), flush=True)
         try:
-            if n not in ('script', 'review'):
+            if n not in ('script', 'review', 'qc'):
                 from pipeline.script_review import require_approval, digest
                 from pipeline.common import need
                 plan = require_approval(project)
@@ -112,6 +128,11 @@ def main():
             print('@@STUDIO ' + json.dumps({'stage': n, 'status': 'failed'}), flush=True)
             raise
         print('@@STUDIO ' + json.dumps({'stage': n, 'status': 'completed'}), flush=True)
+    if a.upload:
+        from pipeline.common import need
+        need(project.final.exists(), 'Chưa có final.mp4; không thể upload.')
+        from pipeline.youtube_upload import upload
+        upload(project)
     print("\nXong.")
 
 

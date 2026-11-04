@@ -1,23 +1,52 @@
-channel: "Dấu Vết Văn Minh"
-reference: "examples/giza.approved.txt"
-approval_scope: "Chủ kênh cung cấp làm mẫu kịch bản đã duyệt; không phải xác nhận mọi dữ kiện là đúng hoặc còn cập nhật."
+channel: Dấu Vết Văn Minh
+reference: examples/sticker-direction.txt
+approval_scope: Chủ repo xác nhận niche khoa học cơ thể/cảm giác/hành vi, bối cảnh
+  và hình thức stick-orange hiện tại ngày 30/10/2026. Đây là chốt định hướng; không
+  phải duyệt kịch bản, cơ chế khoa học hoặc chất lượng của bất kỳ video cụ thể nào.
 voice:
-  address: "mình và bạn; chúng ta"
-  tone: "điềm tĩnh, tò mò, giàu hình ảnh, dễ hiểu, tôn trọng bằng chứng"
+  address: bạn; mình khi tự trào
+  tone: tò mò, gần gũi, hài thông minh, kháy nhẹ tình huống; không chế giễu khán giả
 structure:
-  - "Mở bằng một cảnh cụ thể có thể hình dung, dẫn dần đến câu hỏi trung tâm; không ép hook phải là câu hỏi ở giây đầu."
-  - "Đi theo các manh mối có tên/người/địa điểm cụ thể; giải thích cơ chế bằng ví dụ đời thường."
-  - "Chuyển ý bằng câu hỏi tự nhiên; mỗi phần trả lời một câu rồi mở câu tiếp theo."
-  - "Gài lời hứa có payoff ở đoạn sau; không cường điệu bí ẩn hay tạo thông tin giả."
-  - "Kết nối các manh mối thành bức tranh chung; kết bằng câu hỏi lựa chọn cụ thể và lời mời đăng ký nhẹ."
+- Long mở bằng một tình huống đời thường cụ thể và điều trái kỳ vọng; đặt một câu
+  hỏi trung tâm có thể trả lời.
+- 'Xác định điều đang giải thích: cảm giác, trí nhớ hay hành vi nào; phân biệt những
+  khái niệm dễ bị nhập làm một.'
+- Mỗi phần nối từ câu hỏi trước theo quan hệ nguyên nhân hoặc bằng chứng; không liệt
+  kê các sự thật rời rạc.
+- Một nhịp gồm quan sát → giải thích có nguồn → ví dụ trực quan → hệ quả; ví dụ minh
+  họa không thay thế bằng chứng.
+- 'Nêu giới hạn ngay cạnh luận điểm: tương quan, giả thuyết, thí nghiệm trên động
+  vật hoặc mẫu nhỏ phải gọi đúng tên.'
+- Kết trả lời câu hỏi mở, quay lại tình huống ban đầu với hiểu biết mới; không đưa
+  lời hứa chưa giải quyết vào CTA.
 historical_care:
-  - "Nói rõ giới hạn bằng chứng: manh mối không phải lời giải toàn bộ; phát hiện khác nhau không được nhập thành một."
-  - "Phân biệt điều quan sát được, suy luận của nhà nghiên cứu và điều chưa biết."
-  - "Không biến khoảng trống kiến thức thành bằng chứng về kho báu, siêu nhiên hay người ngoài hành tinh."
-  - "Mẫu chỉ dùng học cách kể, không dùng làm nguồn kiểm chứng các con số, niên đại hay phát hiện mới."
+- Tên trường giữ tương thích dữ liệu; tiêu chí kiểm chứng khoa học.
+- Phân biệt quan sát, kết quả nghiên cứu, diễn giải và điều chưa biết; không biến
+  tương quan thành nhân quả.
+- Không bịa cơ chế sinh học cho miếng hài; không suy từ động vật sang người hoặc từ
+  trung bình nhóm sang mọi cá nhân.
+- Không chẩn đoán khán giả, gán bệnh, phán tính cách hay củng cố định kiến từ một
+  hành vi đời thường.
+- Nguồn phải khớp luận điểm và đã được đọc; video đối thủ, ví dụ kể chuyện và mẫu
+  văn phong không là bằng chứng khoa học.
+- Tranh luận còn mở phải nêu mức chắc chắn; không dùng một bài báo để tuyên bố đã
+  có lời giải duy nhất.
 narration:
-  - "Đa số câu ngắn/vừa, thường 10–25 đơn vị tách bằng khoảng trắng; xen câu nhấn rất ngắn."
-  - "Cho phép câu dẫn cảnh dài hơn khi nhịp ngắt tự nhiên; mẫu có 4/182 câu trên 35 từ, tối đa 48."
-  - "Mỗi ý/nhịp thường xuống đoạn; điệp cấu trúc ngắn có dụng ý được phép, không coi mọi điệp nhịp là lỗi lặp."
-  - "Tên riêng, thuật ngữ cần chú giải cách đọc trong hướng dẫn thu; năm/số/viết tắt phải đọc rõ."
-length: "Giữ thời lượng project yêu cầu; không bắt mọi video dài bằng mẫu 3032 đơn vị tách khoảng trắng."
+- Thông tin làm nền → liên tưởng đời thường → miếng hài ngắn → trở lại giải thích;
+  không ép tần suất hài hoặc nhét slang.
+- Ưu tiên câu ngắn/vừa, nhịp đọc tự nhiên; xuống đoạn khi đổi ý, không cắt câu máy
+  móc theo số từ.
+- 'Ẩn dụ phải có ranh giới rõ: não không thật sự là ổ cứng, người gác cổng hoặc nhân
+  vật có ý định.'
+- Không lặp lại hook bằng nhiều ví dụ trước khi bắt đầu trả lời; mỗi đoạn phải thêm
+  thông tin hoặc đổi cách hiểu.
+- Thuật ngữ được giải nghĩa trước khi dùng tiếp; số liệu, tên riêng và viết tắt có
+  hướng dẫn đọc khi cần.
+length: Ưu tiên long ngang 16:9; thời lượng theo lượng thông tin có ích và yêu cầu
+  project. Không kéo dài để đủ phút, không coi bản 15 phút hiện có là chuẩn bắt buộc.
+editorial_handoff:
+  executor: /root/science_editorial
+  role_label: Biên tập khoa học; nhãn công việc của agent, không phải một con người
+  scope: Cập nhật hướng dẫn biên tập và tài liệu bàn giao; chưa duyệt sản phẩm
+  approval_status: direction_only_no_product_approval
+  character_id: stick-orange

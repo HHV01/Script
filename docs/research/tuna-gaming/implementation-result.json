@@ -1,0 +1,11 @@
+{
+  "executor": "current Codex assistant",
+  "reference_observations": "observations.json",
+  "implementation_guide": "../../LAYER-MOTION.md",
+  "episode_preview": "../../../projects/tap-07-cao-thu-van-di-sai/video/motion-preview-khong-tieng.mp4",
+  "evidence": "../../../projects/tap-07-cao-thu-van-di-sai/video/motion-preview-check.json",
+  "tests_passed": 52,
+  "reference_audio_heard": false,
+  "episode7_voice_synthesized": false,
+  "limits": "Preview and software changes only; no claim of full production or matching reference quality."
+}

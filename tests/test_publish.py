@@ -42,8 +42,8 @@ class PublishTests(unittest.TestCase):
                 p.script.write_text('Nội dung mới', encoding='utf-8')
                 s8_publish.run(p)
                 self.assertEqual(complete.call_count, 2)
-                self.assertEqual(json.loads((d/'publish.json').read_text())['niche'], 'Lịch sử')
-                self.assertIn('Tags:', (d/'publish.txt').read_text())
+                self.assertEqual(json.loads((d/'publish.json').read_text(encoding='utf-8'))['niche'], 'Lịch sử')
+                self.assertIn('Tags:', (d/'publish.txt').read_text(encoding='utf-8'))
 
     def test_youtube_disabled_and_missing_key(self):
         p = SimpleNamespace(settings={'youtube': {'research': False}})

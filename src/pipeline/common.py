@@ -20,6 +20,11 @@ ROOT = Path(__file__).resolve().parents[2]
 CONFIG = ROOT / "config"
 PROJECTS = ROOT / "projects"
 
+# Cho phép dùng FFmpeg đi kèm trong tools/ffmpeg/bin mà không cần cài vào PATH hệ thống.
+_bundled_ffmpeg = ROOT / "tools" / "ffmpeg" / "bin"
+if _bundled_ffmpeg.is_dir():
+    os.environ["PATH"] = str(_bundled_ffmpeg) + os.pathsep + os.environ.get("PATH", "")
+
 
 def load_env():
     env = ROOT / ".env"
@@ -52,6 +57,7 @@ class Project:
         self.cfg = load_yaml(self.dir / "project.yaml")
         self.settings = deep_merge(load_yaml(CONFIG / "settings.yaml"), self.cfg.get("settings"))
         self.style = load_yaml(CONFIG / "style.yaml")
+        self._nested = (self.dir / "kich-ban").is_dir() and (self.dir / "video").is_dir() and (self.dir / "hinh").is_dir()
         self.characters = {}
         for cid in self.cfg.get("characters", []):
             p = CONFIG / "characters" / f"{cid}.yaml"
@@ -61,30 +67,69 @@ class Project:
 
     # --- đường dẫn các file của project ---
     @property
-    def script(self): return self.dir / "script.txt"
+    def script(self):
+        if self._nested:
+            p = self.dir / "kich-ban" / "script.txt"
+            if p.exists() or not (self.dir / 'script.txt').exists(): return p
+        return self.dir / "script.txt"
     @property
-    def words(self): return self.dir / "voice.words.json"
+    def words(self):
+        if self._nested:
+            p = self.dir / "video" / "voice.words.json"
+            if p.exists() or not (self.dir / 'voice.words.json').exists(): return p
+        return self.dir / "voice.words.json"
     @property
-    def scenes_file(self): return self.dir / "scenes.json"
+    def scenes_file(self):
+        if self._nested:
+            p = self.dir / "kich-ban" / "scenes-plan.json"
+            if p.exists() or not (self.dir / 'scenes.json').exists(): return p
+        return self.dir / "scenes.json"
     @property
-    def images_dir(self): return self.dir / "images"
+    def images_dir(self):
+        if self._nested:
+            return self.dir / "hinh"
+        return self.dir / "images"
     @property
-    def srt(self): return self.dir / "subtitles.srt"
+    def srt(self):
+        if self._nested:
+            for name in ("subtitles-render.srt", "subtitles.srt"):
+                p = self.dir / "video" / name
+                if p.exists(): return p
+            if not (self.dir / 'subtitles.srt').exists():
+                return self.dir / 'video' / 'subtitles.srt'
+        return self.dir / "subtitles.srt"
     @property
-    def final(self): return self.dir / "final.mp4"
+    def final(self):
+        if self._nested:
+            p = self.dir / "video" / "final.mp4"
+            if p.exists() or not (self.dir / 'final.mp4').exists(): return p
+        return self.dir / "final.mp4"
 
     @property
     def voice(self):
-        for ext in ("mp3", "wav", "m4a", "ogg"):
-            p = self.dir / f"voice.{ext}"
-            if p.exists():
-                return p
+        search_dirs = [self.dir / "video", self.dir] if self._nested else [self.dir]
+        for d in search_dirs:
+            for ext in ("mp3", "wav", "m4a", "ogg"):
+                p = d / f"voice.{ext}"
+                if p.exists():
+                    return p
         return None
 
     def load_scenes(self):
         if not self.scenes_file.exists():
-            raise SystemExit("Chưa có scenes.json — chạy bước 'scenes' trước.")
-        return json.loads(self.scenes_file.read_text(encoding="utf-8"))
+            raise SystemExit("Chua co scenes.json/scenes-plan.json.")
+        data = json.loads(self.scenes_file.read_text(encoding="utf-8"))
+        if isinstance(data, dict) and "scenes" in data:
+            out = []
+            for s in data["scenes"]:
+                item = dict(s)
+                if "narration" in item and "text" not in item:
+                    item["text"] = item["narration"]
+                out.append(item)
+            return out
+        if isinstance(data, dict):
+            return data.get("scenes", [])
+        return data
 
     def save_scenes(self, scenes):
         tmp = self.scenes_file.with_suffix(".tmp")
@@ -92,9 +137,11 @@ class Project:
         tmp.replace(self.scenes_file)  # ghi nguyên tử, tránh hỏng file khi bị ngắt giữa chừng
 
     def image_path(self, scene):
-        """Đường dẫn ảnh đã tải của cảnh (None nếu chưa có)."""
-        for p in self.images_dir.glob(f"{scene['id']:03d}.*"):
-            return p
+        sid = scene["id"]
+        for pattern in (f"{sid:03d}.*", f"canh-{sid:03d}.*"):
+            for p in self.images_dir.glob(pattern):
+                if p.suffix.lower() in (".png", ".jpg", ".webp"):
+                    return p
         return None
 
 

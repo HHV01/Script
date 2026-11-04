@@ -1,6 +1,5 @@
 """Bước 6 — KIỂM TRA số ảnh khớp số prompt, chỉ khi khớp mới tải nguyên project về images/."""
 from .common import need
-from .local_animation import is_local_scene
 from .s5_generate import connect
 
 
@@ -25,9 +24,18 @@ def check(scenes, live_keys):
 
 def run(project, force=False):
     all_scenes = project.load_scenes()
-    scenes = [s for s in all_scenes if not is_local_scene(s)]
+    scenes = all_scenes
     if not scenes:
-        print('[collect] Cảnh animation cục bộ không cần tải ảnh.')
+        print('[collect] Không có cảnh cần tải ảnh.')
+        return
+    if all(project.image_path(s) and project.image_path(s).stat().st_size > 1024 for s in scenes):
+        from PIL import Image
+        for scene in scenes:
+            with Image.open(project.image_path(scene)) as image:
+                image.verify()
+            scene['image'] = project.image_path(scene).name
+        project.save_scenes(all_scenes)
+        print(f'[collect] Đã kiểm tra đủ {len(scenes)} ảnh lưu cục bộ; không cần mở lại Flow.')
         return
     b = connect(project)
     live = b.call("list_tiles", timeout=60)["keys"]

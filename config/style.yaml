@@ -1,5 +1,13 @@
-# Phong cách ảnh dùng chung cho toàn bộ cảnh. Chỉnh theo kênh của bạn.
-aspect_ratio: "16:9"
-prefix: "Flat vector illustration, clean bold outlines, warm muted palette, cinematic composition"
-suffix: "no text, no captions, no watermark"
-avoid: "photorealism, blurry, extra fingers, distorted face, text overlay"
+aspect_ratio: '16:9'
+prefix: Original hand-drawn stick-figure explainer sketched with a single charcoal
+  pen, loose organic lines with slight wobble, warm cream paper background, teal and
+  coral wash accents, character fills 60-70 percent of frame height, large expressive
+  readable poses through simple body language, simple object props, sparse contextual
+  background, one clear idea per frame, flat wash colors, strong silhouette; horizontal
+  16:9 composition, wide landscape framing with breathing room on both sides, keep
+  focal action and faces inside the central safe area
+suffix: no text, no captions, no watermark; show the relevant object or action clearly,
+  contextual setting appropriate to the stated place and period
+avoid: realistic human presenter, hair and round glasses, copied franchise characters,
+  visual clutter, photorealistic fake evidence, misleading diagrams, text overlay,
+  logos, digital clean lines, perfect geometry, 3D render

@@ -27,7 +27,9 @@ def plan():
             'briefs': [{'topic': 'Hệ thống dẫn nước La Mã đã thay đổi đô thị ra sao?', 'niche': 'Kỹ thuật các nền văn minh',
                         'category': 'civilizations', 'hook': 'Một thành phố cổ lấy nước như thế nào?',
                         'rationale': 'Video b là tín hiệu tham khảo cùng lĩnh vực, không chứng minh tăng view.',
-                        'outline': 'Bối cảnh, kỹ thuật, đời sống, dấu vết còn lại.', 'evidence_video_ids': ['b']}]}
+                        'outline': 'Bối cảnh, kỹ thuật, đời sống, dấu vết còn lại.', 'evidence_video_ids': ['b'],
+                        'research_sources': [{'title': 'Fixture source', 'url': 'https://example.org/source',
+                                              'summary': 'Test-only verified source fixture.'}]}]}
 
 
 class ManagerTests(unittest.TestCase):
@@ -50,6 +52,38 @@ class ManagerTests(unittest.TestCase):
     def tearDown(self):
         self.manager.close()
         self.tmp.cleanup()
+
+    def test_campaign_deadline_prevents_dispatch(self):
+        self.manager.settings.update(enabled=True, auto_dispatch=True,
+            campaign={'enabled': True, 'ends_at': 1, 'target_subscribers': 20})
+        self.manager.state['pending_brief'] = 'queued'
+        self.manager.tick()
+        self.assertFalse(self.manager.settings['enabled'])
+        self.assertIsNone(self.manager.state['pending_brief'])
+        self.studio.start.assert_not_called()
+
+    def test_single_brief_object_and_outline_list_are_normalized(self):
+        value = plan()
+        value['briefs'] = value['briefs'][0]
+        value['briefs']['outline'] = ['Bối cảnh', 'Bằng chứng', 'Kết luận']
+        normalized = validate_plan(value, [], {'b'})
+        self.assertEqual(len(normalized['briefs']), 1)
+        self.assertEqual(normalized['briefs'][0]['outline'], 'Bối cảnh\nBằng chứng\nKết luận')
+
+    def test_missing_sources_holds_handoff_without_starting_worker(self):
+        self.analyze()
+        brief = self.manager.state['report']['briefs'][0]
+        brief.pop('research_sources', None)
+        self.manager.delegate(brief['id'])
+        self.studio.start.assert_not_called()
+        self.assertEqual(self.manager.state['pending_brief'], brief['id'])
+
+    def test_campaign_target_stops_new_work(self):
+        self.manager.settings.update(enabled=True, auto_dispatch=True,
+            campaign={'enabled': True, 'ends_at': 9999999999, 'target_subscribers': 20})
+        self.manager.state['report'] = dataset()
+        self.assertFalse(self.manager.campaign_active())
+        self.assertEqual(self.manager.state['campaign_result'], 'target_reached')
 
     def analyze(self):
         with patch.object(self.manager.client, 'collect', return_value=dataset()), \
@@ -83,7 +117,7 @@ class ManagerTests(unittest.TestCase):
         self.assertEqual(self.studio.start.call_count,1)
         self.assertEqual(len(self.created),1)
         import yaml
-        cfg=yaml.safe_load((self.root/'projects'/name/'project.yaml').read_text())
+        cfg=yaml.safe_load((self.root/'projects'/name/'project.yaml').read_text(encoding='utf-8'))
         self.assertEqual(cfg['production_brief']['outline'],brief['outline'])
         self.assertEqual(cfg['production_brief']['source_report'],report['id'])
         self.assertTrue((self.manager.directory/'report.md').exists())
@@ -139,7 +173,11 @@ class ChannelTests(unittest.TestCase):
             client=ChannelClient(directory)
             with self.assertRaises(ChannelError):
                 client.finish_authorization('code','wrong-state')
-            self.assertTrue(all(scope.endswith('readonly') for scope in SCOPES))
+            self.assertEqual(set(SCOPES), {
+                'https://www.googleapis.com/auth/youtube.readonly',
+                'https://www.googleapis.com/auth/yt-analytics.readonly',
+                'https://www.googleapis.com/auth/youtube.upload',
+                'https://www.googleapis.com/auth/youtube'})
             client_file=Path(directory)/'client.json'
             client_file.write_text(json.dumps({'installed': {'client_id':'test.apps.googleusercontent.com',
                 'client_secret':'test-not-real','auth_uri':'https://accounts.google.com/o/oauth2/auth',
@@ -163,7 +201,8 @@ class ChannelTests(unittest.TestCase):
             client.pending={'flow':flow,'state':'expected','expires':time.time()+30}
             client.finish_authorization('authorized-code','expected')
             flow.fetch_token.assert_called_once_with(code='authorized-code')
-            self.assertEqual(stat.S_IMODE(client.token_path.stat().st_mode),0o600)
+            if os.name != 'nt':
+                self.assertEqual(stat.S_IMODE(client.token_path.stat().st_mode),0o600)
             self.assertNotIn('not-real',json.dumps(client.readiness()))
             client.disconnect()
             self.assertFalse(client.token_path.exists())

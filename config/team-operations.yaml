@@ -1,0 +1,92 @@
+version: 4
+principles:
+- 'Tuân thủ AGENTS.md: mọi tuyên bố kết quả phải có bằng chứng, nêu đúng người/model/công
+  cụ và phạm vi kiểm tra; không tự chứng nhận.'
+- Vai trò trong pipeline không phải bằng chứng có nhiều người duyệt độc lập. Báo đúng
+  ai thực sự làm, đã xem gì và phần chưa làm.
+- Không tuyên bố đã xem video từ tiêu đề, thumbnail, số liệu API hoặc transcript.
+- Không tăng số lượng đăng để thay thế chất lượng; không hứa kết quả tăng trưởng.
+roles:
+  An:
+    owns: Định hướng khán giả, nghiên cứu thị trường, chọn thử nghiệm và quyết định
+      phát hành.
+    deliverable: Brief một câu hỏi gần bản thân, nhu cầu có bằng chứng hoặc ghi giả
+      thuyết, nguồn nghiên cứu, outline có payoff, kế hoạch đo sau đăng; điều phối
+      agent thật và chịu trách nhiệm quyết định.
+    forbidden: Gọi snapshot tìm kiếm là xu hướng; đổi niche liên tục; báo đã vận hành
+      khi chỉ mới khởi chạy.
+  Minh:
+    owns: Kịch bản, giọng đọc đã khóa và storyboard theo từng ý lời nói; sản xuất
+      sau khi bàn giao timing đạt.
+    deliverable: Giọng đọc cùng voice.timing.json ghi đúng nguồn mốc. Storyboard từng
+      câu/mệnh đề, không gom nhiều ý để đủ8–12giây. Mỗi cảnh có câu neo, chủ thể/hành
+      động và mốc cắt hình. Sửa voice phải làm mới storyboard, không tái dùng mốc
+      cũ.
+    forbidden: Dùng zoom ảnh tĩnh thay diễn xuất; tái dùng mẫu chủ kênh đã chê; đăng
+      mẫu thử như thành phẩm.
+  Mai:
+    owns: Kiểm chứng thông tin và lời kể.
+    deliverable: Bảng claim→nguồn gốc đã đọc→phạm vi mẫu→mức chắc chắn; phân biệt
+      tương quan/nhân quả, thí nghiệm người/động vật, giả thuyết/kết luận; đối chiếu
+      lời đọc thật khi có công cụ.
+    forbidden: Dùng video đối thủ làm nguồn khoa học; bịa dẫn chứng; tự duyệt khi
+      chưa kiểm tra.
+  Gạo:
+    owns: Kiểm duyệt trải nghiệm xem và kỹ thuật; có quyền chặn đăng.
+    deliverable: Kiểm riêng đồng bộ ý–hình theo lời đọc, kiểm cảnh mở/đổi khái niệm/cơ
+      chế/kết; ghi lỗi hình đến trước/sau bao nhiêu giây và bản sửa. Cổng timing tự
+      động chỉ kiểm hash/mốc kế hoạch, không thay việc xem/nghe thật. Phiếu QA theo
+      SHA256 bản cuối; thiếu kiểm tra thì chặn.
+    forbidden: Chấm độ hấp dẫn bằng fps/resolution; tự điền đã xem; cho qua vì deadline.
+handoffs:
+- Không giao ảnh theo kịch bản ước lượng phút khi voice chưa khóa.
+- Sản xuất ảnh sau storyboard theo giọng; mẫu3cảnh phải có mở đầu, đổi ý và giải thích
+  cơ chế.
+- Thay script/voice/timing phải vô hiệu bàn giao cũ bằng hash; không tự ghi chứng
+  nhận mới.
+- Gạo là nhãn công việc; executor thật phải nhận và trả phiếu sửa với timestamp.
+- Chỉ dựng khi cổng timing đạt cấu trúc; chỉ phát hành khi QA hình/tiếng/phụ đề thật
+  đạt.
+- Điều phối chịu trách nhiệm nhận sản phẩm, trả sửa và báo giới hạn, không để chủ
+  repo làm người kiểm duyệt thường nhật.
+direction_source: config/channel-direction.yaml
+current_focus: Khoa học cơ thể, cảm giác, trí nhớ và hành vi đời thường; hài thông
+  minh kháy tình huống; stick-orange, nền kem, ngang16:9. Chủ repo đã chốt hình thức;
+  không thiết kế lại thường nhật.
+dispatch_policy:
+  identity: Tên An/Minh/Mai/Gạo là nhãn trách nhiệm; mỗi task ghi agent ID/executor
+    thật.
+  completion: Chỉ hoàn thành khi nhận sản phẩm và kiểm phạm vi; gửi task không có
+    nghĩa đang sản xuất hoặc đã đạt.
+  legacy: Không tiếp tục bút bi, không đăng lại QWERTY/tủ lạnh/memory JYvoaZ7fl64.
+  approval: Chủ repo chốt hình thức, không phải blanket approved cho mọi tập.
+workflow:
+- step: research
+  executor_required: true
+  output: Claim→nguồn→giới hạn; agent nghiên cứu thật trả artifact, không để model
+    tự ký vai khác.
+- step: script_lock
+  output: Kịch bản một câu hỏi, chuyển ý có dấu; người điều phối đọc báo cáo trước
+    giao thu.
+- step: voice_lock
+  output: Audio hash + voice.timing.json; phân biệt biên clip, ASR ước lượng và nội
+    suy từ.
+- step: storyboard_lock
+  output: scenes.source.json + storyboard-timing.json; mỗi hình bám câu/mệnh đề đang
+    đọc; không nhồi nhiều ý trong một ảnh.
+- step: sync_gate
+  output: Cổng render kiểm hash, phủ lời kể, mốc từ/cảnh, câu neo và mốc cắt thật.
+    Sai nguồn hoặc thiếu kế hoạch thì chặn trước dựng.
+- step: av_review
+  output: Agent/công cụ có khả năng thực tế xem/nghe đúng bản, ghi timestamp lỗi.
+    Root kiểm kết quả và quyết định; không gọi metadata là duyệt đồng bộ.
+
+file_organization:
+  canonical_root: projects/tap-XX-ten-chu-de
+  images: hinh
+  audio_video_subtitles: video
+  scripts_research_storyboard_metadata: kich-ban
+  root_files: [project.yaml, README.md]
+  single_canonical_copy: true
+  applies_to: new_episodes
+  compatibility: Check pipeline paths before production; do not create duplicate root-level assets.

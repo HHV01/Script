@@ -1,0 +1,41 @@
+{
+  "date": "2026-11-04",
+  "executor": "Browser Use read-only tool; result retrieved by current Codex assistant",
+  "run_id": "0142431d-30f7-46d5-ab3f-1a90e531eea3",
+  "status": "completed",
+  "samples": [
+    {
+      "url": "https://www.youtube.com/watch?v=6tYB05v2KGo",
+      "range_seconds": [
+        0,
+        50
+      ],
+      "last_sample": 49.8,
+      "observations": [
+        "Mouth/hand pose changes; alarm-clock photo; hard cut to bed scene.",
+        "Head drops onto table; title reveal; prop/cup changes.",
+        "Layered photos/backgrounds and character reactions; shrinking bubble seen."
+      ]
+    },
+    {
+      "url": "https://www.youtube.com/watch?v=5lZt4qGnr8A",
+      "range_seconds": [
+        0,
+        40
+      ],
+      "last_sample": 39.8,
+      "observations": [
+        "Rapid hard cuts between poses, sign, screenshot and character.",
+        "Chart appears before narrator reaction beside it.",
+        "Facial states/props change, then cut to family meal with TV."
+      ]
+    }
+  ],
+  "audio_listening_verified": false,
+  "transcript_scope": "Visible auto-captions only; not hearing verification",
+  "limits": [
+    "Current assistant received tool visual report, did not personally watch those excerpts.",
+    "No full-video or audio quality review.",
+    "No claims about exact production software, CTR or retention."
+  ]
+}

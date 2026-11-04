@@ -1,9 +1,11 @@
-# Sao chép thư mục này thành projects/<tên> (hoặc dùng: python run.py new <tên>)
-topic: "Điền chủ đề video ở đây"
-niche: "Lịch sử và dấu vết văn minh: sự kiện, nhân vật, đế chế và bài học từ quá khứ"
-audience: "Người xem Việt Nam yêu thích lịch sử, khảo cổ và các nền văn minh"
-minutes: 8                # độ dài mục tiêu (phút) cho bước viết kịch bản
-characters: [tich]        # id file trong config/characters/
-flow_url: ""              # URL project Google Flow đã tạo sẵn (để trống nếu tự mở tay)
-# settings:               # (tuỳ chọn) ghi đè config/settings.yaml cho riêng project
-#   voice: {vieneu: {voice: "Mai Anh"}}
+topic: Điền chủ đề video ở đây
+niche: 'Khoa học về chính bạn: cơ thể, cảm giác, trí nhớ và hành vi đời thường'
+audience: Người xem Việt Nam thích kiến thức gần bản thân; nhân khẩu học chưa xác
+  minh
+minutes: 15
+characters:
+- stick-orange
+flow_url: ''
+settings:
+  render:
+    require_object_motion: true

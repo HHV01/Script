@@ -10,6 +10,7 @@ import sys
 import threading
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from datetime import datetime
 from pathlib import Path
 from urllib.parse import urlparse, unquote, parse_qs
 
@@ -20,7 +21,7 @@ from pipeline.script_review import review_summary
 
 from pipeline.stages import STAGES as STAGE_MODULES
 STAGES = list(STAGE_MODULES)
-LABELS = ['Biên kịch', 'Duyệt kịch bản', 'Phòng thu', 'Phân cảnh', 'Mỹ thuật', 'Google Flow', 'Kiểm ảnh', 'Dựng phim', 'Xuất bản']
+LABELS = ['Biên kịch', 'Duyệt kịch bản', 'Phòng thu', 'Phân cảnh', 'Mỹ thuật', 'Google Flow', 'Kiểm ảnh', 'Dựng phim', 'Xuất bản', 'Kiểm thử']
 NAME = re.compile(r'^[\w-]{1,64}$', re.UNICODE)
 STATIC = Path(__file__).parent / 'static'
 
@@ -34,6 +35,43 @@ def project_path(name):
     return path
 
 
+def qc_summary(p):
+    """Phiếu của nhân viên kiểm thử, đọc từ publish-review.json."""
+    fallback = {'status': 'not_tested', 'tester': {'name': 'Gạo', 'role': 'Nhân viên kiểm thử'}}
+    report_path = p / 'publish-review.json'
+    if not report_path.is_file():
+        return fallback
+    try:
+        report = json.loads(report_path.read_text(encoding='utf-8'))
+    except (OSError, ValueError):
+        return fallback
+    checks = report.get('checks') or []
+    passed = sum(1 for check in checks if check.get('status') == 'pass')
+    warned = sum(1 for check in checks if check.get('status') == 'warn')
+    failed = sum(1 for check in checks if check.get('status') == 'fail')
+    stale = False
+    video = p / 'final.mp4'
+    try:
+        tested = datetime.fromisoformat(report['generated_at']).timestamp()
+        stale = video.is_file() and video.stat().st_mtime > tested + 1
+    except (KeyError, ValueError, OSError):
+        pass
+    status = 'stale' if stale else ('approved' if report.get('approved') else 'blocked')
+    parts = [f'{passed}/{len(checks)} mục đạt']
+    if warned:
+        parts.append(f'{warned} cảnh báo')
+    if failed:
+        parts.append(f'{failed} chưa đạt')
+    if stale:
+        parts.append('video đã thay đổi sau lần kiểm')
+    return {'status': status, 'score': report.get('score'),
+            'tester': report.get('tester') or fallback['tester'],
+            'tested_at': report.get('generated_at'), 'summary': ', '.join(parts),
+            'checks': [{'label': c.get('label'), 'status': c.get('status'), 'detail': c.get('detail')}
+                       for c in checks],
+            'blockers': report.get('blockers') or []}
+
+
 def projects():
     items = []
     for p in sorted(PROJECTS.iterdir()):
@@ -44,9 +82,9 @@ def projects():
             try:
                 cfg = load_yaml(config)
                 items.append({'name': p.name, 'topic': cfg.get('topic', p.name),
-                              'niche': cfg.get('niche', ''), 'minutes': cfg.get('minutes', 8),
+                              'niche': cfg.get('niche', ''), 'minutes': cfg.get('minutes', 15),
                               'video': (p/'final.mp4').is_file(), 'metadata': (p/'publish.json').is_file(),
-                              'review': review_summary(p)})
+                              'review': review_summary(p), 'testing': qc_summary(p)})
             except Exception:
                 items.append({'name': p.name, 'topic': 'Không đọc được project.yaml', 'invalid': True})
     return items
@@ -75,9 +113,20 @@ class Studio:
         directory = ROOT / '.studio'
         directory.mkdir(exist_ok=True)
         target = directory / 'last-run.json'
-        temp = target.with_suffix('.tmp')
-        temp.write_text(json.dumps(self.state, ensure_ascii=False), encoding='utf-8')
-        temp.replace(target)
+        # Unique scratch files and short retries tolerate Windows file-indexer locks.
+        temp = target.with_name(f'{target.name}.{secrets.token_hex(6)}.tmp')
+        try:
+            temp.write_text(json.dumps(self.state, ensure_ascii=False), encoding='utf-8')
+            for attempt in range(6):
+                try:
+                    temp.replace(target)
+                    break
+                except PermissionError:
+                    if attempt == 5:
+                        raise
+                    time.sleep(0.03 * (attempt + 1))
+        finally:
+            temp.unlink(missing_ok=True)
 
     def restore(self):
         target = ROOT / '.studio/last-run.json'
@@ -184,7 +233,7 @@ def create_project(body):
     path = project_path(body.get('name'))
     topic = str(body.get('topic', '')).strip()
     niche = str(body.get('niche', '')).strip()
-    minutes = body.get('minutes', 8)
+    minutes = body.get('minutes', 15)
     if not topic or len(topic) > 1000 or len(niche) > 1000:
         raise ValueError('Nhập chủ đề (tối đa 1000 ký tự).')
     if isinstance(minutes, bool) or not isinstance(minutes, int) or not 1 <= minutes <= 60:

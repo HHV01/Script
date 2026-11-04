@@ -1,10 +1,12 @@
 """Bước 2 — script.txt -> voice + voice.words.json (timestamp từng từ).
 
 provider "vieneu"  : đọc bằng VieNeu-TTS chạy local (pip install vieneu). Vì mỗi câu được đọc riêng nên
-                     biết CHÍNH XÁC thời điểm từng câu -> không cần whisper.
+                     biết biên ghép từng clip câu; từng từ bên trong chỉ được nội suy, không phải đo âm vị.
 provider "manual"  : bạn tự đưa script.txt qua voice AI khác, lưu thành voice.mp3; timestamp lấy bằng whisper.
 """
 import json
+import hashlib
+import subprocess
 import sys
 from pathlib import Path
 
@@ -13,6 +15,21 @@ from .s1_script import split_sentences
 from .script_review import require_approval, digest, write_json
 
 SAMPLE_RATES = {"v3turbo": 48000, "v3nano": 24000}
+
+
+def apply_tempo(audio, sample_rate, tempo=1.0):
+    """Pitch-preserving pace adjustment only; does not synthesize emotion/timbre."""
+    import numpy as np
+    need(type(tempo) in (int, float) and .9 <= tempo <= 1.1,
+         'Tempo mỗi câu phải từ 0.9 đến 1.1.')
+    if tempo == 1.0:
+        return audio
+    result = subprocess.run(['ffmpeg', '-v', 'error', '-f', 'f32le', '-ar', str(sample_rate),
+                             '-ac', '1', '-i', '-', '-af', f'atempo={tempo}',
+                             '-f', 'f32le', '-ar', str(sample_rate), '-ac', '1', '-'],
+                            input=np.asarray(audio, dtype='<f4').tobytes(), capture_output=True)
+    need(result.returncode == 0 and result.stdout, 'Không xử lý được tempo audio; giữ bản nguồn để kiểm tra.')
+    return np.frombuffer(result.stdout, dtype='<f4').copy()
 
 
 def preset_pairs(tts):
@@ -87,6 +104,29 @@ def word_timeline(sentences, durations, gap):
     return words
 
 
+
+def save_sentence_timing(project, sentences, durations, gaps):
+    """Record generated clip boundaries honestly; this is not a listening attestation."""
+    def file_hash(path):
+        with Path(path).open('rb') as stream:
+            return hashlib.file_digest(stream, 'sha256').hexdigest()
+    segments, cursor, offset = [], 0, 0.0
+    for text, duration, gap in zip(sentences, durations, gaps):
+        count = len(text.split())
+        segments.append({'text': text, 'start': round(offset, 3),
+                         'end': round(offset + duration, 3),
+                         'word_start_index': cursor, 'word_end_index': cursor + count})
+        cursor += count
+        offset += duration + gap
+    directory = project.voice.parent
+    write_json(directory / 'voice.timing.json', {
+        'executor': 'pipeline.s2_voice/VieNeu generated clip durations',
+        'timing_kind': 'sentence_boundaries_word_interpolation',
+        'script_sha256': file_hash(project.script), 'voice_sha256': file_hash(project.voice),
+        'words_sha256': file_hash(project.words), 'segments': segments,
+        'scope': 'Concatenated clip boundaries; word times are character-weight interpolation. No listening or phoneme alignment.'})
+
+
 def synth_vieneu(project, plan=None):
     import numpy as np
     try:
@@ -112,6 +152,9 @@ def synth_vieneu(project, plan=None):
     print(f"[voice] VieNeu {cfg['mode']} — đang đọc {len(sentences)} câu bằng giọng '{voice}'...")
     audios = [np.asarray(a, dtype=np.float32).reshape(-1) for a in tts.infer_batch(sentences, voice=voice)]
     need(len(audios) == len(sentences), "VieNeu trả về số đoạn audio không khớp số câu")
+    if plan:
+        audios = [apply_tempo(audio, sr, segment.get('tempo', 1.0))
+                  for audio, segment in zip(audios, plan['segments'])]
     gap = [s["pause_after"] for s in plan["segments"]] if plan else [cfg["gap_seconds"]] * len(audios)
     parts = []
     for index, a in enumerate(audios):
@@ -119,16 +162,19 @@ def synth_vieneu(project, plan=None):
         if index < len(audios)-1:
             parts.append(np.zeros(int(gap[index] * sr), dtype=np.float32))
     full = np.concatenate(parts)
-    for old in project.dir.glob("voice.*"):
+    directory = project.dir / 'video' if getattr(project, '_nested', False) else project.dir
+    directory.mkdir(exist_ok=True)
+    for old in directory.glob("voice.*"):
         old.unlink()
-    out = project.dir / "voice.wav"
+    out = directory / "voice.wav"
     tts.save(full, str(out))
     words = word_timeline(sentences, [len(a) / sr for a in audios], gap)
     expected, actual = len(full) / sr, audio_duration(out)
     need(abs(expected - actual) < 1.0,
          f"Độ dài file voice ({actual:.1f}s) lệch tính toán ({expected:.1f}s) — sai sample rate? Kiểm tra voice.vieneu.mode")
     project.words.write_text(json.dumps(words, ensure_ascii=False), encoding="utf-8")
-    print(f"[voice] ✓ {out.name} {actual:.1f}s, timestamp chính xác theo câu -> {project.words.name}")
+    save_sentence_timing(project, sentences, [len(a) / sr for a in audios], gap)
+    print(f"[voice] ✓ {out.name} {actual:.1f}s; biên clip câu đã lưu, từ nội suy -> {project.words.name}")
 
 
 def transcribe(project):

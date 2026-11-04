@@ -1,0 +1,46 @@
+positioning: Giải thích những chuyện kỳ lạ của cơ thể và hành vi con người bằng hoạt
+  hình nét vẽ, hài thông minh và kháy nhẹ.
+audience: 'Giả thuyết: người Việt trẻ thích kiến thức gần bản thân và cách kể vui.
+  Chưa có dữ liệu xác nhận nhân khẩu học.'
+pillars:
+- Cảm giác và phản ứng cơ thể thường gặp
+- Trí nhớ, chú ý và những hành vi đời thường
+- Kiến thức khoa học có nguồn, kể qua một tình huống gần gũi
+narrator:
+  tone: Tò mò, láu nhẹ, dí dỏm và tự trào; kháy tình huống, không chế giễu khán giả.
+  hook: Một tình huống ai cũng có thể gặp, một nghịch lý và câu hỏi cụ thể.
+  humor: Thông tin làm nền → liên tưởng đời thường → miếng hài ngắn → quay lại giải
+    thích. Không ép tần suất hoặc nhét slang.
+  avoid: Không bịa cơ chế để gây cười; không gán bệnh hoặc chẩn đoán; không sao chép
+    câu chữ đối thủ; không khẳng định hài chắc tăng view.
+visual_direction: 'Dùng nhân vật đã cấu hình tại config/characters/stick-orange.yaml:
+  người que nét bút than hơi lệch tự nhiên trên nền giấy kem, đầu tròn trắng ngà,
+  hai mắt chấm tròn lớn, thân oval cam-nâu, tay chân nét mảnh, dấu vuông san hô ngực
+  trái. Nhân vật lớn, biểu cảm và tự trào nhẹ. Không tự quay về áo tím hoặc thiết
+  kế lại khi chưa có yêu cầu.'
+production: Mỗi video khoảng15phút theo yêu cầu chủ repo. Kịch bản phải đủ chiều sâu,
+  không kéo thời gian bằng lặp ý hoặc giữ ảnh. Thời lượng thực kiểm sau thu/dựng;
+  khung16:9, stick-orange. Bản thử ngắn không thay video hoàn chỉnh.
+evidence: Nguồn nghiên cứu gốc hoặc cơ quan khoa học chuyên môn đã đọc, khớp luận
+  điểm. Nêu mẫu, giới hạn và mức chắc chắn; video đối thủ không là nguồn sự thật.
+character_id: stick-orange
+setting: Bàn làm việc, căn bếp, góc học tập hoặc không gian minh họa kem tối giản;
+  một đạo cụ trung tâm. Thay bối cảnh theo cơ chế cần giải thích, không tạo thế giới
+  kỳ ảo vô cớ.
+success_measure: Mục tiêu tổng 20 đăng ký theo hạn chiến dịch; đo đăng ký tăng ròng
+  theo video nếu API hỗ trợ, so sánh tỷ lệ chọn xem và retention khi có dữ liệu. Không
+  cam kết kết quả từ phong cách hình.
+research_gate: Phải có research_sources đã được đọc và kiểm tra phù hợp trước khi
+  giao Minh. Thiếu nguồn thì để chờ nghiên cứu, không chạy vòng viết/sửa bằng API.
+decision_status: Chủ repo ngày30/10/2026 chốt niche khoa học về chính bạn, giọng kể,
+  bối cảnh, nhân vật và hình thức hình ảnh hiện tại; yêu cầu giao lại agent. Đây là
+  duyệt định hướng hình thức, không thay chứng nhận chất lượng từng video. Ít cạnh
+  tranh chưa được chứng minh.
+owner_approval:
+  scope:
+  - niche
+  - setting
+  - stick-orange character
+  - visual direction
+  date: '2026-10-30'
+  per_video_quality_approval: false

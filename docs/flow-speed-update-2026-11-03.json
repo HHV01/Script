@@ -1,0 +1,46 @@
+{
+  "date": "2026-11-03",
+  "executor": "assistant hien tai (Codex)",
+  "scope": "Giam cho phu trong bo dieu khien Google Flow; khong gui prompt that",
+  "changes": [
+    "Bo sleep 3s va diagnostic bat buoc sau submit",
+    "Gallery poll 250ms, stable 1500ms, doi anh decode thay placeholder",
+    "Cooldown 1-2s mac dinh chi giua submit moi, tru thoi gian download",
+    "Luu elapsed_seconds/operation; ledger tap moi trong hinh, doc fallback ledger cu"
+  ],
+  "checks": {
+    "test_flow_resume": "10 passed",
+    "test_flow_connection": "7 passed",
+    "test_flow_cli": "6 passed",
+    "compileall": "passed",
+    "git_diff_check": "passed; existing .gitignore CRLF warning",
+    "test_flow_playwright": "Follow-up: 2 passed in 5.993s outside sandbox; intercepted fixture, not Google generation"
+  },
+  "limitations": [
+    "Chua benchmark Google Flow that",
+    "Chua xac minh toc do gen server",
+    "Van submit tuan tu de tranh gan nham canh",
+    "Khong co danh gia doc lap"
+  ],
+  "production_generation": false,
+  "owner_constraint": "Keep image/scene count and locked narration/timings; no merging or extending shots to reduce generation.",
+  "followup_changes": [
+    "Reject duplicate scene IDs before opening browser",
+    "Reject one tile assigned to different scenes; do not silently reuse imagery",
+    "Separate submit/wait, download/verify and cooldown timings"
+  ],
+  "followup_checks": {
+    "offline_flow_scene_timeline_tests": {
+      "passed": 39,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "browser_fixture_tests": {
+      "passed": 2,
+      "seconds": 6.895,
+      "scope": "Intercepted fixture only"
+    },
+    "116_scene_regression": "116 distinct tiles/files; original IDs, prompts, narration, start/end and word indices preserved exactly"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "executor": "/root",
+  "actual_agents": [
+    "/root/flow_connection",
+    "/root/flow_resume",
+    "/root/flow_onboarding_docs"
+  ],
+  "features": [
+    "START.cmd menu",
+    "doctor offline JSON",
+    "flow open/check/generate-one",
+    "dedicated persistent profile with project URL save",
+    "browser auto-discovery",
+    "bounded actionable connection failures",
+    "resume local images/known tiles without new generation",
+    "durable unknown-submit guard",
+    "explicit --upload only",
+    "AGENTS and AI-START-HERE entry points"
+  ],
+  "validation": {
+    "tests_run": 53,
+    "passed": 52,
+    "skipped": 1,
+    "failed": 0,
+    "browser_fixture": "installed Chrome headless, all network routes intercepted; generated fixture image then collected",
+    "live_google_flow": "not tested",
+    "doctor": "ready_locally true, project Flow URL missing, account unknown"
+  },
+  "limits": [
+    "Google login may expire or request verification",
+    "Flow UI can change; selector readiness not proof of generation quota",
+    "Other AI must use configured interpreter and preserve profile/keys",
+    "No new video/topic production or upload performed"
+  ]
+}

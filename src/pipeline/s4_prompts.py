@@ -1,7 +1,6 @@
 """Bước 4 — mỗi cảnh -> image_prompt hoàn chỉnh (style + ngoại hình nhân vật cố định + nội dung cảnh)."""
 from . import llm
 from .common import CONFIG, need
-from .local_animation import is_local_scene
 from .branding import contains_brand
 
 
@@ -25,7 +24,8 @@ def _ask(project, batch):
     prompt = template.format(
         style=project.style["prefix"], characters=_characters_text(project.characters),
         topic=project.cfg["topic"],
-        scenes="\n".join(f'{s["id"]}. {s["text"]}' for s in batch))
+        scenes="\n".join(f'{s["id"]}. [{s.get("start", 0):.3f}–{s.get("end", 0):.3f}s] '
+                         f'EXACT CURRENT NARRATION: {s["text"]}' for s in batch))
     return llm.extract_json(llm.complete(project.settings["llm"]["model"], prompt))
 
 
@@ -42,10 +42,9 @@ def validate(batch, result):
 
 def run(project, force=False):
     scenes = project.load_scenes()
-    image_scenes = [s for s in scenes if not is_local_scene(s)]
-    todo = [s for s in image_scenes if force or not s.get("image_prompt")]
+    todo = [s for s in scenes if force or not s.get("image_prompt")]
     if not todo:
-        print("[prompts] không có cảnh cần gọi LLM (animation cục bộ hoặc prompt đã có) — bỏ qua")
+        print("[prompts] không có cảnh cần gọi LLM (prompt đã có) — bỏ qua")
         return
     size = project.settings["prompts"]["batch_size"]
     for i in range(0, len(todo), size):
@@ -65,8 +64,8 @@ def run(project, force=False):
             s["image_prompt"] = compose(project.style, project.characters, r["scene_desc"], s["characters"])
         project.save_scenes(scenes)
         print(f"[prompts] {min(i + size, len(todo))}/{len(todo)}")
-    missing = [s["id"] for s in image_scenes if not s.get("image_prompt")]
+    missing = [s["id"] for s in scenes if not s.get("image_prompt")]
     need(not missing, f"Còn cảnh chưa có prompt: {missing}")
     (project.dir / "prompts.txt").write_text(
-        "\n".join(f'{s["id"]:03d}\t{s["image_prompt"]}' for s in image_scenes), encoding="utf-8")
+        "\n".join(f'{s["id"]:03d}\t{s["image_prompt"]}' for s in scenes), encoding="utf-8")
     print(f"[prompts] đủ {len(scenes)}/{len(scenes)} prompt -> prompts.txt (để bạn đọc lại)")

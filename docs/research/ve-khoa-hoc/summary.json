@@ -1,0 +1,24 @@
+{
+  "snapshot_date_local": "2026-11-04",
+  "channel_handle": "@VeKhoaHoc",
+  "channel_stats": {
+    "viewCount": "248978",
+    "subscriberCount": "564",
+    "hiddenSubscriberCount": false,
+    "videoCount": "30"
+  },
+  "sample_videos": 30,
+  "sum_sample_video_views": 271266,
+  "median_sample_views": 1789.5,
+  "chess_videos": 6,
+  "chess_views": 234471,
+  "chess_share_percent": 86.44,
+  "top_two_share_percent": 73.39,
+  "limitations": [
+    "Channel aggregate view count differs from summed per-video counters in same request session; do not equate those totals.",
+    "One snapshot, not growth/velocity.",
+    "Different publish ages and durations; no inference that recent low-view video failed.",
+    "No CTR, impressions, retention, referral paths, advertising or subscriber conversion.",
+    "Comment sample is relevance-ranked; author replies and objections included, not representative."
+  ]
+}

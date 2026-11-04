@@ -42,10 +42,37 @@ class VieneuStep(unittest.TestCase):
         words = json.loads(self.p.words.read_text(encoding="utf-8"))
         self.assertEqual(" ".join(w["w"] for w in words).split(), self.p.script.read_text(encoding="utf-8").split())
         self.assertTrue(all(a["end"] <= b["start"] + 1e-6 for a, b in zip(words, words[1:])))   # tăng dần
+        timing = json.loads((self.p.voice.parent/'voice.timing.json').read_text(encoding='utf-8'))
+        self.assertEqual(self.p.voice.parent, self.p.dir/'video')
+        self.assertFalse((self.p.dir/'voice.wav').exists())
+        self.assertEqual(timing['timing_kind'], 'sentence_boundaries_word_interpolation')
+        self.assertEqual(timing['segments'][-1]['word_end_index'], len(words))
+        self.assertNotIn('measured', timing['timing_kind'])
         total = audio_duration(self.p.voice)
         self.assertAlmostEqual(words[-1]["end"], total, delta=0.05)                              # khớp độ dài file
         scenes = s3_scenes.make_scenes(self.p.script.read_text(encoding="utf-8"), words, total, 1, 4)
         self.assertEqual(scenes[-1]["end"], round(total, 3))
+
+    def test_generated_sentence_timing_survives_agent_handoff_gate(self):
+        import hashlib
+        from pipeline.timeline_review import inspect
+        s2_voice.run(self.p)
+        s3_scenes.run(self.p)
+        scenes = self.p.load_scenes()
+        def sha(path):
+            with path.open('rb') as stream:
+                return hashlib.file_digest(stream, 'sha256').hexdigest()
+        manifest = {'executor': 'test fixture, not production approval',
+                    'script_sha256': sha(self.p.script), 'voice_sha256': sha(self.p.voice),
+                    'scenes_sha256': sha(self.p.scenes_file), 'beats': [
+                        {'scene_id': scene['id'], 'anchor_text': scene['text'],
+                         'visual_subject': 'test figure', 'visual_action': 'test action',
+                         'at_seconds': scene['start'], 'visual_at_seconds': scene['start']}
+                        for scene in scenes]}
+        (self.p.dir/'storyboard-timing.json').write_text(json.dumps(manifest), encoding='utf-8')
+        result = inspect(self.p)
+        self.assertTrue(result['approved'], result['blockers'])
+        self.assertIn('interpolated', result['evidence']['timing_precision'])
 
     def test_second_run_is_skipped(self):
         s2_voice.run(self.p)

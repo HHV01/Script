@@ -1,0 +1,28 @@
+{
+  "executor": "/root",
+  "owner_approval_scope": [
+    "niche",
+    "setting",
+    "character",
+    "visual direction"
+  ],
+  "per_video_qa_approved": false,
+  "tasks": [
+    {
+      "agent": "/root/science_editorial",
+      "deliverables": [
+        "config/editorial/profile.yaml",
+        "docs/science-editorial-handoff.md"
+      ],
+      "status": "returned_and_read_by_root"
+    },
+    {
+      "agent": "/root/science_quality_handoff",
+      "deliverables": [
+        "docs/science-quality-handoff.md"
+      ],
+      "status": "returned_and_read_by_root"
+    }
+  ],
+  "runtime_limit": "Config updated on disk; live app reload and continuous agent workers not verified. Existing scheduler remains disabled."
+}

@@ -1,5 +1,6 @@
 """Bước 3 — script.txt + timestamp voice -> scenes.json (mỗi cảnh có start/end khớp voice)."""
 import json
+import hashlib
 import re
 from difflib import SequenceMatcher
 
@@ -77,30 +78,70 @@ def pack(units, start, end, min_s, max_s):
     return scenes
 
 
-def make_scenes(script_text, voice_words, total, min_s, max_s):
+def make_scenes(script_text, voice_words, total, min_s, max_s, strategy="semantic_sentence",
+                timing_basis="provided_word_timestamps_unverified"):
     sentences = split_sentences(script_text)
     flat = " ".join(sentences).split()
     start, end = align_words(flat, voice_words, total)
-    packed = pack(build_units(sentences, start, end, max_s), start, end, min_s, max_s)
+    units = build_units(sentences, start, end, max_s)
+    need(strategy in ("semantic_sentence", "sentence", "legacy_pack"), "scenes.strategy không hợp lệ")
+    # Do not keep an old illustration on screen merely to satisfy a minimum duration.
+    packed = pack(units, start, end, min_s, max_s) if strategy == "legacy_pack" else units
     scenes = []
     for k, p in enumerate(packed):
         s = 0.0 if k == 0 else start[p["i0"]]
-        scenes.append({"id": k + 1, "text": p["text"], "start": round(s, 3)})
+        scenes.append({"id": k + 1, "text": p["text"], "start": round(s, 3),
+                       "word_start_index": p["i0"], "word_end_index": p["i1"],
+                       "timing_basis": timing_basis})
     for k, sc in enumerate(scenes):          # cảnh nối liền nhau, không hở tiếng
         sc["end"] = round(scenes[k + 1]["start"] if k + 1 < len(scenes) else total, 3)
     return scenes
 
 
+def source_fingerprint(project):
+    """Hashes bind scene narration to its inputs; they do not certify synchronization."""
+    def file_hash(path):
+        h = hashlib.sha256()
+        with path.open("rb") as stream:
+            for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+                h.update(chunk)
+        return h.hexdigest()
+    settings = {"scenes": project.settings["scenes"], "voice": project.settings.get("voice", {})}
+    return {"version": 1, "script_sha256": file_hash(project.script),
+            "voice_sha256": file_hash(project.voice), "words_sha256": file_hash(project.words),
+            "settings_sha256": hashlib.sha256(json.dumps(settings, sort_keys=True,
+                ensure_ascii=False).encode("utf-8")).hexdigest()}
+
+
+def validate_source(project):
+    current = source_fingerprint(project)
+    try:
+        previous = json.loads((project.dir / "scenes.source.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        previous = None
+    need(previous == current,
+         "Storyboard cũ/thiếu provenance: script, voice, timestamp hoặc settings đã đổi. "
+         "Dừng để giữ prompt/ảnh hiện có; kiểm tra rồi chạy scenes --force rõ ràng để tạo lại.")
+    return current
+
+
 def run(project, force=False):
-    if project.scenes_file.exists() and not force:
-        print("[scenes] đã có scenes.json — bỏ qua (--force sẽ XÓA prompt/ảnh đã gắn)")
-        return
     need(project.script.exists() and project.voice and project.words.exists(),
          "Cần script.txt, voice.* và voice.words.json — chạy các bước trước.")
+    if project.scenes_file.exists() and not force:
+        validate_source(project)
+        print("[scenes] inputs khớp scenes.source.json — giữ storyboard hiện có")
+        return
     words = json.loads(project.words.read_text(encoding="utf-8"))
     sc = project.settings["scenes"]
     scenes = make_scenes(project.script.read_text(encoding="utf-8"), words,
-                         audio_duration(project.voice), sc["min_seconds"], sc["max_seconds"])
+                         audio_duration(project.voice), sc["min_seconds"], sc["max_seconds"],
+                         sc.get("strategy", "semantic_sentence"),
+                         "sentence_audio_duration_with_interpolated_words" if
+                         project.settings.get("voice", {}).get("provider") == "vieneu" else
+                         "supplied_word_timestamps_not_independently_verified")
     project.save_scenes(scenes)
+    (project.dir / "scenes.source.json").write_text(
+        json.dumps(source_fingerprint(project), ensure_ascii=False, indent=2), encoding="utf-8")
     durs = [s["end"] - s["start"] for s in scenes]
     print(f"[scenes] {len(scenes)} cảnh, dài {min(durs):.1f}–{max(durs):.1f}s (TB {sum(durs)/len(durs):.1f}s)")

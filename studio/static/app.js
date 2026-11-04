@@ -1,9 +1,9 @@
 'use strict';
 const $ = id => document.getElementById(id);
-const stages = ['script','review','voice','scenes','prompts','generate','collect','render','publish'];
-const names = ['Biên kịch','Duyệt kịch bản','Phòng thu','Phân cảnh','Mỹ thuật','Google Flow','Kiểm ảnh','Dựng phim','Xuất bản'];
-const actions = ['Đang viết câu chuyện lịch sử','Mai đang đọc duyệt, cập nhật tín hiệu YouTube và hướng dẫn thu giọng','Đang tạo giọng đọc và thời gian lời nói','Đang chia cảnh theo lời đọc','Đang thiết kế hình ảnh từng cảnh','Đang tạo ảnh minh họa trên Google Flow','Đang đối chiếu và tải ảnh','Đang ghép ảnh, giọng đọc và phụ đề','Đang chuẩn bị tiêu đề, mô tả và tag'];
-const descriptions = ['Chủ đề và phong cách của kênh được chuyển thành một kịch bản có mở đầu, diễn biến và kết thúc.','Chỉ cho thu khi hook, mạch kể, độ cẩn trọng lịch sử và câu đọc đạt yêu cầu. Mai có thể yêu cầu sửa rồi duyệt lại.','Lời kể được đọc thành tiếng và đồng bộ thời gian để hình ảnh bám sát câu chuyện.','Mỗi cảnh nhận một đoạn lời kể cùng thời điểm bắt đầu và kết thúc.','Giữ phong cách hình ảnh nhất quán, ngoại hình nhân vật và bối cảnh đúng câu chuyện.','Browser cần đăng nhập Google và mở đúng project Flow. Nhật ký bên dưới sẽ báo nếu cần thao tác.','Chỉ tải khi ảnh khớp với các cảnh. Ảnh thiếu hoặc trùng sẽ được báo lỗi.','Dựng video theo độ dài lời kể, thêm chuyển động ảnh và phụ đề nhỏ sát đáy.','Chuẩn bị gói đăng YouTube đúng niche lịch sử và gợi ý thumbnail, hook, nhịp kể.'];
+const stages = ['script','review','voice','scenes','prompts','generate','collect','render','publish','qc'];
+const names = ['Biên kịch','Duyệt kịch bản','Phòng thu','Phân cảnh','Mỹ thuật','Google Flow','Kiểm ảnh','Dựng phim','Xuất bản','Kiểm thử'];
+const actions = ['Đang viết câu chuyện khoa học','Đang kiểm tra kịch bản bằng mô hình, cập nhật tín hiệu YouTube và hướng dẫn thu giọng','Đang tạo giọng đọc và thời gian lời nói','Đang chia cảnh theo lời đọc','Đang thiết kế hình ảnh từng cảnh','Đang tạo ảnh minh họa trên Google Flow','Đang đối chiếu và tải ảnh','Đang ghép ảnh, giọng đọc và phụ đề','Đang chuẩn bị tiêu đề, mô tả và tag','Đang kiểm duyệt video, tiêu đề, mô tả và tag trước khi đăng'];
+const descriptions = ['Chủ đề và phong cách của kênh được chuyển thành một kịch bản có mở đầu, diễn biến và kết thúc.','Chỉ cho thu khi hook, mạch kể, độ cẩn trọng khoa học và câu đọc đạt yêu cầu. Kịch bản chưa đạt phải sửa rồi kiểm tra lại.','Lời kể được đọc thành tiếng và đồng bộ thời gian để hình ảnh bám sát câu chuyện.','Mỗi cảnh nhận một đoạn lời kể cùng thời điểm bắt đầu và kết thúc.','Giữ phong cách hình ảnh nhất quán, ngoại hình nhân vật và bối cảnh đúng câu chuyện.','Browser cần đăng nhập Google và mở đúng project Flow. Nhật ký bên dưới sẽ báo nếu cần thao tác.','Chỉ tải khi ảnh khớp với các cảnh. Ảnh thiếu hoặc trùng sẽ được báo lỗi.','Dựng video theo độ dài lời kể, thêm chuyển động ảnh và phụ đề nhỏ sát đáy.','Chuẩn bị gói đăng YouTube đúng niche khoa học đời thường và gợi ý thumbnail, hook, nhịp kể.','Chấm điểm tiêu đề, mô tả, tag; kiểm tra khung ngang 16:9, âm thanh, phụ đề và CTA; chặn đăng nếu chưa đạt.'];
 let managerState={status:'idle',settings:{},readiness:{}},managerBusy=false,managerPosition={x:-4,z:1.2};
 let token='', selected='', state={status:'idle',stages:{},logs:[]}, projectList=[], online=false, pending=false;
 $('stage-strip').innerHTML = names.map((n,i)=>`<div class="stage" id="stage-${stages[i]}"><div class="stage-number">${i+1}</div><span>${n}</span></div>`).join('');
@@ -21,16 +21,18 @@ function render(){
   const count=Object.values(run.stages||{}).filter(x=>x==='completed').length;
   $('run').disabled=!selected||busy||pending||!online;
   $('stop').disabled=!busy||pending||!online;
-  $('run').textContent=busy?(run.stage==='review'?'● Mai đang đọc duyệt':'● Minh đang làm việc'):'▶ Giao việc cho Minh';
-  $('worker-name').textContent=run.stage==='review'?'Mai':'Minh';
-  $('worker-role').textContent=run.stage==='review'?'Biên tập viên kịch bản':'Người đại diện sản xuất';
-  $('worker-avatar').classList.toggle('editor-avatar',run.stage==='review');
+  const worker=run.stage==='review'?{name:'Mai',role:'Biên tập viên kịch bản',cls:'editor-avatar'}:run.stage==='qc'?{name:'Gạo',role:'Nhân viên kiểm thử',cls:'tester-avatar'}:{name:'Minh',role:'Người đại diện sản xuất',cls:''};
+  $('run').textContent=busy?(run.stage==='review'?'● Đang kiểm tra kịch bản bằng mô hình':run.stage==='qc'?'● Gạo đang kiểm thử':'● Minh đang làm việc'):'▶ Giao việc cho Minh';
+  $('worker-name').textContent=worker.name;
+  $('worker-role').textContent=worker.role;
+  $('worker-avatar').className='avatar '+worker.cls;
+  $('worker-avatar').firstChild.textContent=worker.name[0];
   $('project-select').disabled=busy;
   $('start-stage').disabled=busy;
   $('only-stage').disabled=busy||!$('start-stage').value;
   if(!$('start-stage').value)$('only-stage').checked=false;
   const project=projectList.find(p=>p.name===selected);
-  $('project-topic').textContent=project?project.topic:'Bắt đầu bằng một chủ đề lịch sử mà bạn muốn kể.';
+  $('project-topic').textContent=project?project.topic:'Bắt đầu bằng một câu hỏi khoa học đời thường mà bạn muốn kể.';
   $('agent-state').textContent=statusNames[run.status]||'Sẵn sàng';
   $('agent-state').style.color=['failed','interrupted'].includes(run.status)?'var(--red)':'var(--green)';
   $('progress-label').textContent=`${count} / ${stages.length} công đoạn`;
@@ -43,11 +45,11 @@ function render(){
   });
   const active=run.status==='running';
   const action=active&&current>=0?actions[current]:run.status==='completed'?'Đã hoàn tất công việc được giao':['failed','interrupted'].includes(run.status)?'Công việc cần bạn kiểm tra nhật ký':run.status==='cancelled'?'Đã dừng · Có thể tiếp tục từ công đoạn còn lại':run.status==='stopping'?'Đang dừng tiến trình…':'Sẵn sàng cho một câu chuyện mới';
-  $('agent-name').textContent=run.stage==='review'?'Mai · Biên tập viên kịch bản':'Minh · Người kể chuyện';
+  $('agent-name').textContent=run.stage==='review'?'Mai · Biên tập viên kịch bản':run.stage==='qc'?'Gạo · Nhân viên kiểm thử':'Minh · Người kể chuyện';
   $('agent-action').textContent=action;
   $('scene-status').textContent=(statusNames[run.status]||'Sẵn sàng').toUpperCase();
   $('current-task').textContent=current>=0?names[current]:'Chưa nhận nhiệm vụ';
-  $('task-description').textContent=current>=0?descriptions[current]:'Tôi sẽ đưa câu chuyện của bạn qua 9 công đoạn, từ kịch bản đến gói đăng YouTube.';
+  $('task-description').textContent=current>=0?descriptions[current]:'Tôi sẽ đưa câu chuyện của bạn qua 10 công đoạn, từ kịch bản đến gói đăng YouTube.';
   const logs=run.logs||[];const container=$('logs'),atBottom=container.scrollHeight-container.scrollTop-container.clientHeight<45;
   const signature=JSON.stringify(logs);
   if(container.dataset.signature!==signature){
@@ -59,7 +61,8 @@ function render(){
   $('log-count').textContent=logs.length;
   $('run-time').textContent=run.started_at?'Bắt đầu '+new Date(run.started_at*1000).toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'}):'Chưa bắt đầu';
   renderReview(project?.review);
-  const items=[['script.review.json','Phiếu duyệt của Mai','✓',project?.review?.status&&project.review.status!=='not_reviewed'],['recording_script.md','Bản hướng dẫn thu giọng','≡',project?.review?.status==='approved'],['final.mp4','Video hoàn chỉnh','▷',project?.video],['subtitles.srt','Phụ đề','≡',project?.video],['publish.txt','Tiêu đề · mô tả · tag','↗',project?.metadata],['publish.json','Gói xuất bản đầy đủ','◇',project?.metadata]];
+  renderTesting(project?.testing);
+  const items=[['script.review.json','Phiếu duyệt của Mai','✓',project?.review?.status&&project.review.status!=='not_reviewed'],['recording_script.md','Bản hướng dẫn thu giọng','≡',project?.review?.status==='approved'],['final.mp4','Video hoàn chỉnh','▷',project?.video],['subtitles.srt','Phụ đề','≡',project?.video],['publish.txt','Tiêu đề · mô tả · tag','↗',project?.metadata],['publish.json','Gói xuất bản đầy đủ','◇',project?.metadata],['publish-review.md','Phiếu kiểm thử trước khi đăng','✓',project?.testing?.status&&project.testing.status!=='not_tested']];
   $('artifacts').replaceChildren();
   items.forEach(([file,label,icon,ready])=>{const el=document.createElement(ready?'a':'div');el.className='artifact'+(ready?'':' disabled');if(ready){el.href=`/artifacts/${encodeURIComponent(selected)}/${file}`;el.download=file;}const symbol=document.createElement('span');symbol.textContent=icon;const info=document.createElement('div');const title=document.createElement('b');title.textContent=label;const filename=document.createElement('small');filename.textContent=file;info.append(title,filename);const arrow=document.createElement('span');arrow.textContent=ready?'↓':'—';el.append(symbol,info,arrow);$('artifacts').append(el);});
   sceneStage=current;
@@ -95,9 +98,36 @@ function renderReview(review){
   $('review-narration').textContent=r.narration_notes||'Bản được duyệt sẽ có kế hoạch chia câu, đoạn và khoảng nghỉ cho phòng thu.';
   $('review-date').textContent=r.researched_at?'Tín hiệu YouTube cập nhật: '+new Date(r.researched_at).toLocaleString('vi-VN',{timeZone:'Asia/Ho_Chi_Minh'}):'Chưa có tín hiệu YouTube được cập nhật';
   $('review-issues').replaceChildren();(r.reasons||[]).forEach(reason=>{const li=document.createElement('li');li.textContent=reason;$('review-issues').append(li);});
-  const dimensions={hook:'Hook',structure:'Mạch kể',historical_care:'Cẩn trọng lịch sử',niche_fit:'Đúng niche',readability:'Dễ đọc',engagement:'Sức cuốn hút'};
+  const dimensions={hook:'Hook',structure:'Mạch kể',historical_care:'Cẩn trọng khoa học',niche_fit:'Đúng niche',readability:'Dễ đọc',engagement:'Sức cuốn hút'};
   $('review-scores').replaceChildren();Object.entries(dimensions).forEach(([key,label])=>{const item=document.createElement('div');const title=document.createElement('span');title.textContent=label;const score=document.createElement('b');score.textContent=r.scores?.[key]===undefined?'—':r.scores[key]+'/10';item.append(title,score);$('review-scores').append(item);});
 }
+function renderTesting(testing){
+  const t=testing||{status:'not_tested'};
+  const labels={not_tested:'Chưa kiểm thử',approved:'ĐẠT · Cho đăng',blocked:'CHƯA ĐẠT · Chặn đăng',stale:'Phiếu cũ · Kiểm lại'};
+  const status=$('testing-status');
+  status.textContent=labels[t.status]||'Chưa kiểm thử';
+  status.classList.toggle('ok',t.status==='approved');
+  status.classList.toggle('bad',t.status==='blocked'||t.status==='stale');
+  const who=t.tester?`${t.tester.name} · ${t.tester.role}`:'Gạo · Nhân viên kiểm thử';
+  const when=t.tested_at?new Date(t.tested_at).toLocaleString('vi-VN',{timeZone:'Asia/Ho_Chi_Minh'}):'';
+  $('testing-summary').textContent=t.status==='not_tested'
+    ?'Gạo sẽ kiểm tra hình, tiếng, phụ đề, phần kêu gọi đăng ký và bộ tiêu đề/mô tả/tag trước khi cho đăng.'
+    :`${who} kiểm lúc ${when}. ${t.summary||''}`.trim();
+  const checks=t.checks||[];
+  const counts={pass:0,warn:0,fail:0};
+  checks.forEach(c=>{if(counts[c.status]!==undefined)counts[c.status]++;});
+  const tiles=[['Điểm',t.score===undefined||t.score===null?'—':`${t.score}/100`],['Đạt',`${counts.pass}/${checks.length||0}`],['Cảnh báo',counts.warn],['Chưa đạt',counts.fail]];
+  $('testing-scores').replaceChildren();
+  tiles.forEach(([label,value])=>{const item=document.createElement('div');const name=document.createElement('span');name.textContent=label;const val=document.createElement('b');val.textContent=value;item.append(name,val);$('testing-scores').append(item);});
+  const issues=$('testing-issues');
+  issues.replaceChildren();
+  const problems=(t.blockers&&t.blockers.length)?t.blockers:checks.filter(c=>c.status!=='pass').map(c=>`${c.label} — ${c.detail}`);
+  problems.slice(0,6).forEach(text=>{const li=document.createElement('li');li.textContent=text;li.className='testing-issue';issues.append(li);});
+  const list=$('testing-checks');
+  list.replaceChildren();
+  checks.forEach(c=>{const li=document.createElement('li');li.className='testing-check '+(c.status||'');li.textContent=`${c.label} — ${c.detail||''}`;list.append(li);});
+}
+
 const formatNumber=value=>value===null||value===undefined?'—':new Intl.NumberFormat('vi-VN',{maximumFractionDigits:1}).format(Number(value));
 const formatDate=value=>value?new Date(typeof value==='number'?value*1000:value).toLocaleString('vi-VN',{timeZone:'Asia/Ho_Chi_Minh'}):'—';
 function managerError(message){$('manager-error').textContent=message||'';$('manager-error').hidden=!message;}
@@ -152,7 +182,7 @@ $('disconnect-channel').onclick=async()=>{try{await post('/api/manager/disconnec
 const canvas=$('world'),ctx=canvas.getContext('2d');let width=0,height=0,angle=-.12,zoom=1,drag=null,sceneStage=-1,sceneRunning=false,sceneFailed=false;
 let agent={x:0,z:1.8},lastTime=performance.now();
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
-const stations=[{x:-5,z:-3.6},{x:4,z:.2},{x:-1.7,z:-3.6},{x:1.7,z:-3.6},{x:5,z:-3.6},{x:-5,z:3.5},{x:-1.7,z:3.5},{x:1.7,z:3.5},{x:5,z:3.5}];
+const stations=[{x:-5,z:-3.6},{x:4,z:.2},{x:-1.7,z:-3.6},{x:1.7,z:-3.6},{x:5,z:-3.6},{x:-5,z:3.5},{x:-1.7,z:3.5},{x:1.7,z:3.5},{x:5,z:3.5},{x:2.9,z:5.8}];
 function resize(){const rect=canvas.getBoundingClientRect();width=rect.width;height=rect.height;const dpr=Math.min(devicePixelRatio||1,2);canvas.width=width*dpr;canvas.height=height*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);}
 new ResizeObserver(resize).observe(canvas);
 function project(x,y,z){const xx=x*Math.cos(angle)-z*Math.sin(angle),zz=x*Math.sin(angle)+z*Math.cos(angle);const scale=Math.min(width/19,height/13)*zoom;return [width/2+xx*scale,height*.48+(zz*.48-y*.95)*scale];}
@@ -176,19 +206,19 @@ function desk(s,i,t){const active=sceneStage===i,done=state.stages?.[stages[i]]=
  label(`${String(i+1).padStart(2,'0')}  ${names[i]}`,s.x,0,s.z+2.05,active?c:'#8b9ea5',Math.max(8,Math.min(width/95,10)));
  if(done)label('✓',s.x+.85,1.9,s.z+.3,'#8ebca3',12);
 }
-function person(x,z,t,manager=false,editor=false){circle(x,.025,z,.4,'#060e13a0');const moving=Math.abs(agent.x-(stations[sceneStage]?.x||0))>.05;const bob=sceneRunning&&!reduced?Math.sin(t*5)*.025:0;
+function person(x,z,t,manager=false,editor=false,tester=false){circle(x,.025,z,.4,'#060e13a0');const moving=Math.abs(agent.x-(stations[sceneStage]?.x||0))>.05;const bob=sceneRunning&&!reduced?Math.sin(t*5)*.025:0;
  box(x-.18,.27+bob,z-.12,.14,.46,.2,['#596568','#273a42','#20313b']);box(x+.05,.27+bob,z-.12,.14,.46,.2,['#596568','#273a42','#20313b']);
- box(x-.25,.65+bob,z-.2,.5,.55,.36,editor?['#c0addb','#886d9d','#68527b']:manager?['#90bcca','#527f91','#3b6273']:['#c4aa74','#977d4c','#796940']);
+ box(x-.25,.65+bob,z-.2,.5,.55,.36,editor?['#c0addb','#886d9d','#68527b']:manager?['#90bcca','#527f91','#3b6273']:tester?['#a9d8c6','#4c8a76','#356a5a']:['#c4aa74','#977d4c','#796940']);
  box(x-.35,.7+bob,z-.12,.11,.38,.17,['#c4aa74','#b79964','#8a754f']);box(x+.25,.7+bob,z-.12,.11,.38,.17,['#c4aa74','#b79964','#8a754f']);
  box(x-.19,1.21+bob,z-.15,.38,.37,.32,['#d4b997','#c4a784','#a99178']);box(x-.21,1.52+bob,z-.17,.42,.12,.36,['#333b3d','#283235','#202c30']);
- const p=project(x,1.99,z);ctx.font='600 9px system-ui';const text=editor?(sceneStage===1&&sceneRunning?'MAI · ĐỌC DUYỆT':'MAI · BIÊN TẬP'):manager?(['researching','planning'].includes(managerState.status)?'AN · NGHIÊN CỨU':'AN · QUẢN LÝ KÊNH'):(sceneRunning?'MINH · ĐANG LÀM VIỆC':sceneFailed?'MINH · CẦN HỖ TRỢ':'MINH');const measure=ctx.measureText(text).width;ctx.fillStyle='#101b21ee';ctx.strokeStyle=sceneFailed?'#bd8174':'#b59e6e';ctx.lineWidth=.7;ctx.beginPath();ctx.roundRect(p[0]-measure/2-10,p[1]-15,measure+20,24,5);ctx.fill();ctx.stroke();ctx.fillStyle='#e2d3ae';ctx.textAlign='center';ctx.fillText(text,p[0],p[1]);
+ const p=project(x,1.99,z);ctx.font='600 9px system-ui';const text=tester?(sceneStage===9&&sceneRunning?'GẠO · ĐANG KIỂM THỬ':'GẠO · KIỂM THỬ'):editor?(sceneStage===1&&sceneRunning?'MAI · ĐỌC DUYỆT':'MAI · BIÊN TẬP'):manager?(['researching','planning'].includes(managerState.status)?'AN · NGHIÊN CỨU':'AN · QUẢN LÝ KÊNH'):(sceneRunning?'MINH · ĐANG LÀM VIỆC':sceneFailed?'MINH · CẦN HỖ TRỢ':'MINH');const measure=ctx.measureText(text).width;ctx.fillStyle='#101b21ee';ctx.strokeStyle=sceneFailed?'#bd8174':tester?'#5fae94':'#b59e6e';ctx.lineWidth=.7;ctx.beginPath();ctx.roundRect(p[0]-measure/2-10,p[1]-15,measure+20,24,5);ctx.fill();ctx.stroke();ctx.fillStyle='#e2d3ae';ctx.textAlign='center';ctx.fillText(text,p[0],p[1]);
 }
 function draw(now){const t=now/1000,dt=Math.min((now-lastTime)/1000,.1);lastTime=now;ctx.clearRect(0,0,width,height);
  // Floor and softly lit perimeter.
- box(-7.5,-.25,-6,15,.25,13,['#1b2b33','#0c1921','#12232b']);
- for(let x=-7;x<=7;x++)line([x,.006,-6],[x,.006,7],'#2b40494f',.5);
- for(let z=-6;z<=7;z++)line([-7.5,.006,z],[7.5,.006,z],'#2b40494f',.5);
- box(-7.5,0,-6,.16,3.1,13,['#3d5059','#293c45','#192b35']);
+ box(-7.5,-.25,-6,15,.25,14,['#1b2b33','#0c1921','#12232b']);
+ for(let x=-7;x<=7;x++)line([x,.006,-6],[x,.006,8],'#2b40494f',.5);
+ for(let z=-6;z<=8;z++)line([-7.5,.006,z],[7.5,.006,z],'#2b40494f',.5);
+ box(-7.5,0,-6,.16,3.1,14,['#3d5059','#293c45','#192b35']);
  box(-7.5,0,-6,15,3.1,.16,['#3d5059','#22353f','#142832']);
  // Architectural windows and a library of histories on the back wall.
  for(let i=0;i<8;i++){
@@ -200,7 +230,7 @@ function draw(now){const t=now/1000,dt=Math.min((now-lastTime)/1000,.1);lastTime
  // Paths connect workstations, representing the production pipeline.
  for(let i=0;i<stations.length-1;i++){const a=stations[i],b=stations[i+1];line([a.x,.018,1],[b.x,.018,1],'#53655c55',1);line([a.x,.018,a.z+1.7],[a.x,.018,1],'#53655c55',1);}
  circle(0,.025,.5,1.0,'#d6b57409','#c3ab6e44');circle(0,.026,.5,.78,'#00000000','#c3ab6e55');label('◈',0,.03,.65,'#a79568',22);
- const target=sceneStage===1?{x:1,z:.5}:sceneStage>=0?{x:stations[sceneStage].x,z:stations[sceneStage].z+1.6}:{x:0,z:.5};
+ const target=sceneStage===1?{x:1,z:.5}:sceneStage===9?{x:2,z:1.6}:sceneStage>=0?{x:stations[sceneStage].x,z:stations[sceneStage].z+1.6}:{x:0,z:.5};
  if(reduced){agent.x=target.x;agent.z=target.z;}else{const distance=Math.hypot(target.x-agent.x,target.z-agent.z);if(distance>.015){const speed=Math.min(1,dt*3/distance);agent.x+=(target.x-agent.x)*speed;agent.z+=(target.z-agent.z)*speed;}}
  // Painter's order follows depth for a stable 3D camera.
  box(-4.85,0,.15,.12,.9,.12,['#526b75','#334e59','#233d49']);box(-3.25,0,.15,.12,.9,.12,['#526b75','#334e59','#233d49']);
@@ -213,6 +243,7 @@ function draw(now){const t=now/1000,dt=Math.min((now-lastTime)/1000,.1);lastTime
  managerPosition.z+=(managerTarget.z-managerPosition.z)*Math.min(1,dt*2);
  const objects=stations.map((s,i)=>({depth:s.x*Math.sin(angle)+s.z*Math.cos(angle),draw:()=>desk(s,i,t)}));
  objects.push({depth:4*Math.sin(angle)+1.7*Math.cos(angle),draw:()=>person(4,1.7,t,false,true)});
+ objects.push({depth:2.9*Math.sin(angle)+7.25*Math.cos(angle),draw:()=>person(2.9,7.25,t,false,false,true)});
  objects.push({depth:managerPosition.x*Math.sin(angle)+managerPosition.z*Math.cos(angle),draw:()=>person(managerPosition.x,managerPosition.z,t,true)});
  objects.push({depth:agent.x*Math.sin(angle)+agent.z*Math.cos(angle),draw:()=>person(agent.x,agent.z,t)});
  objects.sort((a,b)=>a.depth-b.depth).forEach(o=>o.draw());

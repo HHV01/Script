@@ -10,10 +10,10 @@ from .common import ROOT, load_env
 from studio.channel import request_json
 
 QUERIES = {
-    'egypt': 'Ai Cập cổ đại kim tự tháp khảo cổ',
-    'empires': 'đế chế La Mã lịch sử',
-    'lost_cities': 'thành phố cổ mất tích khảo cổ',
-    'historical_maps': 'bản đồ lịch sử chiến tranh đế chế',
+    'body': 'cơ thể con người khoa học giải thích',
+    'senses': 'giác quan cảm giác khoa học',
+    'memory': 'trí nhớ não bộ khoa học',
+    'behavior': 'hành vi đời thường khoa học tâm lý',
 }
 
 
@@ -96,7 +96,7 @@ def collect(days=90, results=5, min_views=50000, duration='medium', now=None, pr
 
 def markdown(report):
     stamp=datetime.fromisoformat(report['collected_at']).astimezone(ZoneInfo('Asia/Ho_Chi_Minh'))
-    lines=['# Mẫu đối chiếu hình ảnh video lịch sử','', 'Lấy dữ liệu: '+stamp.strftime('%d/%m/%Y %H:%M (UTC+7)'),
+    lines=['# Mẫu đối chiếu hình ảnh video khoa học cơ thể và hành vi','', 'Lấy dữ liệu: '+stamp.strftime('%d/%m/%Y %H:%M (UTC+7)'),
            f"Cửa sổ: {report['context']['days']} ngày; ngưỡng: {report['context']['min_views']:,} lượt xem.",
            '', '| Nhóm tìm kiếm | Số video đạt ngưỡng | View trung vị trong mẫu đạt ngưỡng |', '|---|---:|---:|']
     for group in report['groups']:
