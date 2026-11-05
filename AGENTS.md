@@ -26,10 +26,7 @@
 ## Bắt đầu cho AI tiếp quản repo
 
 - Đọc docs/AI-START-HERE.md trước sản xuất. Chạy `python run.py doctor --json` hoặc `python run.py doctor <project> --json` để kiểm môi trường cục bộ; đây không là xác minh đăng nhập.
-- Luồng Flow mặc định: `python run.py flow <project> --action open`, đăng nhập/chọn project trong browser riêng, Enter để lưu URL/đóng helper; sau đó `--action check --timeout 60`; chỉ `--action generate-one --scene N` mới gửi tạo một cảnh và phải qua gate kịch bản/storyboard.
-- Hồ sơ .flow-profile riêng với Chrome thường. Không lấy mật khẩu hoặc lưu tài khoản/mật khẩu vào .env. Không xóa profile/lock để ép chạy; đóng helper/worker cũ trước.
-- Bảo toàn flow-attempts và ảnh đã tải khi tiếp tục; lần submit chưa rõ kết quả phải đối chiếu gallery, không tự --force gây tạo lặp.
-- Quy tắc chủ repo: Google Flow tạo ảnh phải mặc định **x1 luôn luôn**, một ảnh mỗi lượt/cảnh. Trước mỗi submit, chọn và xác nhận x1 trong riêng mục mặc định tạo hình ảnh, lưu cài đặt; không xác nhận được thì dừng trước gửi. Không chọn nhầm hàng x1 của video, không đổi lựa chọn xác nhận trước khi tạo, không giảm số cảnh/ảnh của storyboard để tiết kiệm lượt.
+- Theo yêu cầu mới ngày 05/11/2026: bỏ code auto Google Flow. Ảnh cung cấp thủ công; collect chỉ kiểm tệp cục bộ. Không khôi phục browser/extension tự tạo ảnh. Giữ ảnh, profile và hồ sơ Flow cũ; không giảm số cảnh/ảnh.
 - Lệnh run mặc định không upload, kể cả campaign.auto_upload=true. Chỉ thêm --upload khi có yêu cầu đăng đã được ủy quyền và đủ cổng.
 
 ## Quy tắc lưu tệp theo từng tập — chủ repo chốt 03/11/2026

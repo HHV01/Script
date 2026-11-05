@@ -4,7 +4,7 @@
 
 ## 0. Kiểm tra trước khi chạy
 
-Đọc [hướng dẫn bàn giao AI](docs/AI-START-HERE.md), sau đó chạy `python run.py doctor ten_video --json` với project có thật (hoặc bỏ tên để kiểm tra môi trường). Đây là chẩn đoán offline, không tạo nội dung và không xác minh tài khoản/quota. Dùng cùng Python của môi trường đã cài theo README. Chỉ một worker dùng profile Flow tại một thời điểm.
+Đọc [hướng dẫn bàn giao AI](docs/AI-START-HERE.md), sau đó chạy `python run.py doctor ten_video --json` với project có thật (hoặc bỏ tên để kiểm tra môi trường). Đây là chẩn đoán offline, không tạo nội dung và không xác minh tài khoản/quota. Dùng cùng Python của môi trường đã cài theo README.
 
 ## 1. Chuẩn bị project và nguồn
 
@@ -12,7 +12,7 @@
 python run.py new ten_video
 ```
 
-Sửa `projects/ten_video/project.yaml`: `topic`, `niche`, `audience`, `minutes`, `characters`, `flow_url` và các ghi đè `settings`. Dùng nhân vật `stick-orange`; độ dài là mục tiêu biên tập, không phải thời lượng đã đo.
+Sửa `projects/ten_video/project.yaml`: `topic`, `niche`, `audience`, `minutes`, `characters` và các ghi đè `settings`. Dùng nhân vật `stick-orange`; độ dài là mục tiêu biên tập, không phải thời lượng đã đo.
 
 Đọc nguồn nghiên cứu hoặc cơ quan chuyên môn, lưu `research_sources` với URL, tên tài liệu, phần thực sự đã đọc và giới hạn kết luận. Không dùng tiêu đề video hoặc câu trả lời model làm nguồn khoa học. Chốt dàn ý trước sản xuất: tình huống mở → câu hỏi/nghịch lý → cơ chế theo từng ý → ví dụ/giới hạn → trả lời và kết.
 
@@ -42,22 +42,12 @@ Chạy `scenes --force` tạo lại phân cảnh và có thể mất liên kết
 
 ```text
 python run.py run ten_video --only prompts
-python run.py run ten_video --only ping
-python run.py run ten_video --only generate
 python run.py run ten_video --only collect
 ```
 
 Kiểm tra `prompts.txt` và `scenes.json`: cùng nhân vật, màu sắc, không gian; mỗi cảnh minh họa đúng một ý/cơ chế. Ảnh phải đủ rõ cho khung 16:9 và màn hình điện thoại.
 
-Google Flow dùng Playwright với profile riêng `.flow-profile`, không dùng extension/CDP trong luồng mặc định. Xem [hướng dẫn Flow](docs/FLOW.md). Mở và kiểm tra trước khi tạo ảnh:
-
-```text
-python run.py flow ten_video --action open --timeout 60
-python run.py flow ten_video --action check --timeout 60
-python run.py flow ten_video --action generate-one --scene 1 --timeout 60
-```
-
-Đăng nhập trong browser helper, mở đúng project, lưu `flow_url`; quay lại terminal nhấn Enter để đóng helper và giải phóng profile trước lệnh kế tiếp. Phiên đăng nhập có thể hết hạn. `open` và `check` không gửi prompt; `generate-one` có thể tiêu credit và vẫn yêu cầu dữ liệu/cổng đầu vào hợp lệ. Không dùng `--force` thường xuyên; nếu lần gửi trước chưa rõ kết quả, kiểm tra gallery/job trước khi thử lại.
+Tạo ảnh bên ngoài, lưu vào `hinh/canh-001.png`, `hinh/canh-002.png`… rồi chạy `collect` để kiểm ảnh cục bộ. Code auto Flow đã gỡ.
 
 Có thể cung cấp ảnh thủ công rồi gắn đường dẫn tương ứng trong cảnh. Không lấy một ảnh bất kỳ trong thư viện làm kết quả cảnh. Hậu kiểm liên kết cảnh–ảnh và xem nội dung thực tế. Zoom/crop ảnh tĩnh không đồng nghĩa hoạt hình nhân vật.
 

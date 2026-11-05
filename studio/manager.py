@@ -13,7 +13,7 @@ from pipeline.common import load_yaml
 from .channel import ChannelClient, ChannelError, write_private
 
 DEFAULTS = {'enabled': False, 'auto_dispatch': True, 'interval_hours': 24,
-            'channel_handle': '@LsDấuVếtVănMinh', 'minutes': 15, 'flow_url': '',
+            'channel_handle': '@LsDấuVếtVănMinh', 'minutes': 15,
             'niche_seeds': ['Cảm giác và phản ứng cơ thể đời thường', 'Trí nhớ và sự chú ý', 'Hành vi đời thường giải thích bằng khoa học']}
 
 
@@ -133,7 +133,7 @@ class ChannelManager:
 
     def configure(self, body):
         with self.lock:
-            allowed = ('enabled', 'auto_dispatch', 'minutes', 'interval_hours', 'flow_url')
+            allowed = ('enabled', 'auto_dispatch', 'minutes', 'interval_hours')
             updated = dict(self.settings)
             for key in allowed:
                 if key in body:
@@ -144,10 +144,6 @@ class ChannelManager:
                 raise ValueError('Thời lượng phải từ 1 đến 60 phút.')
             if type(updated['interval_hours']) is not int or not 6 <= updated['interval_hours'] <= 168:
                 raise ValueError('Chu kỳ phải từ 6 đến 168 giờ.')
-            if updated['flow_url']:
-                from pipeline.flow_playwright import is_flow_url
-                if not isinstance(updated['flow_url'], str) or not is_flow_url(updated['flow_url']):
-                    raise ValueError('URL phải là project Google Flow tại labs.google.')
             self.settings = updated
             if not self.state['next_run_at']:
                 self.state['next_run_at'] = time.time()
@@ -333,7 +329,7 @@ DỮ LIỆU:\n''' + json.dumps({'report': report, 'existing_topics': existing,
             if (self.root/'projects'/name).exists():
                 raise ValueError('Tên project giao việc bị trùng; cần kiểm tra trước khi giao tiếp.')
             self.create_project({'name': name, 'topic': brief['topic'], 'niche': brief['niche'],
-                                 'minutes': self.settings['minutes'], 'flow_url': self.settings['flow_url']})
+                                 'minutes': self.settings['minutes']})
             import yaml
             path = self.root/'projects'/name/'project.yaml'
             cfg = load_yaml(path)

@@ -2,8 +2,7 @@ import json, shutil, subprocess, sys, tempfile, threading, time, unittest, urlli
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from pipeline import s1_script, s3_scenes, s5_generate, s6_collect, s7_render, s4_prompts
-from pipeline.bridge import Bridge, BridgeError
+from pipeline import s1_script, s3_scenes, s6_collect, s7_render, s4_prompts
 
 SCRIPT = ("Một quyết định sai lầm có thể xóa sổ cả một đế chế. Hãy nhìn vào nước Đức năm 1871, nơi mọi quyền lực tập trung vào một người. "
           "Khi người đó bị sa thải, cỗ máy tê liệt. Một quyết định sai lầm có thể xóa sổ cả một đế chế! "
@@ -61,59 +60,10 @@ class Core(unittest.TestCase):
         batch = [{"id": 1}, {"id": 2}, {"id": 3}]
         self.assertEqual(s4_prompts.validate(batch, [{"id": 1, "scene_desc": "x"}, {"id": 2, "scene_desc": " "}]), [2, 3])
 
-    def test_collect_check(self):
-        sc = [{"id": i, "tile_key": f"/t{i}"} for i in (1, 2, 3)]
-        self.assertEqual(s6_collect.check(sc, ["/t1", "/t2", "/t3", "/old"]), [])
-        self.assertTrue(s6_collect.check(sc[:2] + [{"id": 3}], ["/t1", "/t2"]))                 # thiếu ảnh
-        self.assertTrue(s6_collect.check(sc[:2] + [{"id": 3, "tile_key": "/t1"}], ["/t1", "/t2"]))  # trùng ảnh
-        self.assertTrue(s6_collect.check(sc, ["/t1", "/t2"]))                                    # ảnh bị xóa khỏi Flow
-
-    def test_flow_login_is_reported(self):
-        with self.assertRaises(SystemExit) as e:
-            s5_generate.require_flow_ready(
-                {"url": "https://accounts.google.com/v3/signin/identifier", "promptBox": False})
-        self.assertIn("đăng nhập", str(e.exception).lower())
-        with self.assertRaises(SystemExit):
-            s5_generate.require_flow_ready(
-                {"url": "https://labs.google/fx/tools/flow/project/abc", "promptBox": False})
-        s5_generate.require_flow_ready(
-            {"url": "https://labs.google/fx/tools/flow/project/abc", "promptBox": True})
-
     def test_frame_counts_do_not_drift(self):
         scenes = [{"start": i * 6.37, "end": (i + 1) * 6.37} for i in range(140)]
         self.assertEqual(sum(s7_render.frame_counts(scenes, 30)), round(140 * 6.37 * 30))
 
-    def test_bridge_roundtrip_and_upload(self):
-        tmp = Path(tempfile.mkdtemp())
-        b = Bridge(18765, tmp / "images")
-        b.start()
-        base = "http://127.0.0.1:18765"
-
-        def fake_extension():
-            while True:
-              try:
-                c = json.loads(urllib.request.urlopen(base + "/next").read())
-                if c["cmd"] == "idle":
-                    continue
-                if c["cmd"] == "submit":
-                    res = {"id": c["id"], "ok": True, "data": {"tiles": [f"/img{c['data']['scene']}"]}}
-                elif c["cmd"] == "download":
-                    req = urllib.request.Request(f"{base}/upload?scene={c['data']['scene']}&ext=png", data=b"x" * 2000, method="POST")
-                    urllib.request.urlopen(req)
-                    res = {"id": c["id"], "ok": True, "data": {}}
-                else:
-                    res = {"id": c["id"], "ok": False, "error": "boom"}
-                urllib.request.urlopen(urllib.request.Request(base + "/result", data=json.dumps(res).encode(), method="POST"))
-              except OSError:
-                return
-        threading.Thread(target=fake_extension, daemon=True).start()
-        b.wait_connected(10)
-        self.assertEqual(b.call("submit", {"scene": 7, "prompt": "p"})["tiles"], ["/img7"])
-        b.call("download", {"scene": 7, "key": "/img7"})
-        self.assertTrue((tmp / "images" / "007.png").exists())
-        with self.assertRaises(BridgeError):
-            b.call("nope")
-        b.stop(); shutil.rmtree(tmp)
 
 
 if __name__ == "__main__":

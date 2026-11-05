@@ -29,26 +29,6 @@ scenes:
   strategy: semantic_sentence
 prompts:
   batch_size: 20
-flow:
-  backend: playwright
-  playwright:
-    use_environment_proxy: true
-    headless: false
-    cdp_url: ''
-    profile_dir: .flow-profile
-    executable_path: ''
-    startup_timeout: 60
-    navigation_timeout: 60
-    readiness_timeout: 60
-    debug_artifacts: false
-  port: 8765
-  token: ''
-  delay_seconds:
-  - 1
-  - 2
-  retries: 2
-  submit_timeout: 180
-  pick: first
 render:
   width: 1920
   height: 1080
@@ -68,7 +48,6 @@ manager:
   auto_dispatch: false
   interval_hours: 24
   minutes: 15
-  flow_url: ''
   niche_seeds:
   - Cảm giác và phản ứng cơ thể đời thường
   - Trí nhớ và sự chú ý

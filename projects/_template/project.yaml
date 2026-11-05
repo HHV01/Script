@@ -5,7 +5,6 @@ audience: Người xem Việt Nam thích kiến thức gần bản thân; nhân 
 minutes: 15
 characters:
 - stick-orange
-flow_url: ''
 settings:
   render:
     require_object_motion: true
