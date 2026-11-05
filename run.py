@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Pipeline: bible nhân vật -> kịch bản -> voice -> phân cảnh -> prompt -> ảnh cung cấp thủ công -> kiểm tra -> video.
+"""Pipeline: bible nhân vật -> kịch bản -> voice -> phân cảnh -> prompt -> Google Flow -> kiểm tra/tải -> video.
 
   python run.py studio                         mở giao diện xưởng video khoa học
   python run.py new <tên>                       tạo project mới từ projects/_template
@@ -8,6 +8,7 @@
   python run.py run <tên> --only review         kiểm tra kịch bản trước khi thu
   python run.py run <tên> --only render         chỉ chạy một bước
   python run.py run <tên> --only publish        xuất tiêu đề, mô tả, tag theo niche
+  python run.py run <tên> --only ping           kiểm tra kết nối browser với tab Flow
   thêm --force để làm lại bước đó
 """
 import argparse
@@ -32,18 +33,24 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("new").add_argument("name")
-    sub.add_parser("menu", help="Menu mở xưởng và kiểm tra môi trường")
+    sub.add_parser("menu", help="Menu mở xưởng và Google Flow")
     studio = sub.add_parser("studio", help="Mở xưởng video khoa học và điều khiển pipeline")
     studio.add_argument("--port", type=int, default=8787)
     r = sub.add_parser("run")
     r.add_argument("name")
     r.add_argument("--from", dest="start", choices=STAGES)
-    r.add_argument("--only", choices=list(STAGES))
+    r.add_argument("--only", choices=[*STAGES, "ping"])
     r.add_argument("--force", action="store_true")
     r.add_argument("--upload", action="store_true", help="Yêu cầu upload rõ ràng sau khi các cổng đạt")
     doctor = sub.add_parser("doctor", help="Kiểm tra cục bộ; không mở browser hoặc tạo ảnh")
     doctor.add_argument("project", nargs="?")
     doctor.add_argument("--json", action="store_true", dest="as_json")
+    flow = sub.add_parser("flow", help="Mở, kiểm tra, hoặc tạo đúng một cảnh Google Flow")
+    flow.add_argument("project")
+    flow.add_argument("--action", choices=['open','check','generate-one'], default='check')
+    flow.add_argument("--timeout", type=int, default=60)
+    flow.add_argument("--scene", type=int, default=1)
+    flow.add_argument("--force", action="store_true", help="Tạo lại có chủ ý sau khi kiểm tra gallery")
     visual = sub.add_parser("research-visuals", help="Lấy mẫu video tham khảo để đối chiếu hình ảnh")
     visual.add_argument("--days", type=int, default=90)
     visual.add_argument("--results", type=int, default=5)
@@ -64,6 +71,14 @@ def main():
         if (not re.fullmatch(r'[\w-]{1,64}', name) or name.startswith('_')
                 or (PROJECTS/name).is_symlink() or (PROJECTS/name).resolve().parent != PROJECTS.resolve()):
             raise SystemExit('Tên dự án không hợp lệ; chỉ dùng chữ, số, gạch nối/gạch dưới, không đường dẫn.')
+    if a.cmd == 'flow':
+        from pipeline.flow_cli import run as flow_main
+        from pipeline.bridge import BridgeError
+        try:
+            flow_main(Project(a.project), a.action, a.timeout, a.scene, a.force)
+        except BridgeError as error:
+            raise SystemExit(str(error)) from None
+        return
 
     if a.cmd == "research-visuals":
         from pipeline.visual_benchmark import main as research_main
@@ -84,6 +99,9 @@ def main():
         return
 
     project = Project(a.name)
+    if a.only == "ping":
+        import_module("pipeline.s5_generate").ping(project)
+        return
     names = list(STAGES)
     if a.only:
         names = [a.only]

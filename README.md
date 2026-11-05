@@ -1,6 +1,6 @@
 # Xưởng video khoa học đời thường
 
-Công cụ Python và giao diện web cục bộ để làm video tiếng Việt về cơ thể, cảm giác, trí nhớ và hành vi. Luồng hiện có: kịch bản → duyệt văn bản → giọng đọc → phân cảnh → prompt → ảnh cung cấp thủ công → dựng → metadata và kiểm tra.
+Công cụ Python và giao diện web cục bộ để làm video tiếng Việt về cơ thể, cảm giác, trí nhớ và hành vi. Luồng hiện có: kịch bản → duyệt văn bản → giọng đọc → phân cảnh → prompt → ảnh Google Flow → dựng → metadata và kiểm tra.
 
 Định hướng hiện tại: video ngang **16:9**, nhân vật `stick-orange`, nền giấy kem. Xem [cấu hình định hướng](config/channel-direction.yaml) và [quy tắc repo](AGENTS.md). Đây là công cụ hỗ trợ sản xuất; chạy xong một bước không đồng nghĩa nội dung đã được xem, nghe hoặc duyệt chất lượng.
 
@@ -23,11 +23,13 @@ Khi cần sản xuất, cài thêm trong cùng môi trường:
 
 ```powershell
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m playwright install chromium
 ```
 
 - **LLM:** provider và model theo `src/pipeline/llm.py`, `config/settings.yaml`; cấu hình key tương ứng trong `.env`. Cấu hình mặc định dùng OpenCode, không phải tài khoản ChatGPT.
 - **Voice:** mặc định VieNeu `v3turbo`, giọng Hải Đăng. Lần đầu có thể tải model; tốc độ phụ thuộc máy. Chế độ audio thủ công cần thêm `faster-whisper` để căn lời đọc.
 - **Media:** cần FFmpeg và ffprobe trong PATH hoặc `tools/ffmpeg/bin/`.
+- **Flow:** cần tài khoản truy cập Google Flow, Playwright và phiên đăng nhập trong profile riêng.
 
 Chỉ tạo `.env` từ [.env.example](.env.example) nếu chưa có; không ghi đè key đang dùng. `YOUTUBE_API_KEY` dùng cho nghiên cứu dữ liệu công khai; quyền Analytics/upload dùng OAuth riêng. `doctor` kiểm tra môi trường cục bộ, không xác minh đăng nhập, quota hoặc quyền truy cập provider.
 
@@ -42,13 +44,13 @@ Ví dụ tạo tập mới, đổi số và tên để không trùng tập hiệ
 .\.venv\Scripts\python.exe run.py doctor tap-08-ten-chu-de --json
 ```
 
-Lệnh `new` sao chép template. Sửa `project.yaml` để điền chủ đề, đối tượng, thời lượng mục tiêu, nguồn; thêm `README.md` ghi bản hiện hành, trạng thái thực và việc còn thiếu. Mỗi tập có một thư mục chính:
+Lệnh `new` sao chép template. Sửa `project.yaml` để điền chủ đề, đối tượng, thời lượng mục tiêu, nguồn và URL Flow; thêm `README.md` ghi bản hiện hành, trạng thái thực và việc còn thiếu. Mỗi tập có một thư mục chính:
 
 ```text
 projects/tap-08-ten-chu-de/
   project.yaml
   README.md
-  hinh/       # ảnh, prompt và nguồn ảnh
+  hinh/       # ảnh, prompt, hồ sơ gửi Flow
   video/      # voice, mốc giọng, phụ đề, clip và bản xuất
   kich-ban/   # nguồn, kịch bản, phân cảnh, phiếu và metadata
 ```
@@ -71,11 +73,21 @@ Kiểm nguồn và nội dung văn bản trước khi thu; nghe voice và đối
 
 `--only` giới hạn một bước; `--from` chạy bước đó và các bước sau. `run` không có hai tùy chọn này sẽ chạy cả luồng. `--force` có thể ghi đè kết quả hoặc gọi dịch vụ có phí; không dùng để thử trạng thái.
 
-## Cung cấp ảnh thủ công
+## Google Flow: một ảnh mỗi lần gửi
 
-Code auto Google Flow, extension và Playwright đã được gỡ. Tạo ảnh bằng công cụ bên ngoài, đặt từng ảnh vào `hinh/` theo ID cảnh: `canh-001.png`, `canh-002.png`… (cũng hỗ trợ `001.png`). Giữ đủ ảnh để phủ đúng nhịp video.
+Luồng mặc định dùng **Playwright + `.flow-profile`**, không yêu cầu extension hoặc CDP. Thực hiện lần lượt:
 
-Chạy `python run.py run tap-08-ten-chu-de --only collect` bằng Python của môi trường đã cài. Bước này chỉ kiểm ảnh cục bộ và ghi tên ảnh vào phân cảnh; thiếu/hỏng sẽ dừng, không tự tạo hoặc tải ảnh. Profile và hồ sơ Flow cũ được giữ để đối chiếu.
+```powershell
+.\.venv\Scripts\python.exe run.py flow tap-08-ten-chu-de --action open --timeout 60
+.\.venv\Scripts\python.exe run.py flow tap-08-ten-chu-de --action check --timeout 60
+.\.venv\Scripts\python.exe run.py flow tap-08-ten-chu-de --action generate-one --scene 1 --timeout 60
+```
+
+Trong cửa sổ `open`, đăng nhập và mở đúng project Flow; quay lại terminal nhấn Enter để lưu URL/đóng helper. Kiểm tra `flow_url` trước khi tiếp tục. Chrome thường đăng nhập sẵn không có nghĩa profile này đã đăng nhập.
+
+`open` và `check` không gửi tạo ảnh. `generate-one` có thể tiêu credit và yêu cầu cổng kịch bản/phân cảnh hợp lệ. Trước mỗi submit, công cụ phải chọn và xác nhận **x1 trong mục tạo hình ảnh**, lưu cài đặt; không xác nhận được thì dừng. Giữ nguyên số cảnh cần để phủ nhịp video, không giảm ảnh để tiết kiệm lượt.
+
+Chỉ một worker dùng profile tại một thời điểm. Giữ ảnh và hồ sơ `flow-attempts` khi tiếp tục; nếu submit chưa rõ kết quả, đối chiếu gallery trước khi gửi lại. Không xóa profile/lock hoặc dùng `--force` để ép chạy. Xem [hướng dẫn Flow](docs/FLOW.md).
 
 ## Chuyển động, dựng và xuất bản
 

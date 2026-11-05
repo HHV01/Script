@@ -1,9 +1,9 @@
 'use strict';
 const $ = id => document.getElementById(id);
-const stages = ['script','review','voice','scenes','prompts','collect','render','publish','qc'];
-const names = ['Biên kịch','Duyệt kịch bản','Phòng thu','Phân cảnh','Mỹ thuật','Kiểm ảnh','Dựng phim','Xuất bản','Kiểm thử'];
-const actions = ['Đang viết câu chuyện khoa học','Đang kiểm tra kịch bản bằng mô hình, cập nhật tín hiệu YouTube và hướng dẫn thu giọng','Đang tạo giọng đọc và thời gian lời nói','Đang chia cảnh theo lời đọc','Đang thiết kế hình ảnh từng cảnh','Đang kiểm tra ảnh cung cấp thủ công','Đang ghép ảnh, giọng đọc và phụ đề','Đang chuẩn bị tiêu đề, mô tả và tag','Đang kiểm duyệt video, tiêu đề, mô tả và tag trước khi đăng'];
-const descriptions = ['Chủ đề và phong cách của kênh được chuyển thành một kịch bản có mở đầu, diễn biến và kết thúc.','Chỉ cho thu khi hook, mạch kể, độ cẩn trọng khoa học và câu đọc đạt yêu cầu. Kịch bản chưa đạt phải sửa rồi kiểm tra lại.','Lời kể được đọc thành tiếng và đồng bộ thời gian để hình ảnh bám sát câu chuyện.','Mỗi cảnh nhận một đoạn lời kể cùng thời điểm bắt đầu và kết thúc.','Giữ phong cách hình ảnh nhất quán, ngoại hình nhân vật và bối cảnh đúng câu chuyện.','Kiểm tra tệp ảnh từng cảnh trong thư mục dự án; báo lỗi nếu thiếu hoặc hỏng.','Dựng video theo độ dài lời kể, thêm chuyển động ảnh và phụ đề nhỏ sát đáy.','Chuẩn bị gói đăng YouTube đúng niche khoa học đời thường và gợi ý thumbnail, hook, nhịp kể.','Chấm điểm tiêu đề, mô tả, tag; kiểm tra khung ngang 16:9, âm thanh, phụ đề và CTA; chặn đăng nếu chưa đạt.'];
+const stages = ['script','review','voice','scenes','prompts','generate','collect','render','publish','qc'];
+const names = ['Biên kịch','Duyệt kịch bản','Phòng thu','Phân cảnh','Mỹ thuật','Google Flow','Kiểm ảnh','Dựng phim','Xuất bản','Kiểm thử'];
+const actions = ['Đang viết câu chuyện khoa học','Đang kiểm tra kịch bản bằng mô hình, cập nhật tín hiệu YouTube và hướng dẫn thu giọng','Đang tạo giọng đọc và thời gian lời nói','Đang chia cảnh theo lời đọc','Đang thiết kế hình ảnh từng cảnh','Đang tạo ảnh minh họa trên Google Flow','Đang đối chiếu và tải ảnh','Đang ghép ảnh, giọng đọc và phụ đề','Đang chuẩn bị tiêu đề, mô tả và tag','Đang kiểm duyệt video, tiêu đề, mô tả và tag trước khi đăng'];
+const descriptions = ['Chủ đề và phong cách của kênh được chuyển thành một kịch bản có mở đầu, diễn biến và kết thúc.','Chỉ cho thu khi hook, mạch kể, độ cẩn trọng khoa học và câu đọc đạt yêu cầu. Kịch bản chưa đạt phải sửa rồi kiểm tra lại.','Lời kể được đọc thành tiếng và đồng bộ thời gian để hình ảnh bám sát câu chuyện.','Mỗi cảnh nhận một đoạn lời kể cùng thời điểm bắt đầu và kết thúc.','Giữ phong cách hình ảnh nhất quán, ngoại hình nhân vật và bối cảnh đúng câu chuyện.','Browser cần đăng nhập Google và mở đúng project Flow. Nhật ký bên dưới sẽ báo nếu cần thao tác.','Chỉ tải khi ảnh khớp với các cảnh. Ảnh thiếu hoặc trùng sẽ được báo lỗi.','Dựng video theo độ dài lời kể, thêm chuyển động ảnh và phụ đề nhỏ sát đáy.','Chuẩn bị gói đăng YouTube đúng niche khoa học đời thường và gợi ý thumbnail, hook, nhịp kể.','Chấm điểm tiêu đề, mô tả, tag; kiểm tra khung ngang 16:9, âm thanh, phụ đề và CTA; chặn đăng nếu chưa đạt.'];
 let managerState={status:'idle',settings:{},readiness:{}},managerBusy=false,managerPosition={x:-4,z:1.2};
 let token='', selected='', state={status:'idle',stages:{},logs:[]}, projectList=[], online=false, pending=false;
 $('stage-strip').innerHTML = names.map((n,i)=>`<div class="stage" id="stage-${stages[i]}"><div class="stage-number">${i+1}</div><span>${n}</span></div>`).join('');
@@ -49,7 +49,7 @@ function render(){
   $('agent-action').textContent=action;
   $('scene-status').textContent=(statusNames[run.status]||'Sẵn sàng').toUpperCase();
   $('current-task').textContent=current>=0?names[current]:'Chưa nhận nhiệm vụ';
-  $('task-description').textContent=current>=0?descriptions[current]:'Tôi sẽ đưa câu chuyện của bạn qua 9 công đoạn, từ kịch bản đến gói đăng YouTube.';
+  $('task-description').textContent=current>=0?descriptions[current]:'Tôi sẽ đưa câu chuyện của bạn qua 10 công đoạn, từ kịch bản đến gói đăng YouTube.';
   const logs=run.logs||[];const container=$('logs'),atBottom=container.scrollHeight-container.scrollTop-container.clientHeight<45;
   const signature=JSON.stringify(logs);
   if(container.dataset.signature!==signature){
@@ -141,7 +141,7 @@ function renderManager(){
   if(m.error)managerError(m.error);
   if(!$('manager-settings-form').dataset.loaded){
     $('manager-enabled').checked=!!m.settings?.enabled;$('manager-dispatch').checked=!!m.settings?.auto_dispatch;
-    $('manager-interval').value=m.settings?.interval_hours||24;$('manager-minutes').value=m.settings?.minutes||8;
+    $('manager-interval').value=m.settings?.interval_hours||24;$('manager-minutes').value=m.settings?.minutes||8;$('manager-flow').value=m.settings?.flow_url||'';
     $('manager-settings-form').dataset.loaded='true';
   }
   $('manager-next').textContent=m.settings?.enabled?'Lượt tiếp theo: '+formatDate(m.next_run_at)+' · chỉ chạy khi server mở.':'Lịch tự động đang tắt. Bạn có thể phân tích ngay.';
@@ -174,7 +174,7 @@ function renderManager(){
   }
 }
 $('manager-analyze').onclick=async()=>{managerBusy=true;managerError('');renderManager();try{await post('/api/manager/analyze',{});$('manager-details').open=true;await refresh();}catch(e){managerError(e.message);}finally{managerBusy=false;renderManager();}};
-$('manager-settings-form').onsubmit=async event=>{event.preventDefault();managerError('');const button=event.currentTarget.querySelector('[type=submit]');button.disabled=true;try{await post('/api/manager/settings',{enabled:$('manager-enabled').checked,auto_dispatch:$('manager-dispatch').checked,interval_hours:Number($('manager-interval').value),minutes:Number($('manager-minutes').value)});await refresh();}catch(e){managerError(e.message);}finally{button.disabled=false;}};
+$('manager-settings-form').onsubmit=async event=>{event.preventDefault();managerError('');const button=event.currentTarget.querySelector('[type=submit]');button.disabled=true;try{await post('/api/manager/settings',{enabled:$('manager-enabled').checked,auto_dispatch:$('manager-dispatch').checked,interval_hours:Number($('manager-interval').value),minutes:Number($('manager-minutes').value),flow_url:$('manager-flow').value.trim()});await refresh();}catch(e){managerError(e.message);}finally{button.disabled=false;}};
 $('connect-channel').onclick=async()=>{managerError('');const tab=window.open('','_blank');if(tab)tab.opener=null;try{const result=await post('/api/manager/connect',{});if(tab)tab.location.href=result.url;else managerError('Browser chặn cửa sổ đăng nhập. Cho phép popup rồi kết nối lại.');}catch(e){if(tab)tab.close();managerError(e.message);}};
 $('disconnect-channel').onclick=async()=>{try{await post('/api/manager/disconnect',{});await refresh();}catch(e){managerError(e.message);}};
 
@@ -182,7 +182,7 @@ $('disconnect-channel').onclick=async()=>{try{await post('/api/manager/disconnec
 const canvas=$('world'),ctx=canvas.getContext('2d');let width=0,height=0,angle=-.12,zoom=1,drag=null,sceneStage=-1,sceneRunning=false,sceneFailed=false;
 let agent={x:0,z:1.8},lastTime=performance.now();
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
-const stations=[{x:-5,z:-3.6},{x:4,z:.2},{x:-1.7,z:-3.6},{x:1.7,z:-3.6},{x:5,z:-3.6},{x:-5,z:3.5},{x:-1.7,z:3.5},{x:1.7,z:3.5},{x:5,z:3.5}];
+const stations=[{x:-5,z:-3.6},{x:4,z:.2},{x:-1.7,z:-3.6},{x:1.7,z:-3.6},{x:5,z:-3.6},{x:-5,z:3.5},{x:-1.7,z:3.5},{x:1.7,z:3.5},{x:5,z:3.5},{x:2.9,z:5.8}];
 function resize(){const rect=canvas.getBoundingClientRect();width=rect.width;height=rect.height;const dpr=Math.min(devicePixelRatio||1,2);canvas.width=width*dpr;canvas.height=height*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);}
 new ResizeObserver(resize).observe(canvas);
 function project(x,y,z){const xx=x*Math.cos(angle)-z*Math.sin(angle),zz=x*Math.sin(angle)+z*Math.cos(angle);const scale=Math.min(width/19,height/13)*zoom;return [width/2+xx*scale,height*.48+(zz*.48-y*.95)*scale];}
@@ -211,7 +211,7 @@ function person(x,z,t,manager=false,editor=false,tester=false){circle(x,.025,z,.
  box(x-.25,.65+bob,z-.2,.5,.55,.36,editor?['#c0addb','#886d9d','#68527b']:manager?['#90bcca','#527f91','#3b6273']:tester?['#a9d8c6','#4c8a76','#356a5a']:['#c4aa74','#977d4c','#796940']);
  box(x-.35,.7+bob,z-.12,.11,.38,.17,['#c4aa74','#b79964','#8a754f']);box(x+.25,.7+bob,z-.12,.11,.38,.17,['#c4aa74','#b79964','#8a754f']);
  box(x-.19,1.21+bob,z-.15,.38,.37,.32,['#d4b997','#c4a784','#a99178']);box(x-.21,1.52+bob,z-.17,.42,.12,.36,['#333b3d','#283235','#202c30']);
- const p=project(x,1.99,z);ctx.font='600 9px system-ui';const text=tester?(sceneStage===8&&sceneRunning?'GẠO · ĐANG KIỂM THỬ':'GẠO · KIỂM THỬ'):editor?(sceneStage===1&&sceneRunning?'MAI · ĐỌC DUYỆT':'MAI · BIÊN TẬP'):manager?(['researching','planning'].includes(managerState.status)?'AN · NGHIÊN CỨU':'AN · QUẢN LÝ KÊNH'):(sceneRunning?'MINH · ĐANG LÀM VIỆC':sceneFailed?'MINH · CẦN HỖ TRỢ':'MINH');const measure=ctx.measureText(text).width;ctx.fillStyle='#101b21ee';ctx.strokeStyle=sceneFailed?'#bd8174':tester?'#5fae94':'#b59e6e';ctx.lineWidth=.7;ctx.beginPath();ctx.roundRect(p[0]-measure/2-10,p[1]-15,measure+20,24,5);ctx.fill();ctx.stroke();ctx.fillStyle='#e2d3ae';ctx.textAlign='center';ctx.fillText(text,p[0],p[1]);
+ const p=project(x,1.99,z);ctx.font='600 9px system-ui';const text=tester?(sceneStage===9&&sceneRunning?'GẠO · ĐANG KIỂM THỬ':'GẠO · KIỂM THỬ'):editor?(sceneStage===1&&sceneRunning?'MAI · ĐỌC DUYỆT':'MAI · BIÊN TẬP'):manager?(['researching','planning'].includes(managerState.status)?'AN · NGHIÊN CỨU':'AN · QUẢN LÝ KÊNH'):(sceneRunning?'MINH · ĐANG LÀM VIỆC':sceneFailed?'MINH · CẦN HỖ TRỢ':'MINH');const measure=ctx.measureText(text).width;ctx.fillStyle='#101b21ee';ctx.strokeStyle=sceneFailed?'#bd8174':tester?'#5fae94':'#b59e6e';ctx.lineWidth=.7;ctx.beginPath();ctx.roundRect(p[0]-measure/2-10,p[1]-15,measure+20,24,5);ctx.fill();ctx.stroke();ctx.fillStyle='#e2d3ae';ctx.textAlign='center';ctx.fillText(text,p[0],p[1]);
 }
 function draw(now){const t=now/1000,dt=Math.min((now-lastTime)/1000,.1);lastTime=now;ctx.clearRect(0,0,width,height);
  // Floor and softly lit perimeter.
@@ -230,7 +230,7 @@ function draw(now){const t=now/1000,dt=Math.min((now-lastTime)/1000,.1);lastTime
  // Paths connect workstations, representing the production pipeline.
  for(let i=0;i<stations.length-1;i++){const a=stations[i],b=stations[i+1];line([a.x,.018,1],[b.x,.018,1],'#53655c55',1);line([a.x,.018,a.z+1.7],[a.x,.018,1],'#53655c55',1);}
  circle(0,.025,.5,1.0,'#d6b57409','#c3ab6e44');circle(0,.026,.5,.78,'#00000000','#c3ab6e55');label('◈',0,.03,.65,'#a79568',22);
- const target=sceneStage===1?{x:1,z:.5}:sceneStage===8?{x:2,z:1.6}:sceneStage>=0?{x:stations[sceneStage].x,z:stations[sceneStage].z+1.6}:{x:0,z:.5};
+ const target=sceneStage===1?{x:1,z:.5}:sceneStage===9?{x:2,z:1.6}:sceneStage>=0?{x:stations[sceneStage].x,z:stations[sceneStage].z+1.6}:{x:0,z:.5};
  if(reduced){agent.x=target.x;agent.z=target.z;}else{const distance=Math.hypot(target.x-agent.x,target.z-agent.z);if(distance>.015){const speed=Math.min(1,dt*3/distance);agent.x+=(target.x-agent.x)*speed;agent.z+=(target.z-agent.z)*speed;}}
  // Painter's order follows depth for a stable 3D camera.
  box(-4.85,0,.15,.12,.9,.12,['#526b75','#334e59','#233d49']);box(-3.25,0,.15,.12,.9,.12,['#526b75','#334e59','#233d49']);

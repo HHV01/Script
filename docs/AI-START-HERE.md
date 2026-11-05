@@ -10,8 +10,8 @@
 
    Nếu không có `.venv`, theo README để cài. Có thể thay tiền tố bằng `python` nếu đã chọn đúng môi trường. Đọc lỗi và đường dẫn trong JSON; không in secret để kiểm tra.
 3. Đọc `projects/<tên>/project.yaml`, các đầu ra và trạng thái thực tế. Đối chiếu hash/phiếu khi có. Không coi tệp tồn tại là đạt chất lượng; không tạo lại cảnh, giọng hoặc project chỉ vì chưa biết cách tiếp tục.
-4. Kiểm tra app/worker trước khi mở worker mới; không tự bật lịch manager hoặc hàng đợi cũ.
-5. Ảnh cung cấp thủ công trong `hinh/`, tên theo ID cảnh. Chạy `collect` để kiểm tệp cục bộ; code auto Flow đã gỡ. Giữ nguyên profile, ảnh và hồ sơ Flow cũ để đối chiếu.
+4. Kiểm tra app/worker trước khi mở worker mới. Không tự bật lịch manager. Giữ `.env`, OAuth, `.flow-profile`, ảnh/giọng đã có và hồ sơ chống trùng. Không xóa profile khi gặp khóa hoặc lỗi đăng nhập.
+5. Với Flow, dùng duy nhất luồng mặc định tại [FLOW.md](FLOW.md): Playwright + profile riêng `.flow-profile`, `flow open`, đăng nhập trực tiếp nếu cần, `flow check`, rồi mới `generate-one` khi được phép tiêu credit. Không bắt người dùng cài extension/CDP làm bước mặc định. Không lưu mật khẩu Google vào `.env`.
 6. Chỉ tiếp tục bước còn thiếu hoặc lỗi. Lệnh `run --only <bước>` giới hạn một bước; `--from` chạy nhiều bước tiếp theo và có thể dùng API. `--force` có thể ghi đè dữ liệu. Không chạy toàn pipeline để xem trạng thái.
 7. Mặc định không xuất bản. `run ... --upload` là thao tác xuất bản rõ ràng, chỉ sau các cổng nguồn/kịch bản/hình/tiếng/phụ đề và hash bản cuối. Kiểm tra ledger/YouTube nếu trạng thái upload chưa rõ; không tạo receipt giả hoặc đăng trùng.
 

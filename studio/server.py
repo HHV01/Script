@@ -21,7 +21,7 @@ from pipeline.script_review import review_summary
 
 from pipeline.stages import STAGES as STAGE_MODULES
 STAGES = list(STAGE_MODULES)
-LABELS = ['Biên kịch', 'Duyệt kịch bản', 'Phòng thu', 'Phân cảnh', 'Mỹ thuật', 'Kiểm ảnh', 'Dựng phim', 'Xuất bản', 'Kiểm thử']
+LABELS = ['Biên kịch', 'Duyệt kịch bản', 'Phòng thu', 'Phân cảnh', 'Mỹ thuật', 'Google Flow', 'Kiểm ảnh', 'Dựng phim', 'Xuất bản', 'Kiểm thử']
 NAME = re.compile(r'^[\w-]{1,64}$', re.UNICODE)
 STATIC = Path(__file__).parent / 'static'
 
@@ -238,10 +238,15 @@ def create_project(body):
         raise ValueError('Nhập chủ đề (tối đa 1000 ký tự).')
     if isinstance(minutes, bool) or not isinstance(minutes, int) or not 1 <= minutes <= 60:
         raise ValueError('Thời lượng mục tiêu từ 1 đến 60 phút.')
+    flow_url = str(body.get('flow_url', '')).strip()
+    if flow_url:
+        from pipeline.flow_playwright import is_flow_url
+        if not is_flow_url(flow_url):
+            raise ValueError('URL phải là project Google Flow tại labs.google.')
     if path.exists():
         raise ValueError('Tên project đã tồn tại; hãy chọn tên khác.')
     cfg = load_yaml(PROJECTS/'_template/project.yaml')
-    cfg.update(topic=topic, minutes=minutes)
+    cfg.update(topic=topic, minutes=minutes, flow_url=flow_url)
     if niche:
         cfg['niche'] = niche
     # mkdir is exclusive so two requests cannot overwrite an existing project.
