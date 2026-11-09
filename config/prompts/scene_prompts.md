@@ -10,7 +10,8 @@ QUY TẮC:
 - Timestamp là khoảng lời đọc CHÍNH XÁC của cảnh hiện tại. Hành động/chủ thể chính phải minh họa mệnh đề đang được đọc ngay đầu khoảng đó; không minh họa câu trước hoặc báo trước câu sau. Không giữ cảnh cũ chỉ để đạt thời lượng tối thiểu. Timestamp từ nội suy không phải bằng chứng đã đồng bộ thực tế.
 - "characters": danh sách id nhân vật xuất hiện trong ảnh (có thể rỗng []). KHÔNG mô tả ngoại hình nhân vật trong scene_desc, hệ thống sẽ tự thêm.
 - Không yêu cầu chữ, logo, biểu ngữ trong ảnh. Không chèn tên kênh hoặc handle vào nội dung ảnh.
-- Các cảnh liên tiếp cùng ý nên đổi góc máy/bố cục để không bị lặp ảnh.
+- Các cảnh liên tiếp cùng không gian phải giữ căn phòng, vị trí đồ đạc chính, ánh sáng và bảng màu; đổi góc máy/tư thế theo hành động, không tự thay phòng hoặc dựng bảng thuyết trình lớn. Bối cảnh là không gian đời thường phù hợp chủ đề, được vẽ chì và màu nước cùng phong cách với nhân vật.
+- Dùng đúng nhân vật ở cấu hình và ảnh tham chiếu chung, không tự thiết kế mascot mới. Các cảnh liên tiếp cùng ý nên đổi góc máy/bố cục để không bị lặp ảnh.
 - Mỗi cảnh có một hành động và cảm xúc đọc được trên điện thoại. Ưu tiên cận vật thể, tương tác tay/đạo cụ, ánh mắt và tư thế có mục đích; không lặp nhân vật đứng chỉ tay.
 - Không tạo bố cục slide: tránh khung thẻ, tiêu đề trang và khoảng trống vô nghĩa. Đồ vật và nhân vật phải đủ lớn; chừa vùng phụ đề.
 - Hình phải làm rõ đúng cơ chế đang nói; không thêm mũi tên, cắt lớp hay chi tiết máy móc sai chỉ để đẹp.

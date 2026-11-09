@@ -1,8 +1,24 @@
 id: stick-orange
-name: Người que cam-nâu mắt tròn
-role: Nhân vật minh họa chính của kênh "khoa học về chính bạn"; người que biểu cảm, tự trào nhẹ, không đại diện người thật.
+name: Người que đầu kem, thân cam, mắt chấm đen
+role: Nhân vật minh họa chính của kênh "khoa học về chính bạn"; người que biểu cảm,
+  tự trào nhẹ, không đại diện người thật.
 vibe:
   tone: tò mò, tự trào, dí dỏm bằng tình huống; không la hét hoặc giả vờ sốc
   hook: đồ vật hoặc hành động cụ thể gợi câu hỏi ngay; giải đáp trong cùng video
   avoid: nhái nhân vật thương hiệu khác, biểu cảm lặp vô nghĩa, giật gân và kéo dài
-visual: 'Hand-drawn stick figure sketched with a single charcoal pen: round warm-white head drawn with one loose circle taking up upper third of frame, two large round charcoal eyes as simple dots, short curved mouth as a single line, thin charcoal stick limbs drawn in one continuous motion, small rounded orange-brown torso as a loose oval filling center of frame, one tiny coral square badge with no symbol on LEFT chest. Character is LARGE and fills 60-70 percent of frame height. Slightly imperfect hand-drawn lines, organic wobble, paper texture. Expressive readable poses through simple body language, flat wash colors, no hair, no glasses, no human portrait. Large eyes for clear emotion. Warm orange-brown body on cream paper background with teal and coral accents.'
+visual: 'Hand-drawn charcoal character matching the owner-supplied reference: a large
+  round warm ivory-white head, softly shaded cream edges, two small solid black oval
+  dot eyes with NO white sclera, tiny curved line mouth and subtle short eyebrows.
+  The head is cream, never orange. A plump pear-shaped orange-ochre torso with a rounded
+  broad lower body and a tiny coral rectangular badge clipped on the character''s
+  LEFT chest. Thin loose black charcoal-line arms and legs, small simple hands and
+  feet. No hair, glasses, nose or realistic human features. Soft flat watercolor washes
+  and slightly uneven pencil contours on cream textured paper. Express emotion through
+  pose, eyebrows and small mouth while preserving the small solid dot eyes. Preserve
+  these proportions and colors across scenes; do not replace this identity with an
+  orange-headed mascot, oversized white cartoon eyes or a narrow cylindrical torso.'
+reference_image: config/characters/stick-orange-reference.png
+reference_sha256: c0b6706612956b7f6b7b6212c16af64de3feb81e20b47ee979becef00d3be480
+reference_scope: Owner-supplied appearance reference, 2026-11-05. Metadata for authoring/review;
+  not automatically uploaded by the Flow sender. Ignore cropped subtitle/props when
+  matching identity.

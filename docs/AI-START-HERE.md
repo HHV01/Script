@@ -1,5 +1,19 @@
 # AI mở repo: đọc trang này trước
 
+## What If — project riêng theo chủ repo ngày 09/11/2026
+
+Đọc [projects/What if/README.md](../projects/What%20if/README.md) và [HANDOFF.md](../projects/What%20if/kich-ban/HANDOFF.md) khi làm nội dung What If/Mây Mù. Kịch bản hiện tại là “Nếu AI hiện hóa đơn điện sau mỗi câu trả lời?”. Phần hướng Soi Sáng đang là đề xuất, chưa có ảnh thử/chốt; ba prompt thử A/C/E đã viết tại `projects/What if/hinh/prompts-test-ace.txt`, chưa tạo ảnh. Nghiên cứu YouTube và mẫu hình Soi Sáng đã chuyển vào `projects/What if/kich-ban/nghien-cuu/`, không còn ở `docs/research/`. Không áp hai bố cục bàn cờ tập 7 sang video này. Đường dẫn có khoảng trắng do chủ repo chỉ định, là hồ sơ biên tập; CLI cũ chưa hỗ trợ tên này. Không tự tạo project tên khác để lách đường dẫn.
+
+
+## Tập 7 — đã dừng theo chủ repo ngày 09/11/2026
+
+Chủ repo quyết định bỏ tập 7 và chuyển sang tập khác. Thư mục `projects/tap-07-cao-thu-van-di-sai` **không còn trên đĩa**; bản đã xoá nằm trong Thùng rác Windows. Trước khi xoá, trạng thái thực là 8/247 ảnh (`scene_001`–`scene_008`), voice 873,9 giây, kịch bản 3342 từ; không có video dựng và không đăng gì. Không dùng lại bố cục A/B bàn cờ của tập 7 cho nội dung khác nếu chủ repo chưa yêu cầu.
+
+Module độc lập tại [flow_gen/README.md](../flow_gen/README.md) được thêm theo yêu cầu chủ repo; code cũ vẫn giữ. Module đã chạy thật cho tập 7 qua CDP với profile ngoài repo, x1/16:9; không suy rằng phiên còn đăng nhập hoặc worker đang chạy. Bước 5 ở phần hướng dẫn cũ dưới đây mô tả CLI cũ, không bắt agent dùng nó thay module mới. Bộ gửi mới giữ nguyên image_prompt; cấu hình tham chiếu không tự upload ảnh.
+
+Dữ liệu tập và ảnh trong `projects/` đang bị Git bỏ qua; agent clone repo sẽ không có hồ sơ What If trên máy này.
+
+
 1. Đọc `AGENTS.md`, `.studio/manager/OPERATIONS.md`, `config/channel-direction.yaml`, `config/team-operations.yaml`. Chỉ dẫn mới của chủ repo ưu tiên ghi chú cũ. Không giả định một agent khác đã duyệt nếu chưa có kết quả thực tế.
 2. Dùng môi trường Python hiện có, chạy chẩn đoán **không tạo nội dung**:
 

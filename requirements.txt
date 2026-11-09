@@ -1,8 +1,9 @@
-pyyaml>=6.0
-openai>=1.0             # gọi OpenCode Go (OpenAI-compatible) để viết kịch bản + mô tả cảnh
-vieneu                  # voice AI chạy local (CPU được; GPU NVIDIA nhanh hơn rất nhiều)
-# faster-whisper>=1.0   # chỉ cần nếu dùng voice.provider: manual
+# Bộ đã kiểm trên Windows, Python 3.14.0 (09/11/2026); máy khác cần chạy lại doctor và một cảnh thử.
+pyyaml==6.0.3
+openai==3.37.0          # gọi OpenCode Go (OpenAI-compatible) để viết kịch bản + mô tả cảnh
+vieneu==3.8.3           # voice AI chạy local (CPU được; GPU NVIDIA nhanh hơn rất nhiều)
+# faster-whisper       # chỉ cần nếu dùng voice.provider: manual (chưa ghim vì chưa cài trên máy này)
 
-playwright>=1.49,<2
-pillow>=10
-google-auth-oauthlib>=1.2,<2
+playwright==1.64.1
+pillow==12.2.0
+google-auth-oauthlib==1.5.0

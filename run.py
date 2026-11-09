@@ -45,6 +45,8 @@ def main():
     doctor = sub.add_parser("doctor", help="Kiểm tra cục bộ; không mở browser hoặc tạo ảnh")
     doctor.add_argument("project", nargs="?")
     doctor.add_argument("--json", action="store_true", dest="as_json")
+    doctor.add_argument("--fix", action="store_true",
+                        help="Cài phần thiếu bằng pip/playwright; không đụng .env, profile hoặc project")
     flow = sub.add_parser("flow", help="Mở, kiểm tra, hoặc tạo đúng một cảnh Google Flow")
     flow.add_argument("project")
     flow.add_argument("--action", choices=['open','check','generate-one'], default='check')
@@ -56,6 +58,18 @@ def main():
     visual.add_argument("--results", type=int, default=5)
     visual.add_argument("--min-views", type=int, default=50000)
     visual.add_argument("--duration", choices=['short','medium','long','any'], default='medium')
+    motion = sub.add_parser("motion", help="Zoom chậm + chuyển cảnh mờ từ ảnh tĩnh (nhịp dựng, không phải animation)")
+    motion.add_argument("images", help="Thư mục ảnh hoặc một tệp ảnh")
+    motion.add_argument("--out", required=True, type=Path)
+    motion.add_argument("--duration", type=float, nargs="*", default=[],
+                        help="Giây cho từng ảnh; một số dùng chung, bỏ trống = 6")
+    motion.add_argument("--fps", type=int, default=30)
+    motion.add_argument("--zoom", type=float, default=0.10, help="Mức zoom tối đa, 0.1 = 10 phần trăm")
+    motion.add_argument("--fade", type=float, default=0.6)
+    dedupe = sub.add_parser("dedupe", help="Báo cáo cảnh gần trùng trước khi tạo ảnh; không tự xoá")
+    dedupe.add_argument("scenes", help="JSON cảnh có id và narration/text")
+    dedupe.add_argument("--threshold", type=float, default=0.85)
+    dedupe.add_argument("--json", action="store_true", dest="as_json")
     a = ap.parse_args()
     if a.cmd == "menu":
         from pipeline.launcher import main as menu_main
@@ -63,7 +77,20 @@ def main():
         return
     if a.cmd == "doctor":
         from pipeline.doctor import main as doctor_main
-        raise SystemExit(doctor_main(a.project, a.as_json))
+        raise SystemExit(doctor_main(a.project, a.as_json, a.fix))
+    if a.cmd == "motion":
+        from pipeline import kenburns
+        argv = [a.images, "--out", str(a.out), "--fps", str(a.fps),
+                "--zoom", str(a.zoom), "--fade", str(a.fade)]
+        if a.duration:
+            argv += ["--duration", *[str(d) for d in a.duration]]
+        raise SystemExit(kenburns.main(argv))
+    if a.cmd == "dedupe":
+        from pipeline import dedupe
+        argv = [a.scenes, "--threshold", str(a.threshold)]
+        if a.as_json:
+            argv.append("--json")
+        raise SystemExit(dedupe.main(argv))
     from pipeline.common import PROJECTS, Project, load_env
     load_env()
     name = getattr(a, 'name', None) or getattr(a, 'project', None)

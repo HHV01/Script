@@ -1,0 +1,87 @@
+{
+  "date": "2026-11-05",
+  "executor": "current Codex assistant; Playwright Python + installed Chrome for synthetic DOM",
+  "scope": "Standalone module only; owner requested keeping legacy code and software-only testing",
+  "files": {
+    "flow_gen/generate_images.py": "b52e75d35a0afabfece05ffa00c6db77d528e8b3f3be4e0f9451ba154d85ca3f",
+    "flow_gen/README.md": "c68bfb5a653cc2c6013ca8f401f7e00f612786ae041318820f5b7c3c897b95ca",
+    "tests/test_flow_gen.py": "2a992ad4c8f01187a8d4d59869c771871c2a748d93a315dcc6b7ad9e0b05ba2c"
+  },
+  "checks": {
+    "py_compile": {
+      "command": "python -m py_compile flow_gen/generate_images.py",
+      "exit_code": 0
+    },
+    "cli_help": {
+      "command": "python flow_gen/generate_images.py --help",
+      "exit_code": 0
+    },
+    "suite": {
+      "command": "python -m unittest discover -s tests -v",
+      "exit_code": 0,
+      "tests_run": 152,
+      "skipped": 1,
+      "elapsed_seconds": 27.476
+    },
+    "new_module_tests": 16,
+    "real_browser_fixture": [
+      "three scenes produce scene_001..003 with distinct expected pixels",
+      "both gallery DOM directions",
+      "Unicode/newlines/leading and trailing spaces preserved exactly in submitted text",
+      "resume causes no new submit",
+      "image x1 selected while video remains x2",
+      "HTTP image requires and receives context cookie",
+      "blob and data URL decoding"
+    ],
+    "unit_fixtures": [
+      "missing prompt ID fails before browser",
+      "late extra or unloaded images delay result decision",
+      "excess images quarantined then individual retries limited to two",
+      "timeout/ambiguous submission and failed download block regeneration",
+      "changed prompt or malformed MIME rejected",
+      "Chrome fallback and CDP browser ownership mocked",
+      "busy profile does not trigger fallback or lock deletion"
+    ],
+    "new_code_common_secret_and_personal_path_patterns": []
+  },
+  "history_audit": {
+    "commits_scanned": 21,
+    "unique_objects_seen": 495,
+    "text_blob_limit_bytes": 5000000,
+    "common_secret_patterns_found": [],
+    "filename_flag_resolved": "Video-scripts/studio/token-saving.test.mjs is a node:test unit test, not a token store",
+    "flow_project_url_history_findings": [
+      {
+        "commit": "aed4bb33",
+        "path": "Chay_Tu_Dong_Flow.bat"
+      },
+      {
+        "commit": "aed4bb33",
+        "path": "Video-scripts/tools/auto_generate_flow.py"
+      },
+      {
+        "commit": "aed4bb33",
+        "path": "app/flow-link.test.mjs"
+      }
+    ],
+    "old_console_and_bat_removed_in": "dd012ba",
+    "limits": "Pattern/path-based audit of reachable local Git history; no guarantee of absence of arbitrary secrets. Historical URLs intentionally not reproduced; no history rewriting performed."
+  },
+  "not_verified": [
+    "No live Google Flow login/generation or selector verification",
+    "No real generation throughput measurement",
+    "No visual review of generated episode scenes",
+    "No independent human/agent review"
+  ],
+  "not_changed": [
+    "Legacy extension and pipeline",
+    "Episode scene counts, prompts, timing and media",
+    "Renderer integration/zoom-pan-fade",
+    "Git history"
+  ],
+  "operational_limits": [
+    "DOM ordering is an assumption requiring live visual calibration",
+    "Pending/timeout jobs must be reconciled manually; no blind submit retry",
+    "Standalone scene_ID filenames are not automatically recognized by legacy renderer"
+  ]
+}

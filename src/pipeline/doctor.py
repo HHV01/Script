@@ -4,6 +4,7 @@ import json
 import os
 import re
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -74,8 +75,55 @@ def inspect(project_name=None):
             'project':project_name, 'ready_locally':not any(c['status']=='fail' for c in checks), 'checks':checks}
 
 
-def main(project_name=None, as_json=False):
+def fix(report, log=None):
+    """Install what can be installed offline. Never touches .env, profiles or projects.
+
+    Only pip packages and the Playwright browser are installed automatically; FFmpeg is a
+    system binary, so the command prints guidance instead of downloading a build.
+    Progress and installer output go to stderr so `--json` stays parseable on stdout.
+    """
+    emit = log or (lambda message: print(message, file=sys.stderr, flush=True))
+    steps = []
+    missing_deps = sorted({c['code'].split('.', 1)[1] for c in report['checks']
+                           if c['status'] in ('fail', 'warn') and c['code'].startswith('dependency.')})
+    if missing_deps:
+        cmd = [sys.executable, '-m', 'pip', 'install', '-r', str(ROOT / 'requirements.txt')]
+        steps.append(('pip install', cmd))
+    browser_missing = any(c['code'] == 'flow.browser' and c['status'] == 'fail'
+                          for c in report['checks'])
+    if browser_missing:
+        steps.append(('playwright install', [sys.executable, '-m', 'playwright', 'install', 'chromium']))
+    results = []
+    for label, cmd in steps:
+        emit(f'[fix] {label}: {" ".join(cmd)}')
+        try:
+            proc = subprocess.run(cmd, cwd=str(ROOT), capture_output=True, text=True)
+        except OSError as error:
+            results.append(dict(step=label, ok=False, detail=type(error).__name__))
+            continue
+        for stream in (proc.stdout, proc.stderr):
+            if stream and stream.strip():
+                emit(stream.rstrip())
+        results.append(dict(step=label, ok=proc.returncode == 0, detail=f'exit {proc.returncode}'))
+    ffmpeg_missing = [c['code'] for c in report['checks']
+                      if c['code'] in ('ffmpeg', 'ffprobe') and c['status'] != 'pass']
+    if ffmpeg_missing:
+        results.append(dict(step='ffmpeg', ok=False,
+                            detail='Cài FFmpeg vào PATH hoặc đặt ffmpeg/ffprobe vào tools/ffmpeg/bin/'))
+    return results
+
+
+def main(project_name=None, as_json=False, do_fix=False):
     report = inspect(project_name)
+    if do_fix:
+        fixed = fix(report)
+        report = inspect(project_name)
+        report['fix'] = fixed
+        if not as_json:
+            for item in fixed:
+                print(f"[fix] {item['step']}: {'xong' if item['ok'] else 'cần làm tay'} - {item['detail']}")
+            if not fixed:
+                print('[fix] Không có gì để cài tự động.')
     if as_json:
         print(json.dumps(report, ensure_ascii=False, indent=2))
     else:
@@ -83,4 +131,5 @@ def main(project_name=None, as_json=False):
             print(f"[{check['status']}] {check['code']}: {check['detail']}")
             if check['action']: print('  → '+check['action'])
         print('Chẩn đoán cục bộ; không gửi prompt hoặc kiểm chứng đăng nhập Flow.')
-    return 0 if report['ready_locally'] else 1
+    fix_ok = all(item['ok'] for item in report.get('fix', []))
+    return 0 if report['ready_locally'] and fix_ok else 1

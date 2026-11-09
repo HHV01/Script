@@ -2,6 +2,8 @@
 
 Công cụ Python và giao diện web cục bộ để làm video tiếng Việt về cơ thể, cảm giác, trí nhớ và hành vi. Luồng hiện có: kịch bản → duyệt văn bản → giọng đọc → phân cảnh → prompt → ảnh Google Flow → dựng → metadata và kiểm tra.
 
+Module mới độc lập: [flow_gen — tạo ảnh theo ID cảnh](flow_gen/README.md), hỗ trợ gửi lô, chờ ảnh thực, profile ngoài repo và state chạy tiếp. Theo lựa chọn chủ repo, code cũ được giữ; các lệnh Studio/`run.py flow` bên dưới vẫn dùng tích hợp cũ, chưa chuyển sang module mới. Chưa nghiệm thu ba cảnh trên Flow thật; các bước thay nhịp cảnh và tích hợp renderer chưa thực hiện.
+
 Định hướng hiện tại: video ngang **16:9**, nhân vật `stick-orange`, nền giấy kem. Xem [cấu hình định hướng](config/channel-direction.yaml) và [quy tắc repo](AGENTS.md). Đây là công cụ hỗ trợ sản xuất; chạy xong một bước không đồng nghĩa nội dung đã được xem, nghe hoặc duyệt chất lượng.
 
 ## Cài đặt trên Windows
@@ -30,6 +32,8 @@ Khi cần sản xuất, cài thêm trong cùng môi trường:
 - **Voice:** mặc định VieNeu `v3turbo`, giọng Hải Đăng. Lần đầu có thể tải model; tốc độ phụ thuộc máy. Chế độ audio thủ công cần thêm `faster-whisper` để căn lời đọc.
 - **Media:** cần FFmpeg và ffprobe trong PATH hoặc `tools/ffmpeg/bin/`.
 - **Flow:** cần tài khoản truy cập Google Flow, Playwright và phiên đăng nhập trong profile riêng.
+
+Nếu thiếu thư viện hoặc browser, chạy `run.py doctor --fix` để cài phần thiếu bằng pip/Playwright. Lệnh này không sửa `.env`, không tạo profile, không mở browser và không đụng vào `projects/`; FFmpeg vẫn phải cài tay.
 
 Chỉ tạo `.env` từ [.env.example](.env.example) nếu chưa có; không ghi đè key đang dùng. `YOUTUBE_API_KEY` dùng cho nghiên cứu dữ liệu công khai; quyền Analytics/upload dùng OAuth riêng. `doctor` kiểm tra môi trường cục bộ, không xác minh đăng nhập, quota hoặc quyền truy cập provider.
 
@@ -87,6 +91,14 @@ Trong cửa sổ `open`, đăng nhập và mở đúng project Flow; quay lại 
 
 `open` và `check` không gửi tạo ảnh. `generate-one` có thể tiêu credit và yêu cầu cổng kịch bản/phân cảnh hợp lệ. Trước mỗi submit, công cụ phải chọn và xác nhận **x1 trong mục tạo hình ảnh**, lưu cài đặt; không xác nhận được thì dừng. Giữ nguyên số cảnh cần để phủ nhịp video, không giảm ảnh để tiết kiệm lượt.
 
+Trước khi tạo ảnh, có thể rà cảnh gần trùng lời đọc:
+
+```powershell
+.\.venv\Scripts\python.exe run.py dedupe projects\tap-08-ten-chu-de\scenes.json --threshold 0.85
+```
+
+Lệnh này **chỉ báo cáo**, không tự xoá hay sửa cảnh; cắt cảnh là quyết định biên tập của chủ repo.
+
 Chỉ một worker dùng profile tại một thời điểm. Giữ ảnh và hồ sơ `flow-attempts` khi tiếp tục; nếu submit chưa rõ kết quả, đối chiếu gallery trước khi gửi lại. Không xóa profile/lock hoặc dùng `--force` để ép chạy. Xem [hướng dẫn Flow](docs/FLOW.md).
 
 ## Chuyển động, dựng và xuất bản
@@ -94,6 +106,14 @@ Chỉ một worker dùng profile tại một thời điểm. Giữ ảnh và h�
 Ưu tiên hiện hành là animate từ đúng ảnh cảnh đã tạo. Adapter ComfyUI/SVD là thử nghiệm riêng, cần cài worker/model; không nằm trong cài đặt cơ bản và không tự chạy thành công chỉ bằng lệnh `render`. Mẫu SVD đầu tiên bị đánh giá chưa đạt do biến dạng mặt/tay. Xem [image-to-video](docs/IMAGE-TO-VIDEO.md).
 
 Template bật `render.require_object_motion: true`, nên renderer chặn việc dùng ảnh tĩnh làm phương án thay thế khi thiếu chuyển động phù hợp. Phần dựng theo lớp là prototype khác; xem [giới hạn và điều kiện dùng](docs/LAYER-MOTION.md). Cần chuẩn bị đầu vào chuyển động hợp lệ và kiểm nội dung trước khi dựng.
+
+Với cảnh không có clip chuyển động thật, có thể tạo nhịp zoom chậm/lia nhẹ và chuyển cảnh mờ từ chính ảnh đã tạo:
+
+```powershell
+.\.venv\Scripts\python.exe run.py motion projects\tap-08-ten-chu-de\hinh\canh --out projects\tap-08-ten-chu-de\video\nhip-can.mp4 --duration 6 --fade 0.6
+```
+
+Đây là **nhịp dựng, không phải animation**: ảnh gốc không được vẽ lại. Không ghi nhận các khung này là "đã có chuyển động" khi kiểm duyệt.
 
 ```powershell
 .\.venv\Scripts\python.exe run.py run tap-08-ten-chu-de --only render

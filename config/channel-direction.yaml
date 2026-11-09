@@ -13,11 +13,14 @@ narrator:
     thích. Không ép tần suất hoặc nhét slang.
   avoid: Không bịa cơ chế để gây cười; không gán bệnh hoặc chẩn đoán; không sao chép
     câu chữ đối thủ; không khẳng định hài chắc tăng view.
-visual_direction: 'Dùng nhân vật đã cấu hình tại config/characters/stick-orange.yaml:
-  người que nét bút than hơi lệch tự nhiên trên nền giấy kem, đầu tròn trắng ngà,
-  hai mắt chấm tròn lớn, thân oval cam-nâu, tay chân nét mảnh, dấu vuông san hô ngực
-  trái. Nhân vật lớn, biểu cảm và tự trào nhẹ. Không tự quay về áo tím hoặc thiết
-  kế lại khi chưa có yêu cầu.'
+visual_direction: 'Giữ mẫu config/characters/stick-orange-reference.png và mô tả tại
+  stick-orange.yaml: đầu tròn kem/trắng ngà, mắt chấm đen nhỏ không tròng trắng, thân
+  cam bầu, thẻ nhỏ san hô ngực trái, tay chân nét than mảnh. Cả nhân vật và bối cảnh
+  đều vẽ chì/than trên giấy kem, màu nước nhạt teal/coral/gỗ ấm. Ưu tiên không gian
+  đời thường có đồ đạc liên quan câu chuyện, không thay bằng nhân vật thuyết trình
+  cạnh bảng lớn. Trong cùng chuỗi cảnh, giữ liên tục căn phòng, bố trí đồ, ánh sáng
+  và bảng màu; đổi tư thế/góc máy theo lời đọc. Không sao chép căn phòng ngủ/bếp vào
+  chủ đề không phù hợp; không thiết kế lại nhân vật.'
 production: Mỗi video khoảng15phút theo yêu cầu chủ repo. Kịch bản phải đủ chiều sâu,
   không kéo thời gian bằng lặp ý hoặc giữ ảnh. Thời lượng thực kiểm sau thu/dựng;
   khung16:9, stick-orange. Bản thử ngắn không thay video hoàn chỉnh.

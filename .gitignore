@@ -11,3 +11,9 @@ projects/*
 .studio/
 
 tools/ffmpeg/
+
+# Standalone Flow runner output and browser/session files
+out/
+.flow_gen_profile/
+.flow_profile/
+*.env

@@ -1,0 +1,27 @@
+{
+  "executor": "current Codex assistant",
+  "scope": "current standalone sender after live DOM fixes; not a production quality approval",
+  "source_sha256": "7ea2fd5a118d2b589012575c8c25218febbd00c227873509f50f887cd4e329e7",
+  "test_sha256": "66f4c5f6b254a2dcc440624f3a53874c0a9c8b13a95d878f9958a21f3e9707ac",
+  "checks": {
+    "py_compile": "passed",
+    "full_suite": {
+      "run": 153,
+      "skipped": 1,
+      "exit_code": 0,
+      "elapsed_seconds": 33.449
+    },
+    "new_module_tests": 17,
+    "live": "direct mode x1/16:9, reference selected by separate upstream UI workflow, three files downloaded in two commands",
+    "resume": "all three skipped; browser not opened"
+  },
+  "quality": "needs_revision; user reference identity broadly restored but chess/continuity errors observed",
+  "evidence": "projects/tap-07-cao-thu-van-di-sai/hinh/flow-calibration-v2/visual-review.json",
+  "limits": [
+    "No whole video or voice review",
+    "No independent review",
+    "No 3-scene single-batch acceptance",
+    "No controlled speed benchmark"
+  ],
+  "prior_report": "docs/flow-gen-validation-2026-11-05.json describes prior software-only version; hashes there are historical"
+}
